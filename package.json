@@ -1,0 +1,25 @@
+{
+  "name": "codehistorytranscribe",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node codevideodb.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "canvas": "^2.8.0",
+    "cors": "^2.8.5",
+    "debug": "~2.6.9",
+    "diff": "^5.0.0",
+    "electron": "^13.1.7",
+    "express": "~4.16.1",
+    "flask": "^0.2.10",
+    "http-errors": "~1.6.3",
+    "jade": "~1.11.0",
+    "jquery": "^3.6.0",
+    "md5": "^2.3.0",
+    "morgan": "~1.9.1",
+    "tesseract.js": "^2.1.4",
+    "util": "^0.12.4"
+  }
+}

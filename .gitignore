@@ -1,0 +1,5 @@
+node_modules
+bin
+public/images
+test.db
+eng.traineddata

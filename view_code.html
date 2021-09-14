@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <link rel="stylesheet" href="/public/stylesheets/style.css">
+    <link rel="stylesheet" type="text/css" href="public/stylesheets/magnifier.css">
+  </head>
+
+  <body>
+    <script type = "text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> 
+    <script type="text/javascript" src="public/javascripts/Event.js"></script>
+    <script type="text/javascript" src="public/javascripts/Magnifier.js"></script>
+    <script type = "module" src="/public/javascripts/viewcode.js"></script>
+   
+
+    <div style="display: inline-block" id="zoom-ui">
+      <a class="magnifier-thumb-wrapper" href="public/images/testCode.png" style="width: fit-content">
+          <img id="thumb" src="public/images/testCode.png" style="width: 200px; height: 133px">
+      </a>
+      <div class="magnifier-preview" id="preview" style="width: 400px; height: 266px; display: inline-block">Code Zoom</div>
+    </div>
+    <div>
+      <!-- //onclick="getData()" -->
+      <button type="button" id="get-data-btn">Get Data</button>
+      <button type="button" id="show-current-btn">Update Current</button>
+      <button type="button" id="show-prev-btn">Show Previous</button>
+      <button type="button" id="show-next-btn">Show Next</button>
+      
+    </div>
+    <!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
+    <div class="float-container">
+      <div id="code-image" class="float-child">
+
+        <div id="code-container">
+          <div id="screenshot">
+            <img id="code-img" class='img' src="public/images/testCode.png" width="640" />
+            <canvas id="overlay-canvas" width="640" height="480" ></canvas>
+          </div>
+          <div id="zoom">
+            This is where the zoom view will go.
+          </div>
+        </div>
+        
+        <div>
+          <button type="button" id="update-ocr-box">Update OCR Box</button>
+        </div>
+
+      </div>
+      <div id="code-text" class="float-child">
+        This should be where the recognized code goes.
+        <textarea rows="100" cols="100" id="code-editor" style="max-height:800px;min-height:800px; resize: none"></textarea>
+        <div>
+          <button type="button" id="update-code-text">Update Code Text</button>
+        </div>
+      </div>
+      
+  </div>
+
+    <!-- <script type="text/javascript" src="public/javascripts/Event.js"></script>
+    <script type="text/javascript" src="public/javascripts/Magnifier.js"></script>
+    <script type="text/javascript">
+      var evt = new Event(),
+      m = new Magnifier(evt);
+      console.log(m);
+      m.attach({
+        thumb: '#thumb',
+        large: 'public/images/testCode.png',
+        largeWrapper: 'preview',
+        zoom: 2,
+        zoomable: true
+      });
+    </script> -->
+
+  </body>
+
+
+</html>
