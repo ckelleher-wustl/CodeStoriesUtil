@@ -155,11 +155,21 @@
 
       function printTimingInfo() {
             var tableCode = "<TABLE>"
-            $.ajax("http://localhost:3000/")
+            var url = player.getVideoUrl();
+            var time = player.getCurrentTime();
 
-              .done(function(data) {
-                  //Ajax request was successful.
-                  console.log("DATA: " + JSON.stringify(data))
+            if (time >= 180) {
+              time = time - 180;
+            } else {
+              time = 0;
+            }
+
+            console.log("time is : " + url + " " + time);
+
+
+            $.get('http://localhost:3000/', { offset: time, order : "ASC"}, 
+                function(data){
+                  // console.log("DATA: " + JSON.stringify(data))
                   for (var key in data) {
                     if (data.hasOwnProperty(key)) {
                         // console.log(key + " -> " + data[key]["url"] + data[key]["comment"]);
@@ -173,43 +183,15 @@
                   console.log(tableCode);
 
                   var dbrecords = $( "#dbrecords" );
-                  console.log(dbrecords.html());
+                  // console.log(dbrecords.html());
                   dbrecords.html(tableCode);
-              })
-              .fail(function(xhr, status, error) {
-                  //Ajax request failed.
-                  var errorMessage = xhr.status + ': ' + xhr.statusText
-                  console.log('Error - ' + errorMessage);
-            })
-           
+            });           
 
             // document.getElementById("commentText").value = "";
             // $( "input[value='Hot Fuzz']" )
             var dbrecords = $( "#dbrecords" );
-            console.log(dbrecords.html());
-            dbrecords.html("hello world");
-
-
-          // the API changed at some point, rendering this approach incorrect.
-          // $.ajax({
-          //       url: 'http://localhost:3000/print',
-          //       headers: {
-          //           'Access-Control-Allow-Origin': '*',
-          //           'Content-Type':'application/json'
-          //       },
-          //       dataType: 'application/json',
-          //       data: '',
-          //       error: function(error) {
-          //          console.log('An error has occurred: ' + JSON.stringify(error));
-          //       },
-          //       success: function(data) {
-          //           // var title = (data.talks[0].talk_title);
-          //           // var description = (data.talks[0].talk_description);
-          //           console.log("DATA: " + data)
-
-          //           },
-          //       method: 'GET'
-          //   });
+            // console.log(dbrecords.html());
+            // dbrecords.html("hello world");
 
       }
     </script>

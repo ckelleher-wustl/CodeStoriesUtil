@@ -25,15 +25,18 @@ const sourceVideoID = 2; // right now, this is hard coded to use the george hotz
 // default behavior for the server is to send back the results
 app.get('/', async (req, res) => {
     console.log("requesting data..." + JSON.stringify(req.query));
-   
+    var offset = 0;
+    var order = "DESC";
     if (req.query.offset){
         console.log("offset is " + req.query.offset);
+        offset = req.query.offset;
     }
     if (req.query.order){
         console.log("order is " + req.query.order);
+        order = req.query.order;
     }
 
-    const rows = await myDB.getEntries(sourceVideoID, req.query.offset, req.query.order);
+    const rows = await myDB.getEntries(sourceVideoID, offset, order);
     console.log("rows " + rows);
     res.json(rows);
 });

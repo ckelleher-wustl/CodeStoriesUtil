@@ -38,19 +38,6 @@ $( document ).ready(function() {
         updateOCRBox();
     } );
 
-
-    // evt = new Event();
-
-    // m = new Magnifier(evt);
-    // console.log(m);
-    // m.attach({
-    //     thumb: '#thumb',
-    //     large: 'public/images/testCode.png',
-    //     largeWrapper: 'preview',
-    //     zoom: 2,
-    //     zoomable: true
-    // });
-
     createMagnifier('public/images/testCode.png');
     
 });
@@ -76,14 +63,6 @@ function updateDisplay() {
     $( "#code-editor" ).val(dbEntries[dbIndex]["code_text"]);
     $('#code-img').attr("src","public/images/" + dbEntries[dbIndex]["img_file"]);
 
-
-    // <div style="display: inline-block" id="zoom-ui">
-    //   <a class="magnifier-thumb-wrapper" href="public/images/testCode.png" style="width: fit-content">
-    //       <img id="thumb" src="public/images/testCode.png" style="width: 200px; height: 133px">
-    //   </a>
-    //   <div class="magnifier-preview" id="preview" style="width: 400px; height: 266px; display: inline-block">Code Zoom</div>
-    // </div>
-
     $(".magnifier-thumb-wrapper").remove();
     $(".magnifier-preview").remove();
 
@@ -97,19 +76,6 @@ function updateDisplay() {
     createMagnifier(url);
 
     
-
-    // // reset images for the zoom ui
-    // console.log($('#thumb') + " " + $('.magnifier-thumb-wrapper'));
-    // $('#thumb').attr("src","public/images/" + dbEntries[dbIndex]["img_file"]);
-    // $('#thumb').attr("data-large-img-url","public/images/" + dbEntries[dbIndex]["img_file"]);
-    // $('#thumb-lens').attr("background","url(public/images/" + dbEntries[dbIndex]["img_file"] + ")");
-    // // $('#thumb').attr("class","img");
-    // $('.magnifier-thumb-wrapper').attr("href", "public/images/" + dbEntries[dbIndex]["img_file"]);
-    // // createMagnifier('public/images/' + dbEntries[dbIndex]["img_file"]);
-    // // m.attach({
-    // //     thumb: '#thumb'
-    // // });
-    // m.setThumb('#thumb')
 
     // set the coord string the selection ui
     var boxCoords = dbEntries[dbIndex]["coords"];
