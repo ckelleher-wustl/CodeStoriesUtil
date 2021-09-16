@@ -5,6 +5,9 @@
 <body>
     <script type = "text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> 
     <script src="node_modules/diff/dist/diff.js"></script>
+    
+   <link rel="stylesheet" type="text/css" href="node_modules/diff2html/bundles/css/diff2html.min.css"/>
+   <script src="node_modules/diff2html/bundles/js/diff2html.min.js"></script>
     <script type = "module" src="/public/javascripts/diffcode.js"></script>
 
     <div>
@@ -12,18 +15,8 @@
         <button type="button" id="show-next-btn">Show Next</button>
     </div>
 
-
-    <div class="row">
-        <div class="column">
-            <pre id="code_diff">
-                diff code will go here someday.
-            </pre>
-        </div>
-        <div class="column">
-            <pre id="code_modified">
-                post modification-code will go here someday.
-            </pre>
-        </div>
+    <div class="row" id="diff">
+        This is where the diff can go.
     </div>
 
     <div class="row" id="search">

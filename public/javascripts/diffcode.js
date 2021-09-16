@@ -19,45 +19,16 @@ $( document ).ready(function() {
 
 function showDiff(codeState1, codeState2) {
 
-    const diff = Diff.diffChars(codeState1, codeState2),
-    display = document.getElementById('code_diff'),
-    postCode = document.getElementById('code_modified'),
-    removed_fragment = document.createDocumentFragment(),
-    added_fragment = document.createDocumentFragment();
+    //todo: write something to strip the line numbers from the code before comparison
 
-    diff.forEach((part) => {
-        // blue for additions, red for deletions
-        // grey for common parts
-        if (!part.added) {
-            const color = part.added ? 'blue' :
-                part.removed ? 'red' : 'grey';
-            span = document.createElement('span');
-            span.style.color = color;
-            span.appendChild(document
-                .createTextNode(part.value));
-                removed_fragment.appendChild(span);
-        }
-
-        if (!part.removed) {
-            const color = part.added ? 'blue' :
-                part.removed ? 'red' : 'grey';
-            span = document.createElement('span');
-            span.style.color = color;
-            span.appendChild(document
-                .createTextNode(part.value));
-                added_fragment.appendChild(span);
-        }
+    var diff = Diff.createTwoFilesPatch("previous", "current", codeState1, codeState2,null,null,{context:100});
+    console.log(diff)
+    var diffHtml = Diff2Html.html(diff, {
+        drawFileList: false,
+        //matching: 'words',
+        outputFormat: 'side-by-side',
     });
-
-    $(display).empty();
-    display.appendChild(removed_fragment);
-
-    $(postCode).empty();
-    postCode.appendChild(added_fragment);
-
-    // const postCode = document.getElementById('code_modified');
-    // // console.log(postCode.innerText)
-    // $(postCode).html(codeState2);
+    document.getElementById('diff').innerHTML = diffHtml;
 }
 
 function showComments(commentEntries, startTime, endTime){
@@ -82,6 +53,7 @@ function getComments(startTime, endTime) {
 }
 
 function getCode() {
+    console.log("get code");
     $.get('http://localhost:3000/getCodeText', { offset: offset, order : "ASC"}, 
         function(response){
             codeEntries = response;
