@@ -1,3 +1,7 @@
+// attempt to have a code formatter to get rid of whitespace issues - but no python version
+// import prettier from "https://unpkg.com/prettier@2.4.1/esm/standalone.mjs";
+// import parserBabel from "https://unpkg.com/prettier@2.4.1/esm/parser-babel.mjs";
+
 var codeEntries = {};
 var offset = 0;
 var index = 1;
@@ -17,9 +21,63 @@ $( document ).ready(function() {
 
 })
 
+function stripLineNumbers(codeState) {
+    const codeLines = codeState.split(/\r?\n/);
+    var header = "";
+    var body = "";
+
+    
+
+    for (var i = 0; i < codeLines.length; i++){
+
+        var line = codeLines[i];
+        // strip out digits at the beginning of each line
+        if (line[0] >= '0' && line[0] <= '9') {
+            if (line.indexOf(" ") != -1) {
+                line = line.substring(codeLines[i].indexOf(" ")) ;
+            } else {
+                line = "";
+            }
+        } 
+
+        // attempt to normalize indenting issues
+        if (line.indexOf("         ") !=-1) {
+            line = "\t\t\t" + line.substring(9);
+        } else if (line.indexOf("        ") !=-1){
+            line = "\t\t\t" + line.substring(8);
+        } else if (line.indexOf("      ") !=-1){
+            line = "\t\t" + line.substring(6);
+        } else if (line.indexOf("     ") !=-1){
+            line = "\t\t" + line.substring(5);
+        } else if (line.indexOf("   ") !=-1){
+            line = "\t" + line.substring(3);
+        } else if (line.indexOf("  ") !=-1){
+            line = "\t" + line.substring(2);
+        }
+        
+        if ((line.indexOf("#") != -1) || (line.indexOf("import") != -1)) {
+            header = header + line + "\n";
+        } else {
+            body = body + line + "\n";
+        }
+    }
+
+    // // oh it would be lovely to use this, but no python formatter.
+    // try {
+    //     body = prettier.format(body, { semi: true, parser: "babel", plugins: [parserBabel], });
+    // } catch( se) {
+    //     console.log(se);
+    // }
+
+    // console.log("PRETTIER: " + header + body);
+    return header + body;
+}
+
 function showDiff(codeState1, codeState2) {
 
     //todo: write something to strip the line numbers from the code before comparison
+    codeState1 = stripLineNumbers(codeState1);
+    codeState2 = stripLineNumbers(codeState2);
 
     var diff = Diff.createTwoFilesPatch("previous", "current", codeState1, codeState2,null,null,{context:100});
     console.log(diff)
