@@ -1,6 +1,8 @@
 // attempt to have a code formatter to get rid of whitespace issues - but no python version
 // import prettier from "https://unpkg.com/prettier@2.4.1/esm/standalone.mjs";
 // import parserBabel from "https://unpkg.com/prettier@2.4.1/esm/parser-babel.mjs";
+// import levenshtein from '/node_modules/edit-distance/dist/index.js';
+// import levenshtein from '/node_modules/js-levenshtein/index.js';
 
 var codeEntries = {};
 var offset = 0;
@@ -26,8 +28,6 @@ function stripLineNumbers(codeState) {
     var header = "";
     var body = "";
 
-    
-
     for (var i = 0; i < codeLines.length; i++){
 
         var line = codeLines[i];
@@ -41,20 +41,50 @@ function stripLineNumbers(codeState) {
         } 
 
         // attempt to normalize indenting issues
-        if (line.indexOf("         ") !=-1) {
+        if (line.indexOf("          ") !=-1) {
+            line = "\t\t\t" + line.substring(10);
+        } else if (line.indexOf("          ") !=-1) {
             line = "\t\t\t" + line.substring(9);
         } else if (line.indexOf("        ") !=-1){
             line = "\t\t\t" + line.substring(8);
+        } else if (line.indexOf("       ") !=-1){
+            line = "\t\t" + line.substring(7);
         } else if (line.indexOf("      ") !=-1){
             line = "\t\t" + line.substring(6);
         } else if (line.indexOf("     ") !=-1){
             line = "\t\t" + line.substring(5);
+        } else if (line.indexOf("    ") !=-1){
+            line = "\t" + line.substring(4);
         } else if (line.indexOf("   ") !=-1){
             line = "\t" + line.substring(3);
         } else if (line.indexOf("  ") !=-1){
             line = "\t" + line.substring(2);
         }
-        
+
+        // fix ( " issues
+        var idx = line.indexOf("( \"");
+        if (idx != -1) {
+            // console.log("( \" found: " + line);
+           line = line.substring(0, idx) + "(\"" + line.substring(idx+3);
+        //    console.log("( \" removed: " + line);
+        }
+
+         // fix ( ' issues
+        idx = line.indexOf("( \'");
+        if (idx != -1) {
+            // console.log("( \' found: " + line);
+           line = line.substring(0, idx) + "(\'" + line.substring(idx+3);
+        //    console.log("( \' removed: " + line);
+        }
+
+        // fix ,X issues
+        // let first = line.search(/[^ ],/) // find before the comma with no following space
+        let second = line.search(/,[^ ]/) // find after the comma
+        if (second != -1) {
+            console.log("second is " + second + ": " + line);
+            line = line.substring(0,second) + ", " + line.substring(second + 1)
+        }
+
         if ((line.indexOf("#") != -1) || (line.indexOf("import") != -1)) {
             header = header + line + "\n";
         } else {
@@ -76,11 +106,23 @@ function stripLineNumbers(codeState) {
 function showDiff(codeState1, codeState2) {
 
     //todo: write something to strip the line numbers from the code before comparison
+    console.log("strip line numbers codeState1");
     codeState1 = stripLineNumbers(codeState1);
+    console.log("strip line numbers codeState2");
     codeState2 = stripLineNumbers(codeState2);
 
+    // console.log(levenshtein('kitten', 'sitting'));
+
+    // var insert, remove, update;
+    // insert = remove = function(node) { return 1; };
+    // update = function(stringA, stringB) { return stringA !== stringB ? 1 : 0; };
+
+    // // Compute edit distance, mapping, and alignment.
+    // var lev = levenshtein(codeState1, codeState2, insert, remove, update);
+    // console.log('Levenshtein', lev.distance, lev.pairs(), lev.alignment());
+
     var diff = Diff.createTwoFilesPatch("previous", "current", codeState1, codeState2,null,null,{context:100});
-    console.log(diff)
+    // console.log(diff)
     var diffHtml = Diff2Html.html(diff, {
         drawFileList: false,
         //matching: 'words',
@@ -91,11 +133,19 @@ function showDiff(codeState1, codeState2) {
 
 function showComments(commentEntries, startTime, endTime){
     const search = document.getElementById('search');
+    var lastSearch = "None."
     var evtString = startTime + " - " + endTime + "<br>";
     for(var comment in commentEntries) {
-        console.log(JSON.stringify(commentEntries[comment]));
-       evtString = evtString + JSON.stringify(commentEntries[comment]) + "<br>";
+        // console.log(JSON.stringify(commentEntries[comment]));
+        const currNote = JSON.stringify(commentEntries[comment]);
+        evtString = evtString + currNote + "<br>";
+        if (currNote.indexOf("search:") != -1) {
+            lastSearch = currNote;
+        }
     }
+
+
+    evtString = "<b>" + lastSearch + "</b></br>" + evtString;
 
     $(search).html(evtString);
 }

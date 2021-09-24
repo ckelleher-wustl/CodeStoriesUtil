@@ -4,6 +4,8 @@ const canvas = require('canvas'); // need this for images
 const express = require('express'); // handling web routes
 const cors = require('cors'); // cross origin requests to allow external sites to use this api
 
+const levenshtein = require('js-levenshtein');
+
 const app = express();
 const port = 3000;
 myDB = new CodingDB("./test.db");
@@ -192,6 +194,7 @@ app.post("/updatecodetext", async (req, res, next) => {
 
 app.get('/getCodeText', async (req, res) => {
     console.log("requesting code text..." + JSON.stringify(req.query));
+    console.log("string edit distance: " + levenshtein('kitten', 'sitting'));
    
     if (req.query.offset){
         console.log("offset is " + req.query.offset);
