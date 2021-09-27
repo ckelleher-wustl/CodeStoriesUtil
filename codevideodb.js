@@ -29,6 +29,7 @@ app.get('/', async (req, res) => {
     console.log("requesting data..." + JSON.stringify(req.query));
     var offset = 0;
     var order = "DESC";
+    var limit = 20;
     if (req.query.offset){
         console.log("offset is " + req.query.offset);
         offset = req.query.offset;
@@ -37,8 +38,12 @@ app.get('/', async (req, res) => {
         console.log("order is " + req.query.order);
         order = req.query.order;
     }
+    if (req.query.limit){
+        console.log("limit is " + req.query.limit);
+        limit = req.query.limit;
+    }
 
-    const rows = await myDB.getEntries(sourceVideoID, offset, order);
+    const rows = await myDB.getEntries(sourceVideoID, offset, order, limit);
     console.log("rows " + rows);
     res.json(rows);
 });
@@ -195,6 +200,8 @@ app.post("/updatecodetext", async (req, res, next) => {
 app.get('/getCodeText', async (req, res) => {
     console.log("requesting code text..." + JSON.stringify(req.query));
     console.log("string edit distance: " + levenshtein('kitten', 'sitting'));
+
+    var limit = 20;
    
     if (req.query.offset){
         console.log("offset is " + req.query.offset);
@@ -202,8 +209,12 @@ app.get('/getCodeText', async (req, res) => {
     if (req.query.order){
         console.log("order is " + req.query.order);
     }
+    if (req.query.limit){
+        console.log("limit is " + req.query.limit);
+        limit = req.query.limit;
+    }
 
-    const rows = await myDB.getCodeText(sourceVideoID, req.query.offset, req.query.order);
+    const rows = await myDB.getCodeText(sourceVideoID, req.query.offset, req.query.order, limit);
     console.log("rows " + rows);
     res.json(rows);
 });

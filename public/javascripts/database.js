@@ -25,10 +25,10 @@ class CodingDB {
     //     return this.db;
     // }
 
-    async getEntries(sourceVideoID, offset, order) {
+    async getEntries(sourceVideoID, offset, order, limit) {
         // (videoID, timed_url, time, notes) VALUES(2, "test.html", 123, "These are some witty observations");
         let sql = 'SELECT eventID as id, timed_url as timed_url, time as time, notes as notes, img_file as img_file, code_text as code_text, coords as coords FROM CodingEvents \
-        WHERE time>=' + offset + ' ORDER BY time ' + order + ' LIMIT 20';
+        WHERE time>=' + offset + ' ORDER BY time ' + order + ' LIMIT ' + limit;
 
             //WHERE time>=" + offset + "
         try {
@@ -40,10 +40,10 @@ class CodingDB {
         }
     }
 
-    async getCodeText(sourceVideoID, offset, order) {
+    async getCodeText(sourceVideoID, offset, order, limit) {
         // (videoID, timed_url, time, notes) VALUES(2, "test.html", 123, "These are some witty observations");
         let sql = 'SELECT eventID as id, time as time, code_text as code_text FROM CodingEvents \
-        WHERE code_text IS NOT NULL AND time>=' + offset + ' ORDER BY time ' + order + ' LIMIT 20';
+        WHERE code_text IS NOT NULL AND time>=' + offset + ' ORDER BY time ' + order + ' LIMIT ' + limit;
         console.log(sql);
 
             //WHERE time>=" + offset + "
