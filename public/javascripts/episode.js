@@ -7,6 +7,7 @@ var offset = 0;
 
 let span = null;
 var intervalSearches = {};
+var intervalKeywords = {};
     
 $( document ).ready(function() {
     console.log( "ready!" );
@@ -97,6 +98,28 @@ function showDiff(codeState1, codeState2) {
     document.getElementById('diff').innerHTML = diffHtml;
 }
 
+function getKeywords(codeState1, codeState2) {
+    codeState1 = stripLineNumbers(codeState1);
+    codeState2 = stripLineNumbers(codeState2);
+
+    var keywords = "";
+
+    var diff = Diff.createTwoFilesPatch("previous", "current", codeState1, codeState2,null,null,{context:100});
+
+    var lines = diff.split(/\r?\n/);
+    for (var i = 0; i < lines.length; i++) {
+        if (lines[i].startsWith('+')) {
+            // console.log("added: " + lines[i]);
+            var dotIndex = lines[i].indexOf(".");
+            var parenIndex = lines[i].indexOf("(");
+            if ( (dotIndex != -1) && (parenIndex !=-1) ) {
+                keywords = keywords +  lines[i].substring(dotIndex+1, parenIndex) + ";";
+            }
+        }
+    }
+    return keywords;
+}
+
 function getComments(startTime, endTime) {
     $.get('http://localhost:3000/getCommentsInRange', { startTime: startTime, endTime : endTime}, 
     function(response){
@@ -108,7 +131,7 @@ function getComments(startTime, endTime) {
 
             if (commentEntries[i]["notes"].indexOf("search:") !=  -1) {
                 lastSearch = commentEntries[i]["notes"];
-                console.log("Found new search: " + interval + " " + lastSearch);
+                // console.log("Found new search: " + interval + " " + lastSearch);
             }
         }
 
@@ -134,7 +157,9 @@ function getCode() {
                 const interval = startTime + " - " + endTime;
                 // this just initializes everything. getComments will then fill in values for ones that have them.
                 intervalSearches[interval] = "None"; 
+                intervalKeywords[interval] = getKeywords(codeEntries[i-1]["code_text"], codeEntries[i]["code_text"]);
                 getComments(startTime, endTime);
+                
             }
             
             updateCodeDisplay();
@@ -156,6 +181,7 @@ function updateCodeDisplay() {
         
         tableCode = tableCode + "<TD>" + interval +  "</TD>";
         tableCode = tableCode + "<TD>" + intervalSearches[interval] + "</TD>";
+        tableCode = tableCode + "<TD>" + intervalKeywords[interval] + "</TD>";
         // tableCode = tableCode + "<TD>" + lastSearch +  "</TD>";
         
         tableCode = tableCode + "</TR>";
