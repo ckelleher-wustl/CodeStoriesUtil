@@ -11,13 +11,23 @@
    <script src="//unpkg.com/string-similarity/umd/string-similarity.min.js"></script>
    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
    
-    <script type = "module" src="/public/javascripts/episode.js"></script>    
+   <script type = "module" src="/public/javascripts/codehistory.js"></script>    
+   <script type = "module" src="/public/javascripts/phases.js"></script>    
+
+    <div>
+        <button type="button" id="show-prev-btn">Show Previous</button>
+        <button type="button" id="show-next-btn">Show Next</button>
+    </div>
 
     <div>
         <button type="button" id="calc">Calculate Connections</button>
     </div>
 
-    <div id="episodes">
-        This is where the list of events contributing to this code change go.
+    <div class="row" id="diff">
+        This is where the diff can go.
+    </div>
+
+    <div class="row" id="structure">
+        This is where the structural info can go.
     </div>
 </body>
