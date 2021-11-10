@@ -1,21 +1,169 @@
 var codeLines = {};
+var codeVersionsTable = {};
+var linePhaseTable= {};
+var phaseLineTable = {};
+
+// this is duplicated which is not ideal, but for now: 
+var intervalBounds = [197, 381, 595, 975, 1149, 1404, 1634, 2006, 2308, 2506];
 
 function getLineAtTime(codeLine, time) {
 
-    console.log("line@time: " + JSON.stringify(codeLine) + " " + time);
+    // console.log("line@time: " + JSON.stringify(codeLine) + " " + time);
 
     var linePrevs = codeLine["previousVersions"];
 
     for (var i = 0; i < linePrevs.length; i++) {
         var prevVersion = linePrevs[i];
 
-        // it's not necessarily the zeroth position, sadly. START HERE
         if(prevVersion["times"].indexOf(time) !== -1){
             return prevVersion["line"];
         }
     }
 
     return "";
+}
+
+
+export function calculateStats(endTime) {
+    // console.log(JSON.stringify(codeEntries));
+    var structural = [];
+    var transient = [];
+    
+    var structuralEdits = 0;
+    var transientEdits = 0;
+
+    for (var entry in codeLines) {
+        // console.log(JSON.stringify(codeLines[entry]));
+
+        var isStructural = (codeLines[entry]["time"] >= endTime);
+        if (isStructural) {
+            var edits = codeLines[entry]["previousVersions"].length;
+            if (edits > 3) console.log('structural ' + entry + "(" + edits + ")");
+            structural.push(codeLines[entry]);
+            structuralEdits = structuralEdits + edits;
+        } else {
+            var edits = codeLines[entry]["previousVersions"].length;
+            if (edits > 3) console.log('transient ' + entry + "(" + edits + ")");
+            transient.push(codeLines[entry]);
+            transientEdits = transientEdits + edits;
+        }
+
+    }
+
+    console.log("structural count " + structural.length);
+    console.log("structural edits " + structuralEdits)
+    console.log("transient count " + transient.length);
+    console.log("transient edits " + transientEdits);
+}
+
+export function getTimeHistory(historyData) {
+    // console.log("HISTORY: " + JSON.stringify(historyData["previousVersions"]));
+    var changeTimes = [];
+    var changePhases = [];
+    for (var i = 0; i < historyData["previousVersions"].length; i++){
+        // console.log("version " + JSON.stringify(historyData["previousVersions"][vsn]));
+        changeTimes.push(historyData["previousVersions"][i]["times"][0]);
+    }
+    // add the first of the current times
+    changeTimes.push(historyData["pastTimes"][0]);
+
+    for (var i = 1; i < intervalBounds.length; i++) {
+        for (var j = 0; j < changeTimes.length; j++) {
+            var changeTime = changeTimes[j];
+            if ((changeTime >= intervalBounds[i-1]) && (changeTime < intervalBounds[i])) {
+                if (!(changePhases.includes("phase" + (i-1)))) {
+                // console.log("pushing phase" + (i-1));
+                changePhases.push("phase" + (i-1));
+                }
+            }
+        }
+    }
+    // console.log("CHANGE TIMES " + changeTimes);
+    console.log("CHANGE PHASES " + changePhases);
+    if (changePhases.length == 0) {
+        console.log("\tCHANGE Times " + changeTimes);
+        console.log("\t" + JSON.stringify(historyData));
+    }
+    return changePhases;
+
+    // note failing to find this one: window = sdl2.ext.Window(\"twitch SLAM\", size=(W, H), position=(-500, -500))" 
+    // for now, pressing on to try to get the highlighting to work.
+
+}
+
+export function getPhasesForLine(line) {
+    if (linePhaseTable.length == 0) {
+        console.log("Phase table not yet created");
+    } else{
+        return linePhaseTable[line];
+    }
+}
+
+export function getLinesForPhases(phase) {
+    if (linePhaseTable.length == 0) {
+        console.log("LinePhase table not yet created");
+    } else{
+        console.log("requesting " + phase + " " + phaseLineTable[phase]);
+        return phaseLineTable[phase];
+    }
+}
+
+export function findPhasesForLines(codeState, time) {
+    createVersionsTable();
+    codeState = stripLineNumbers(codeState);
+    var lines = codeState.split(/\r?\n/);
+
+    for (var i = 0; i < lines.length; i++) {
+        if (lines[i].trim().length > 0) {
+            linePhaseTable["line" + i] = {code: lines[i], phases:[]};
+
+            if (codeLines[lines[i].trim()]) {
+                // console.log("line " + i + " " + lines[i].trim() + " data: " + JSON.stringify(codeLines[lines[i].trim()]));
+                if (codeLines[lines[i].trim()]) {
+                    linePhaseTable["line" + i]["phases"] = getTimeHistory(codeLines[lines[i].trim()]);
+                }
+            } else {
+                // console.log("not found " + lines[i].trim());
+                var endLine = codeVersionsTable[lines[i].trim()];
+                // console.log("\tfinal line " +  endLine + " " + JSON.stringify(codeLines[endLine]));
+
+                if (codeLines[endLine]) {
+                    linePhaseTable["line" + i]["phases"] = getTimeHistory(codeLines[endLine]);
+                }
+            }
+            
+        }
+    }
+    // at this point, there should be valid data in the phases
+
+    // for (var i= 0;  i < lines.length; i++) {
+    //     if ("line" + i in linePhaseTable) {
+    //         console.log( "line" + i + ":  " + JSON.stringify(linePhaseTable["line"+i]));
+           
+    //     }
+    // }
+
+}
+
+export function findLinesForPhases() {
+    // console.log("Lines for phases " + JSON.stringify(linePhaseTable));
+    for (var line in linePhaseTable) {
+        // console.log("LP" + "  " + line +   " " + JSON.stringify(linePhaseTable[line]));
+
+        var phaseList = linePhaseTable[line]["phases"];
+        if (phaseList) {
+            for (var i = 0; i < phaseList.length; i++) {
+                var phaseName = phaseList[i];
+                if (phaseName in phaseLineTable) {
+                    phaseLineTable[phaseName].push(line);
+                } else {
+                    phaseLineTable[phaseName] = [];
+                }
+            }
+        }
+    }
+
+    // console.log("PHASELINETABLE " + JSON.stringify(phaseLineTable));
 }
 
 
@@ -26,8 +174,8 @@ export function classifyLinesInPeriod(startTime, endTime, sessionEnd) {
     var modPersistentLines = [];
     var modTransientLines = [];
     
-    console.log("\nPERSISTENT LINES: [" + startTime + " - " + endTime + "]");
-    console.log();
+    // console.log("\nPERSISTENT LINES: [" + startTime + " - " + endTime + "]");
+    // console.log();
 
     // for all the lines we know about (correcting for modifications)
     for (var line in codeLines) {
@@ -53,15 +201,15 @@ export function classifyLinesInPeriod(startTime, endTime, sessionEnd) {
         var lastTime = codeLines[line]["time"];
 
 
-        console.log("Classifying " + line.trim() + " " + startTime + "-" + endTime + " " + insertTime + "-" + lastTime);
+        // console.log("Classifying " + line.trim() + " " + startTime + "-" + endTime + " " + insertTime + "-" + lastTime);
         // if the line was inserted during this period
         if ((insertTime >= startTime) && (insertTime <= endTime)) {
 
-            console.log("line inserted during target period");
+            // console.log("line inserted during target period");
 
             // and if it still exists at the end of the session then it's a persistant/structural line
             if (lastTime >= sessionEnd) {
-                console.log("PERSIST " + line + " " + JSON.stringify(codeLines[line]));
+                // console.log("PERSIST " + line + " " + JSON.stringify(codeLines[line]));
                 var lineAtTime = getLineAtTime(codeLines[line], endTime);
                 if (lineAtTime.length > 0) {
                     persistentLines.push(lineAtTime);
@@ -70,9 +218,9 @@ export function classifyLinesInPeriod(startTime, endTime, sessionEnd) {
                 }
                 
             } else {
-                console.log("TRANSIENT " + line + " " + JSON.stringify(codeLines[line]));
+                // console.log("TRANSIENT " + line + " " + JSON.stringify(codeLines[line]));
                 var lineAtTime = getLineAtTime(codeLines[line], endTime);
-                console.log("line@time " + lineAtTime);
+                // console.log("line@time " + lineAtTime);
                 if (lineAtTime.length > 0) {
                     transientLines.push(lineAtTime);
                 } else {
@@ -96,10 +244,10 @@ export function classifyLinesInPeriod(startTime, endTime, sessionEnd) {
 
                         // and if it still exists at the end of the session then it's a persistant/structural line
                         if (lastTime == sessionEnd) {
-                            console.log("MOD PERSIST " + linePrevs[i]["line"] + " " + linePrevs[i]["times"][0]);
+                            // console.log("MOD PERSIST " + linePrevs[i]["line"] + " " + linePrevs[i]["times"][0]);
                             modPersistentLines.push(linePrevs[i]["line"]);
                         } else {
-                            console.log("MOD TRANSIENT " + linePrevs[i]["line"] + " " + linePrevs[i]["times"][0]);
+                            // console.log("MOD TRANSIENT " + linePrevs[i]["line"] + " " + linePrevs[i]["times"][0]);
                             modTransientLines.push(linePrevs[i]["line"]);
                         }
                     }
@@ -149,23 +297,23 @@ export function getHTMLView(code, pLines, tLines, mpLines, mtLines) {
 
         // if lines[j] is in the persistent lines list, then print it out.
         if (persist) {
-            console.log("PERMA : " + lines[j].trim());
+            // console.log("PERMA : " + lines[j].trim());
             html = html + "<tr><td><span style='background-color: #728FCE;'>P:" + lines[j].trim() + "</span></td></td>";
         }
 
         // if lines[j] is in the persistent lines list, then print it out.
         if (mPersist) {
-            console.log("M-PERMA : " + lines[j].trim());
+            // console.log("M-PERMA : " + lines[j].trim());
             html = html + "<tr><td><span style='background-color: #CCCCFF;'>MP:" + lines[j].trim() + "</span></td></td>";
         }
 
         if (transient) {
-            console.log("TRANS : " + lines[j].trim());
+            // console.log("TRANS : " + lines[j].trim());
             html = html + "<tr><td><span style='background-color: #FFFAC0;'>T:" + lines[j].trim() + "</span></td></td>";
         }
 
         if (mTransient) {
-            console.log("M-TRANS : " + lines[j].trim());
+            // console.log("M-TRANS : " + lines[j].trim());
             html = html + "<tr><td><span style='background-color: #FFFFE0;'>MT:" + lines[j].trim() + "</span></td></td>";
         }
 
@@ -173,6 +321,66 @@ export function getHTMLView(code, pLines, tLines, mpLines, mtLines) {
     html = html + "</table>";
 
     return html;
+}
+
+export function createVersionsTable() {
+    for (var line in codeLines) {
+        var prevCnt = codeLines[line]["previousVersions"].length;
+        if (prevCnt > 0) {
+            // console.log("codeLines Entry: " + line + " " + codeLines[line]["previousVersions"].length);
+            for (var vsn in codeLines[line]["previousVersions"]) {
+                var prevVersion = codeLines[line]["previousVersions"][vsn]["line"];
+                codeVersionsTable[prevVersion] = line;
+                // console.log("adding " + prevVersion + "-> " + line);
+            }
+        }
+    }
+}
+
+export function getChangeList(code, startTime, endTime, sessionEnd) {
+
+    var lists = classifyLinesInPeriod(startTime, endTime, sessionEnd);
+    var pLines = lists["persistent"];
+    var mpLines = lists["modPersistent"];
+    var tLines = lists["transient"];
+    var mtLines = lists["modTransient"];
+
+    var changes = [];
+
+    code = stripLineNumbers(code);
+    var lines = code.split(/\r?\n/);
+
+    for (var j = 0; j < lines.length; j++) {
+
+        var persist = lineInList(lines[j], pLines);
+        var mPersist = lineInList(lines[j], mpLines);
+        var transient = lineInList(lines[j], tLines );
+        var mTransient = lineInList(lines[j], mtLines);
+
+        if (persist) {
+            // console.log("PERMA : " + lines[j].trim());
+            changes.push({line: lines[j].trim(), type: "p"}); 
+        }
+
+        if (mPersist) {
+            // console.log("M-PERMA : " + lines[j].trim());
+            changes.push({line: lines[j].trim(), type: "mp"}); 
+        }
+
+        if (transient) {
+            // console.log("TRANS : " + lines[j].trim());
+            changes.push({line: lines[j].trim(), type: "t"}); 
+        }
+
+        if (mTransient) {
+            // console.log("M-TRANS : " + lines[j].trim());
+            changes.push({line: lines[j].trim(), type: "mt"}); 
+        }
+
+    }
+
+    return changes;
+
 }
 
 export function record(codeState, time) {

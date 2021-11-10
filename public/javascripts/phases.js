@@ -45,15 +45,6 @@ function showNextEntry() {
 
         writeCodeChangeView(startIndex, endIndex);
 
-
-        // var start = codeEntries[startIndex];
-        // var end = codeEntries[endIndex];
-        // var sessionEnd = 2710;
-
-        // var transient, persist, modTransient, modPersist = classifyLinesInPeriod(start["time"], end["time"], sessionEnd);
-
-        // console.log("PERSISTENT LINES " + transientAndPersist["persistent"], transientAndPersist["transient"] );
-        // writePersistentCode(end["time"], transientAndPersist["persistent"], transientAndPersist["transient"]);
     }
 
 }
@@ -69,15 +60,6 @@ function showPreviousEntry() {
 
         writeCodeChangeView(startIndex, endIndex);
 
-
-        // var start = codeEntries[startIndex];
-        // var end = codeEntries[endIndex];
-        // var sessionEnd = 2710;
-
-        // var transient, persist, modTransient, modPersist = classifyLinesInPeriod(start["time"], end["time"], sessionEnd);
-
-        // console.log("PERSISTENT LINES " + transientAndPersist["persistent"], transientAndPersist["transient"] );
-        // writePersistentCode(end["time"], transientAndPersist["persistent"], transientAndPersist["transient"]);
     }
 }
 
@@ -98,20 +80,6 @@ function getCode() {
             }
 
             writeCodeChangeView(startIndex, endIndex);
-
-            // var start = codeEntries[startIndex];
-            // var end = codeEntries[endIndex];
-            // var sessionEnd = 2710;
-
-            // // codeLines = codeEntries[endIndex]["code_text"].split(/\r?\n/);
-            // // console.log(codeLines);
-
-            // var transient, persist, modTransient, modPersist = classifyLinesInPeriod(start["time"], end["time"], sessionEnd);
-
-            // console.log("PERSISTENT LINES " + transientAndPersist["persistent"] + " " +  transientAndPersist["transient"] );
-            // writePersistentCode(end["time"], transientAndPersist["persistent"], transientAndPersist["transient"]);
-        
-            // console.log("CODELINES: " + JSON.stringify(codeLines));
     });
 }
 
@@ -143,7 +111,6 @@ function getValueAtTime(time, line, history) {
         }
 
     }
-
 }
 
 
@@ -171,53 +138,6 @@ function writeCodeChangeView(startIndex, endIndex) {
     console.log("modpersist: " +  lines["modPersistent"]);
     console.log("modtransient: " +  lines["modTransient"]);
     console.log(html);
-
-    // get the code for the target time and print out only the persistent lines
-
-    // get the index for the end of the current phase
-    // var idx = findIndexForTime(endTime);
-
-    // // get the code text associated with the end of the current phase and split into lines
-    // var codeState = stripLineNumbers(codeEntries[idx]["code_text"]);
-    // var lines = codeState.split(/\r?\n/);
-
-    // var html = "<table>"
-
-    // for (var j = 0; j < lines.length; j++) {
-
-    //     // now  i need to check whether any of these are in the persistent lines. and print out the ones that are in persistent 
-    //     var persist = false;
-    //     var transient = false;
-    //     for (var persistentIdx = 0; persistentIdx < persistentLines.length; persistentIdx++) {
-    //         var persistentLine = persistentLines[persistentIdx];
-
-    //         if( _.isEqual(lines[j].trim(), persistentLine) ) {
-    //             persist = true;
-    //         }
-    //     }
-
-    //     for (var transientIdx = 0; transientIdx < transientLines.length; transientIdx++) {
-    //         var transientLine = transientLines[transientIdx];
-
-    //         if( _.isEqual(lines[j].trim(), transientLine) ) {
-    //             transient = true;
-    //         }
-    //     }
-
-    //     // if lines[j] is in the persistent lines list, then print it out.
-    //     if (persist) {
-    //         console.log("PERMA : " + lines[j].trim());
-    //         //{ background-color: yellow; }
-    //         html = html + "<tr><td><span style='background-color: LightSteelBlue;'>" + lines[j].trim() + "</span></td></td>";
-    //     }
-
-    //     if (transient) {
-    //         console.log("TRANS : " + lines[j].trim());
-    //         html = html + "<tr><td><span style='background-color: LightGrey;'>" + lines[j].trim() + "</span></td></td>";
-    //     }
-
-    // }
-    // html = html + "</table>";
 
 }
 

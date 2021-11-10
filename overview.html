@@ -1,0 +1,43 @@
+<head>
+    <link rel="stylesheet" href="/public/stylesheets/diff.css">
+</head>
+
+<body>
+    <script type = "text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> 
+    <script src="node_modules/diff/dist/diff.js"></script>
+    
+   <link rel="stylesheet" type="text/css" href="node_modules/diff2html/bundles/css/diff2html.min.css"/>
+   <script src="node_modules/diff2html/bundles/js/diff2html.min.js"></script>
+   <script src="//unpkg.com/string-similarity/umd/string-similarity.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+   <script type = "text/javascript" src = "https://d3js.org/d3.v4.min.js"></script>
+   
+   <script type = "module" src="/public/javascripts/codehistory.js"></script>    
+   <script type = "module" src="/public/javascripts/overview.js"></script>    
+
+    <div>
+        <button type="button" id="show-prev-btn">Show Previous</button>
+        <button type="button" id="show-next-btn">Show Next</button>
+    </div>
+
+    <div>
+        <button type="button" id="calc">Calculate Connections</button>
+    </div>
+
+    <div class="row" id="svgcontainer">
+    </div>
+
+    <div class="row" id="table">
+    </div>
+
+    <div class="row" 
+        id="code"
+        style="padding-top: 50px; padding-left: 30px;" >
+    </div>
+
+    <div class="row" 
+        id="stats"
+        style="padding-top: 50px; padding-left: 30px;" >
+    </div>
+
+</body>
