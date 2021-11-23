@@ -8,8 +8,11 @@ const levenshtein = require('js-levenshtein');
 
 const app = express();
 const port = 3000;
-myDB = new CodingDB("./test.db");
+// myDB = new CodingDB("./test.db");
+myDB = new CodingDB("./onlineChat.db");
 ocr = new OCR();
+
+var directory = 'C:/Users/ckelleher/Downloads/screencap_onlineChat'; 
 
 console.log(myDB + " " + ocr);
 // db = myDB.getDB();
@@ -86,7 +89,7 @@ app.post("/newcode", async (req, res, next) => {
     result = await myDB.newEntry(sourceVideoID, data, time);
 
     // start the process to get the code image and do text recognition on it.
-    var directory = 'C:/Users/ckelleher/Downloads/screencap'; 
+    // var directory = 'C:/Users/ckelleher/Downloads/screencap_onlineChat'; 
     captureAndRecordCode(directory)
 
     console.log("done " + result);
@@ -113,7 +116,7 @@ app.post("/newweb", async (req, res, next) => {
     result = await myDB.newEntry(sourceVideoID, data, time);
 
     // start the process to get the code image and do text recognition on it.
-    var directory = 'C:/Users/ckelleher/Downloads/screencap'; 
+    // var directory = 'C:/Users/ckelleher/Downloads/screencap_onlineChat'; 
     captureAndRecordWeb(directory)
 
     console.log("done " + result);
@@ -139,7 +142,7 @@ app.post("/delete", async (req, res, next) => {
 
 async function updateCoords(eventID, imgName, coordString) {
     // get code tex
-    var directory = 'C:/Users/ckelleher/Downloads/screencap'; 
+    // var directory = 'C:/Users/ckelleher/Downloads/screencap'; 
     var codeText = await ocr.getCodeTextForImage(imgName, directory, coordString);
 
     // then we need to do another db update to record the code

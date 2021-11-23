@@ -9,7 +9,7 @@ class CodingDB {
     //TODO: make this pay attention to the file being passed in.
     constructor(dbFile) {
     //   this.name = name;
-        this.db = new sqlite3.Database('./test.db', sqlite3.OPEN_READWRITE, err => {
+        this.db = new sqlite3.Database(dbFile, sqlite3.OPEN_READWRITE, err => {
             if (err) {
                 return console.error(err.message);
             }

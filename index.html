@@ -54,12 +54,16 @@
 
       // 3. This function creates an <iframe> (and YouTube player)
       //    after the API code downloads.
+
+
+      // <iframe width="1232" height="693" src="https://www.youtube.com/embed/i824zN0DGIo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
       var player;
       function onYouTubeIframeAPIReady() {
         player = new YT.Player('player', {
           height: '390',
           width: '510',
-          videoId: '7Hlb8YX2-W8',
+          // videoId: '7Hlb8YX2-W8',
+          videoId: 'i824zN0DGIo',
           playerVars: {
             'playsinline': 1
           },
@@ -167,7 +171,7 @@
             console.log("time is : " + url + " " + time);
 
 
-            $.get('http://localhost:3000/', { offset: time, order : "ASC"}, 
+            $.get('http://localhost:3000/', { offset: time-200, order : "ASC"}, 
                 function(data){
                   // console.log("DATA: " + JSON.stringify(data))
                   for (var key in data) {
