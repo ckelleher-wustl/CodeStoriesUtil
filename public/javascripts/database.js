@@ -40,9 +40,24 @@ class CodingDB {
         }
     }
 
+    async getEventList(sourceVideoID, offset, order) {
+        // (videoID, timed_url, time, notes) VALUES(2, "test.html", 123, "These are some witty observations");
+        let sql = 'SELECT time as time, notes as notes, img_file as img_file FROM CodingEvents \
+        WHERE time>=' + offset + ' ORDER BY time ' + order;
+
+            //WHERE time>=" + offset + "
+        try {
+            const rows = await this.db.all(sql, []);
+            console.log("returning entries...");
+            return rows;
+        } catch (err) {
+            return ("ERROR: " + err);
+        }
+    }
+
     async getCodeText(sourceVideoID, offset, order, limit) {
         // (videoID, timed_url, time, notes) VALUES(2, "test.html", 123, "These are some witty observations");
-        let sql = 'SELECT eventID as id, time as time, code_text as code_text FROM CodingEvents \
+        let sql = 'SELECT eventID as id, time as time, code_text as code_text, notes as notes FROM CodingEvents \
         WHERE code_text IS NOT NULL AND time>=' + offset + ' ORDER BY time ' + order + ' LIMIT ' + limit;
         console.log(sql);
 

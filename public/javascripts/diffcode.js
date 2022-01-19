@@ -1,12 +1,8 @@
-// attempt to have a code formatter to get rid of whitespace issues - but no python version
-// import prettier from "https://unpkg.com/prettier@2.4.1/esm/standalone.mjs";
-// import parserBabel from "https://unpkg.com/prettier@2.4.1/esm/parser-babel.mjs";
-// import levenshtein from '/node_modules/edit-distance/dist/index.js';
-// import levenshtein from '/node_modules/js-levenshtein/index.js';
-
 var codeEntries = {};
 var offset = 0;
 var index = 1;
+
+var codeFiles = {};
 
 let span = null;
     
@@ -92,14 +88,6 @@ function stripLineNumbers(codeState) {
         }
     }
 
-    // // oh it would be lovely to use this, but no python formatter.
-    // try {
-    //     body = prettier.format(body, { semi: true, parser: "babel", plugins: [parserBabel], });
-    // } catch( se) {
-    //     console.log(se);
-    // }
-
-    // console.log("PRETTIER: " + header + body);
     return header + body;
 }
 
@@ -110,17 +98,7 @@ function showDiff(codeState1, codeState2) {
     codeState1 = stripLineNumbers(codeState1);
     console.log("strip line numbers codeState2");
     codeState2 = stripLineNumbers(codeState2);
-
-    // console.log(levenshtein('kitten', 'sitting'));
-
-    // var insert, remove, update;
-    // insert = remove = function(node) { return 1; };
-    // update = function(stringA, stringB) { return stringA !== stringB ? 1 : 0; };
-
-    // // Compute edit distance, mapping, and alignment.
-    // var lev = levenshtein(codeState1, codeState2, insert, remove, update);
-    // console.log('Levenshtein', lev.distance, lev.pairs(), lev.alignment());
-
+ 
     var diff = Diff.createTwoFilesPatch("previous", "current", codeState1, codeState2,null,null,{context:100});
     // console.log(diff)
     var diffHtml = Diff2Html.html(diff, {
@@ -143,7 +121,6 @@ function showComments(commentEntries, startTime, endTime){
             lastSearch = currNote;
         }
     }
-
 
     evtString = "<b>" + lastSearch + "</b></br>" + evtString;
 
@@ -169,13 +146,60 @@ function getCode() {
             
             updateCodeDisplay();
     });
+
+    jQuery.get('http://localhost:8000/public/initialcode/person.txt', function(data) {
+        codeFiles["person"] = data;
+        console.log(codeFiles["person"]);
+        // alert(data);
+    });
+
+    jQuery.get('http://localhost:8000/public/initialcode/server.txt', function(data) {
+        codeFiles["server"] = data;
+        // alert(data);
+    });
+
+    jQuery.get('http://localhost:8000/public/initialcode/test.txt', function(data) {
+        codeFiles["test"] = data;
+        // alert(data);
+    });
+}
+
+function segmentCode(codeText){
+
+    var header = codeText.substring(0,codeText.indexOf("def"));
+
+    console.log("Header is: ");
+    console.log(header);
+
+    return header;
 }
 
 function updateCodeDisplay() {
+    var notes = codeEntries[index]["notes"];
     var codeState1 = codeEntries[index-1]["code_text"];
     var codeState2 = codeEntries[index]["code_text"];
 
-    showDiff(codeState1, codeState2);
+    var filename = notes.substring(notes.indexOf(": ")+2, notes.indexOf(".py"))
+    console.log(filename);
+
+    if (filename) {
+        console.log("filename is" + filename + ".");
+        console.log("available files " + Object.keys(codeFiles));
+        // console.log("present: " + (codeFiles[filename]));
+    }
+    var origCode = ""
+
+    if (filename && (codeFiles[filename])) {
+        origCode = codeFiles[filename];
+        console.log("FOUND " + filename);
+    } 
+
+    if(origCode.length > 0) {
+        segmentCode(origCode);
+        showDiff(origCode, codeState2);
+    } else {
+        showDiff(codeState1, codeState2);
+    }
 
     var startTime = codeEntries[index-1]["time"];
     var endTime = codeEntries[index]["time"];

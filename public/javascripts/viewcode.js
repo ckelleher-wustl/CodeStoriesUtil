@@ -61,13 +61,13 @@ function updateDisplay() {
     console.log(dbIndex + " < " + (Object.keys(dbEntries).length) + " " + Object.keys(dbEntries));
     console.log("code-img: " + dbEntries[dbIndex]["img_file"]);
     $( "#code-editor" ).val(dbEntries[dbIndex]["code_text"]);
-    $('#code-img').attr("src","public/images/" + dbEntries[dbIndex]["img_file"]);
+    $('#code-img').attr("src","public/images/onlineChat/" + dbEntries[dbIndex]["img_file"]);
 
     $(".magnifier-thumb-wrapper").remove();
     $(".magnifier-preview").remove();
 
 
-    var url = "public/images/" + dbEntries[dbIndex]["img_file"];
+    var url = "public/images/onlineChat/" + dbEntries[dbIndex]["img_file"];
     var time = dbEntries[dbIndex]["time"];
     $('#zoom-ui').append(`<a href=${url} style="width: fit-content" class="magnifier-thumb-wrapper">Time=${time}</a>`);
     $('.magnifier-thumb-wrapper').append(`<img src=${url} id="thumb" style="width: 200px; height 266px"/>`);

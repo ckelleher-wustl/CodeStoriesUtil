@@ -9,10 +9,10 @@ const levenshtein = require('js-levenshtein');
 const app = express();
 const port = 3000;
 // myDB = new CodingDB("./test.db");
-myDB = new CodingDB("./onlineChat.db");
+myDB = new CodingDB("./onlineChat2.db");
 ocr = new OCR();
 
-var directory = 'C:/Users/ckelleher/Downloads/screencap_onlineChat'; 
+var directory = 'C:/Users/ckelleher/Downloads/screencap_onlineChat2'; 
 
 console.log(myDB + " " + ocr);
 // db = myDB.getDB();
@@ -47,6 +47,26 @@ app.get('/', async (req, res) => {
     }
 
     const rows = await myDB.getEntries(sourceVideoID, offset, order, limit);
+    console.log("rows " + rows);
+    res.json(rows);
+});
+
+
+// default behavior for the server is to send back the results
+app.get('/eventsList', async (req, res) => {
+    console.log("requesting data..." + JSON.stringify(req.query));
+    var offset = 0;
+    var order = "ASC";
+    if (req.query.offset){
+        console.log("offset is " + req.query.offset);
+        offset = req.query.offset;
+    }
+    if (req.query.order){
+        console.log("order is " + req.query.order);
+        order = req.query.order;
+    }
+
+    const rows = await myDB.getEventList(sourceVideoID, offset, order);
     console.log("rows " + rows);
     res.json(rows);
 });
