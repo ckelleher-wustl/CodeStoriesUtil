@@ -9,10 +9,10 @@ const levenshtein = require('js-levenshtein');
 const app = express();
 const port = 3000;
 // myDB = new CodingDB("./test.db");
-myDB = new CodingDB("./onlineChat2.db");
+myDB = new CodingDB("./foodNotFood.db");
 ocr = new OCR();
 
-var directory = 'C:/Users/ckelleher/Downloads/screencap_onlineChat2'; 
+var directory = 'C:/Users/ckelleher/Downloads/screencap/foodNotFood'; 
 
 console.log(myDB + " " + ocr);
 // db = myDB.getDB();
@@ -33,6 +33,7 @@ app.get('/', async (req, res) => {
     var offset = 0;
     var order = "DESC";
     var limit = 20;
+    var end = 0;
     if (req.query.offset){
         console.log("offset is " + req.query.offset);
         offset = req.query.offset;
@@ -45,8 +46,54 @@ app.get('/', async (req, res) => {
         console.log("limit is " + req.query.limit);
         limit = req.query.limit;
     }
+    if (req.query.end){
+        console.log("end is " + req.query.end);
+        end = req.query.end;
+    }
 
-    const rows = await myDB.getEntries(sourceVideoID, offset, order, limit);
+    // todo: make it so entries actually pays attention to end.
+    const rows = await myDB.getEntries(sourceVideoID, offset, end, order, limit);
+    console.log("rows " + rows);
+    res.json(rows);
+});
+
+// get code in interval
+app.get('/intervalCode', async (req, res) => {
+    console.log("requesting data..." + JSON.stringify(req.query));
+    var begin = 0;
+    var end = 0;
+    // var order = "ASC";
+    if (req.query.begin){
+        console.log("begin is " + req.query.begin);
+        begin = req.query.begin;
+    }
+    if (req.query.end){
+        console.log("end is " + req.query.end);
+        end = req.query.end;
+    }
+
+    const rows = await myDB.getCodeInRange(begin, end);
+    console.log("rows " + rows);
+    res.json(rows);
+});
+
+
+// get code in interval
+app.get('/intervalSearches', async (req, res) => {
+    console.log("requesting data..." + JSON.stringify(req.query));
+    var begin = 0;
+    var end = 0;
+    // var order = "ASC";
+    if (req.query.begin){
+        console.log("begin is " + req.query.begin);
+        begin = req.query.begin;
+    }
+    if (req.query.end){
+        console.log("end is " + req.query.end);
+        end = req.query.end;
+    }
+
+    const rows = await myDB.getSearchesInRange(begin, end);
     console.log("rows " + rows);
     res.json(rows);
 });
@@ -222,7 +269,7 @@ app.post("/updatecodetext", async (req, res, next) => {
 
 app.get('/getCodeText', async (req, res) => {
     console.log("requesting code text..." + JSON.stringify(req.query));
-    console.log("string edit distance: " + levenshtein('kitten', 'sitting'));
+    // console.log("string edit distance: " + levenshtein('kitten', 'sitting'));
 
     var limit = 20;
    

@@ -37,6 +37,9 @@ $( document ).ready(function() {
     $('#update-ocr-box').on( "click", function(){
         updateOCRBox();
     } );
+    $('#go-to-time-btn').on( "click", function(){
+        jumpToTime();
+    } );
 
     createMagnifier('public/images/testCode.png');
     
@@ -61,13 +64,13 @@ function updateDisplay() {
     console.log(dbIndex + " < " + (Object.keys(dbEntries).length) + " " + Object.keys(dbEntries));
     console.log("code-img: " + dbEntries[dbIndex]["img_file"]);
     $( "#code-editor" ).val(dbEntries[dbIndex]["code_text"]);
-    $('#code-img').attr("src","public/images/onlineChat/" + dbEntries[dbIndex]["img_file"]);
+    $('#code-img').attr("src","public/images/foodNotFood/" + dbEntries[dbIndex]["img_file"]);
 
     $(".magnifier-thumb-wrapper").remove();
     $(".magnifier-preview").remove();
 
 
-    var url = "public/images/onlineChat/" + dbEntries[dbIndex]["img_file"];
+    var url = "public/images/foodNotFood/" + dbEntries[dbIndex]["img_file"];
     var time = dbEntries[dbIndex]["time"];
     $('#zoom-ui').append(`<a href=${url} style="width: fit-content" class="magnifier-thumb-wrapper">Time=${time}</a>`);
     $('.magnifier-thumb-wrapper').append(`<img src=${url} id="thumb" style="width: 200px; height 266px"/>`);
@@ -125,6 +128,39 @@ function updateOCRBox() {
     });
 }
 
+function jumpToTime() {
+    // var input = document.getElementById("input_id").value
+    var timeField = document.querySelector("#go-to-time-field");
+    var time = timeField.value;
+
+    if (!isNaN(time)) {
+
+        time = parseInt(time);
+
+        var newIdx = getClosestIndexForTime(time);
+
+        console.log("move to next time: " + time + " > " + dbEntries[dbEntries.length-1]["time"] + parseInt(dbEntries[dbEntries.length-1]["time"]) + " = " + (time > parseInt(dbEntries[dbEntries.length-1]["time"])) )
+        if (time > parseInt(dbEntries[dbEntries.length-1]["time"])) {
+
+            offset = dbEntries[dbEntries.length-1]["time"];
+            console.log("move to next time interval " + offset)
+            getData();
+            updateDisplay();
+        } else {
+
+            // console.log("time is " + time + " " + dbEntries[dbEntries.length-1]["time"]);
+            console.log("idx is " + newIdx);
+
+            dbIndex = newIdx;
+            updateDisplay();
+        }
+    } else {
+        timeField.value = "";
+    }
+    console.log(timeField + " " + time);
+    console.log("jump to time");
+}
+
 // display the data we are now getting from dbEntries in the appropriate spots.
 function showNextEntry() {
   dbIndex = dbIndex + 1;
@@ -148,6 +184,16 @@ function showPreviousEntry() {
   updateDisplay();
 }
 
+function getClosestIndexForTime(time) {
+    for (var i = 0; i < dbEntries.length; i++) {
+        console.log(time + ">?" + dbEntries[i]["time"] + " " + (parseInt(time) < parseInt(dbEntries[i]["time"])) )
+        if (parseInt(time) < parseInt(dbEntries[i]["time"])) {
+            return i;
+        }
+    }
+    return -1;
+}
+
 function updateCurrentEntry() {
     updateDisplay();
 }
@@ -156,6 +202,6 @@ function getData() {
     $.get('http://localhost:3000/', { offset: offset, order : "ASC"}, 
         function(response){
             dbEntries = response;
-            console.log("0th entry" + JSON.stringify(dbEntries[0]));
+            console.log("current entry" + JSON.stringify(dbEntries[dbIndex]));
     });
 }

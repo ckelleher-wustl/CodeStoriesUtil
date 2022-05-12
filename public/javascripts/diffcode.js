@@ -121,7 +121,6 @@ function showComments(commentEntries, startTime, endTime){
             lastSearch = currNote;
         }
     }
-
     evtString = "<b>" + lastSearch + "</b></br>" + evtString;
 
     $(search).html(evtString);
@@ -165,9 +164,7 @@ function getCode() {
 }
 
 function segmentCode(codeText){
-
     var header = codeText.substring(0,codeText.indexOf("def"));
-
     console.log("Header is: ");
     console.log(header);
 

@@ -25,10 +25,17 @@ class CodingDB {
     //     return this.db;
     // }
 
-    async getEntries(sourceVideoID, offset, order, limit) {
+    async getEntries(sourceVideoID, offset, end, order, limit) {
         // (videoID, timed_url, time, notes) VALUES(2, "test.html", 123, "These are some witty observations");
-        let sql = 'SELECT eventID as id, timed_url as timed_url, time as time, notes as notes, img_file as img_file, code_text as code_text, coords as coords FROM CodingEvents \
-        WHERE time>=' + offset + ' ORDER BY time ' + order + ' LIMIT ' + limit;
+        console.log("interval " + offset + " - " + end);
+        let sql = '';
+        if (end == 0) {
+            sql = 'SELECT eventID as id, timed_url as timed_url, time as time, notes as notes, img_file as img_file, code_text as code_text, coords as coords FROM CodingEvents \
+            WHERE time>=' + offset + ' ORDER BY time ' + order + ' LIMIT ' + limit;
+        } else {
+            sql = 'SELECT eventID as id, timed_url as timed_url, time as time, notes as notes, img_file as img_file, code_text as code_text, coords as coords FROM CodingEvents \
+            WHERE time>=' + offset + ' AND time<=' + end + ' ORDER BY time ' + order;
+        }
 
             //WHERE time>=" + offset + "
         try {
@@ -56,6 +63,9 @@ class CodingDB {
     }
 
     async getCodeText(sourceVideoID, offset, order, limit) {
+        console.log("offset " + offset);
+        console.log("order " + order);
+        console.log("limit " + limit);
         // (videoID, timed_url, time, notes) VALUES(2, "test.html", 123, "These are some witty observations");
         let sql = 'SELECT eventID as id, time as time, code_text as code_text, notes as notes FROM CodingEvents \
         WHERE code_text IS NOT NULL AND time>=' + offset + ' ORDER BY time ' + order + ' LIMIT ' + limit;
@@ -77,6 +87,34 @@ class CodingDB {
         console.log(sql);
 
             //WHERE time>=" + offset + "
+        try {
+            const rows = await this.db.all(sql, []);
+            console.log("returning entries...");
+            return rows;
+        } catch (err) {
+            return ("ERROR: " + err);
+        }
+    }
+
+    async getCodeInRange(startTime, endTime) {
+        let sql = 'SELECT eventID as id, time as time, notes as notes, code_text as code_text FROM CodingEvents \
+        WHERE code_text IS NOT NULL AND time>=' + startTime + ' AND time<=' + endTime + ' ORDER BY time ASC';
+        console.log(sql);
+
+        try {
+            const rows = await this.db.all(sql, []);
+            console.log("returning entries...");
+            return rows;
+        } catch (err) {
+            return ("ERROR: " + err);
+        }
+    }
+
+    async getSearchesInRange(startTime, endTime) {
+        let sql = 'SELECT eventID as id, time as time, notes as notes, img_file as img_file FROM CodingEvents \
+        WHERE code_text IS NULL AND time>=' + startTime + ' AND time<=' + endTime + ' ORDER BY time ASC';
+        console.log(sql);
+
         try {
             const rows = await this.db.all(sql, []);
             console.log("returning entries...");
@@ -148,15 +186,21 @@ class CodingDB {
     }
 
     async recordWebInfo(webImage) {
+
+        console.log("RECORD WEB INFO");
         
         const id = await this.getMaxEventID(); 
         console.log("id value is " + id);
     
-        var sql = "UPDATE CodingEvents SET img_file = ?, WHERE eventID = ?"
-        var params =[webImage, id]
+        var sql = "UPDATE CodingEvents SET img_file = ? WHERE eventID = ?";
+        var params =[webImage, id];
+
+        console.log("SQL = " + sql + " " + params);
     
         try{    
             const result = await this.db.all(sql, params);
+            // console.log("db prepare  " );
+            // const result = db.prepare(sql, params).all();
             console.log("db updated : " + result);
         } catch( err ) {
             return ("ERROR: " + err);
