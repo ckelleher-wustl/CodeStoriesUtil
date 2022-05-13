@@ -8,11 +8,12 @@ const levenshtein = require('js-levenshtein');
 
 const app = express();
 const port = 3000;
-// myDB = new CodingDB("./test.db");
-myDB = new CodingDB("./foodNotFood.db");
+myDB = new CodingDB("./test.db");
+// myDB = new CodingDB("./foodNotFood.db");
 ocr = new OCR();
 
-var directory = 'C:/Users/ckelleher/Downloads/screencap/foodNotFood'; 
+// var directory = 'C:/Users/ckelleher/Downloads/screencap/foodNotFood'; 
+var directory = 'C:/Users/ckelleher/Downloads/screencap/test'; 
 
 console.log(myDB + " " + ocr);
 // db = myDB.getDB();
@@ -129,7 +130,7 @@ async function captureAndRecordCode(directory) {
 // get the current image and then record results in the db 
 async function captureAndRecordWeb(directory) {
     // this shouldn't be codetext.
-    var webImage = await ocr.getCodeImage(directory);
+    var webImage = ocr.getCodeImage(directory);
     console.log( "got code image: "  + webImage);
     var dbResult = await myDB.recordWebInfo(webImage);
     console.log( "web result recorded");
@@ -157,7 +158,8 @@ app.post("/newcode", async (req, res, next) => {
 
     // start the process to get the code image and do text recognition on it.
     // var directory = 'C:/Users/ckelleher/Downloads/screencap_onlineChat'; 
-    captureAndRecordCode(directory)
+    // taking out the image recognition part for now - just grab the most recent file and record.
+    captureAndRecordWeb(directory)
 
     console.log("done " + result);
 })

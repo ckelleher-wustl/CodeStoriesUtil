@@ -8,17 +8,41 @@ class OCR {
         fs.readdir = util.promisify(fs.readdir);
     }
 
-    async getCodeImage(directory) {
+    getCodeImage(directory) {
         // var directory = 'C:/Users/ckelleher/Downloads/screencap'; 
-    
-        try {
-            const result = await fs.readdir(directory); 
-            var last = result.length-1;
-            var mostRecentCodeImage = result[last];
+
+        let files = fs.readdirSync( directory ); // You can also use the async method
+        let filesWithStats = [];
+        let mostRecentCodeImage = '';
+        if( files.length > 1 ) {
+            let sorted = files.sort((a, b) => {
+                let s1 = fs.statSync(directory + "/" + a);
+                let s2 = fs.statSync(directory + "/" + b);
+                return s1.ctime < s2.ctime;
+            });
+            sorted.forEach(file => {
+                filesWithStats.push({
+                    filename: file,
+                    date: new Date(fs.statSync(directory + "/" + file).ctime),
+                    path: directory + "/" + file
+                });
+            });
+
+            var last = filesWithStats.length-1;
+            mostRecentCodeImage = filesWithStats[last]['filename'];
             console.log("returning " + mostRecentCodeImage);
-        } catch (err ) {
-            return ("ERROR: " + err);
         }
+
+       
+    
+        // try {
+        //     const result = await fs.readdir(directory); 
+        //     var last = result.length-1;
+        //     var mostRecentCodeImage = result[last];
+        //     console.log("returning " + mostRecentCodeImage);
+        // } catch (err ) {
+        //     return ("ERROR: " + err);
+        // }
             
          return mostRecentCodeImage;   
     }
@@ -54,7 +78,7 @@ class OCR {
 
     async getCodeText(directory) {
         // const worker = createworker.createWorker();
-        var codeImageName = await this.getCodeImage(directory);
+        var codeImageName = this.getCodeImage(directory);
         // await codeImageName;
 
         console.log("got codeImage " + codeImageName);
