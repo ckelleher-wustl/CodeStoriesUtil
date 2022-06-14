@@ -211,12 +211,6 @@ app.post("/delete", async (req, res, next) => {
 })
 
 async function updateCoords(eventID, imgName, coordString) {
-    // get code tex
-    // var directory = 'C:/Users/ckelleher/Downloads/screencap'; 
-    //var codeText = await ocr.getCodeTextForImage(imgName, directory, coordString);
-
-    // then we need to do another db update to record the code
-    //result = await myDB.updateCodeText(eventID, codeText.codeText);
     result = await myDB.updateOcrBox(eventID, coordString);
     console.log("updated coordString")
 }
