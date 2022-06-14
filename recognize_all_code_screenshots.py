@@ -59,7 +59,7 @@ if __name__ == '__main__':
             if curr_code_text == None: #only do this if nothing currently saved
                 eventID = str(entry[0])
                 coords = entry[-1].split(';')
-                print(image_file, coords)
+                print(eventID, image_file, coords)
                 image = Image.open(image_dir+image_file)
                 pix = np.array(image)
 
@@ -69,8 +69,9 @@ if __name__ == '__main__':
                 lowerY = int(coords[1]) + int(coords[3])
 
                 pix[0,:,:]
-                im_new = Image.fromarray(pix[upperX:lowerX,upperY:lowerY,:])
-                #im_new.show()
+                #im_new = Image.fromarray(pix[upperX:lowerX,upperY:lowerY,:])
+
+                im_new = Image.fromarray(pix[upperY:lowerY,upperX:lowerX,:])
 
                 text = pytesseract.image_to_string(im_new)
                 images_text_map[image_file] = text
@@ -78,7 +79,6 @@ if __name__ == '__main__':
                 update_text(conn, eventID, text)
                     #no code
                 #print(text)
-                break
         #json.dump(images_text_map, open("images_text_map.json",'w'),indent=1)
 
 
