@@ -15,6 +15,7 @@ ocr = new OCR();
 var directory = ':/Users/ckelleher/Downloads/screencap/foodNotFood'; 
 console.log("DB = " + myDB + "; OCR = " + ocr);
 
+
 // body-parser has been incorporated into express, so no need to have a separate thing
 app.use(express.urlencoded());
 app.use(express.json());
@@ -124,6 +125,7 @@ async function captureAndRecordCode(directory) {
 // get the current image and then record results in the db 
 async function captureAndRecordWeb(directory) {
     // this shouldn't be codetext.
+    console.log("getting code image...")
     var webImage = ocr.getCodeImage(directory);
     console.log( "got code image: "  + webImage);
     var dbResult = await myDB.recordWebInfo(webImage);
@@ -208,12 +210,8 @@ app.post("/delete", async (req, res, next) => {
 })
 
 async function updateCoords(eventID, imgName, coordString) {
-    // get code tex
-    // var directory = 'C:/Users/ckelleher/Downloads/screencap'; 
-    var codeText = await ocr.getCodeTextForImage(imgName, directory, coordString);
-
-    // then we need to do another db update to record the code
-    result = await myDB.updateCodeText(eventID, codeText.codeText);
+    result = await myDB.updateOcrBox(eventID, coordString);
+    console.log("updated coordString")
 }
 
 app.post ("/updateocrbox", async (req, res, next) => {
