@@ -1,0 +1,78 @@
+eventID,time,filename
+28,9060,visit: lichess.org authentication page;--note he starts this project with this website pulled. up
+30,9068,visit: lichess.org User page;
+31,9074,"visit: lichess.org Bot page; ""I think we need to create a bot user.. How do we do that?"""
+29,9076,visit: lichess.org Account information
+32,9079,visit: lichess.org bot account upgrade
+34,9233,visit: lichess.org user samwisegardener; this time it is his account
+36,9239,"revisit: lichess.org bot account upgrade;  ""what I need to do is create an access token"".."
+35,9276,visit: Lichess.org Personal access tokens;
+310,9429,revisit: lichess.org bot account upgrade; looking at curl command- explaining it to audience
+311,9440,typed: Insomnia tool; lets him send requests to webservers
+312,9507,revisit: lichess.org bot account upgrade; AFTER hiding screen
+275,9542,visit: lichess.org API Get my profile;
+276,9542,visit: lichess.org API Bot; 
+277,9551,visit: lichess.org API Stream Bot game state; 
+278,9555,visit: lichess.org API Stream Incoming Events
+279,9570,visit: lichess.org API Stream Board game state
+280,9601,"visit: lichess.org API create a seek; I guess the first thing we want to do is join a game, right?"
+281,9627,visit: lichess.org API stream current games
+282,9667,visit: lichess.org API Make a Bot move
+284,9688,visit: lichess.org samwisegardener; looking at Bot account
+283,9688,visit: lichess.org; looking for his own bot
+285,9697,visit: lichess.org challenge to a game; challenging bot to game
+287,9765,visit: lichess.org API challenges;
+43,10077,typed: Streaming Data with Fetch() and NDJSON; this is a link posted by one of the viewers in the livechat
+290,10183,typed: github threadpuller; chat-suggested ndjson handler
+292,10315,revisit: lichess.org API challenges
+294,10372,search: fetch stream response; learning how to get stream connected
+295,10378,visit: streaming requests with the fetch API
+296,10407,search: nodejs TextDecoderStream; does textdecoderstream exist in Node?
+46,10409,visit: Mozilla/ TextDecoder; (first link in search)
+48,10496,visit: How to use NDJson; this is a link posted in the chat
+49,10525,"visit: Fetch Upload Stream; ""I want to do something like this"" --not use some library that already does it"
+57,10858,search: node-fetch
+58,10869,visit: npmjs node-fetch; trying to understand how it works and is supposed to be used
+59,10890,"revisit: Streaming Data with Fetch() and NDJSON; resource sent in stream chat. he says ""I don't want to use an external library"""
+63,10973,search: nodejs http; searching for documentation on DuckDuckGo
+64,10974,visit: NodeJS http; http documentation
+66,11053,revisit: NodeJS http; finding URL() syntax
+78,11240,visit: lichess.org challenge samwisegardener; telling twitch followers to challenge his bot so that he can see the JSON request pop up in the output
+79,11240,revisit: lichess.org challenge samwisegardener; tells twitch followers to challenge his bot so that he can see the challenge requests pop up in the output message
+99,12023,visit: lichess.org API Accept Challenge
+105,12191,revisit: lichess.org API Accept Challenge; checking that accepting challenges is successful
+107,12222,revisit: lichess.org challenge samwisegardener; shows output that is currently waiting for challenge to be accepted by bot
+110,12273,revisit: lichess.org API Accept Challenge; checking parameters of post
+112,12313,search: axios post empty body; searching why authorization header still missing
+298,12318,visit: github POST sending empty object;
+300,12413,search: axios; 
+301,12417,search: axios http; reframing axios search after not clicking anything
+303,12419,visit: axios http; github axios page for http requests
+302,12481,revisit: axios http; checking syntax
+116,12655,revisit: lichess.org API Accept Challenge; checking how challenge object is communicated
+119,12780,visit: lichess.org API stream current game; learning how to stream current game and communicate with bot
+120,12794,visit: lichess.org API bot; looking at streaming game state
+121,12835,revisit: github axios; checking stream syntax in axios
+132,13051,revisit: github axios; checking response format
+136,13117,search: axios ldjson stream; searching how to use axios for streaming events from game
+308,13124,search: !g axios ldjson stream; checking Google for same search terms
+309,13145,revisit: github axios; looking at data.pipe--note that previous search term never resulted in click of new website
+151,13623,revisit: lichess.org API Stream Bot game state; checking if always a GET post
+160,13889,revisit: lichess.org API Stream Bot game state; trying to see syntax for game state
+168,14482,visit: lichess.org API Make a Bot move; trying to figure out how to make bot move.
+169,14538,revisit: lichess.org API Make a Bot move; checking post request syntax
+178,14892,revisit: lichess.org API Make a Bot move; looking at how to deal with invalid moves
+179,14976,search: UCI format; looking into what chess format looks like
+181,14981,search: chess UCI format; reframes search because results weren't related to chess
+180,14984,visit: wikipedia Universal Chess Interface; looking into format
+184,15126,typed: tmijs.com; looking for what are options for starting tmi stream
+189,15252,revisit: tmijs.com; seeing message syntax
+190,15437,"typed: twitch.tv/constructor; this is him interacting with chat, saying that this tool could impact the design of his tool"
+195,15864,search: UCI chess regex; searching for other people's formal answers to this regex call
+196,15872,search: !g uci chess regex; reframing search to work from google instead of duckduckgo
+197,15887,visit: stackoverflow regex challenge custom chess notation; searching for regex for notation
+234,18430,revisit: lichess.org API Make a Bot move; looking at how to resign or offer draw
+239,18699,visit: lichess.org API Decline a challenge; declining challenge if not CJ == user
+241,18795,revisit: lichess.org Stream incoming events; seeing how to finish a game
+250,19273,"search: axios cancel token; after doing custom loop/conditional cancel of game, a user comments to use a cancel token"
+251,19285,visit: github Axios cancellation; checking documentation for cancellation token

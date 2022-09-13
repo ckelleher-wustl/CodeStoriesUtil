@@ -1,0 +1,18 @@
+eventID,time,filename
+6,554,search: go net library; searches go library for making server
+7,556,visit: Go Packet net; checks go net documentation
+18,1025,revisit: Go Package net; checks documentation for read methods
+26,1328,search: telnet disable line mode; searches for character detection
+27,1333,visit: RCF 1116 Telnet Linemode Option
+28,1342,search: telnet send character by character; reformats searches
+29,1356,visit: Hamburg Uni Telnet; 
+31,1510,search: golang string to bytes; checks conversion method for go
+32,1512,visit: yourbasic Convert between byte array/slice and string; checks website for method
+41,1710,search: golang trimspace newline carriage return; 
+42,1712,visit: stackoverflow how remove \n from lines; searches how to trim
+53,2544,search: golang channel basics
+54,2549,visit: A Tour of Go Channels; searches for channel syntax
+58,2673,revisit: A Tour of Go Channels; revisits directly to check syntax
+66,2960,search: golang type switch; searches for type switch syntax
+67,2962,visit: A Tour of Go Type Switches; finds type switch syntax
+69,3022,revisit: A Tour of Go Type Switches; revisits syntax by visiting website directly

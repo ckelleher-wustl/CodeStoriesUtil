@@ -1,0 +1,28 @@
+eventID,time,filename
+4,251,typed: Figma; this is the design mockup for his project (programmer typed in website directly)
+11,746,typed: Live Server; (typed in website directly)
+16,854,revisit: Figma
+19,891,revisit: Live Server;
+28,1334,revisit: Figma
+33,1634,typed: console.agora.io; (typed in website directly)
+34,1648,typed: docs.agora.io/en/All/downloads; (typed in website directly)
+40,1930,revisit: docs.agora.io/en/All/downloads
+41,1935,revisit: console.agora.io;
+45,2376,revisit: Figma
+63,4417,"revisit: Live Server;
+opened up live server to walk friend through previously made mockup of what the finished product should look like / function as"
+106,9667,"typed: Microsoft Paint;
+made a diagram of the proposed information flow between the lobby and the room "
+215,20882,"search: ngrok;
+installed ngrok to allow his viewers to join the chat service he has built so far"
+216,20957,"visit: ngrok;
+installed ngrok to allow his viewers to join the chat service he has built so far, ngrok lets you share your local servers online"
+217,21018,visit: dashboard.ngrok.com/get-started/setup; (clicked on website directly)
+220,21682,"search: How to change vscode local port;
+he is trying to fix the ngrok issue (it isn't broadcasting to correct local port)"
+227,24389,"visit: Agora API Reference;
+reading up on how to enable live video in his app (typed in website directly)"
+230,24775,"revisit: Agora API Reference;
+looking for way to edit the attributes of an agora channel"
+265,28174,"visit: Agora Downloads Page;
+downloading agora rtc sdk (typed in website directly)"

@@ -1,0 +1,26 @@
+seed,type,startTime,endTime
+'gap','gap',1365,1365
+' "imagenet data downloader"','search',1365,1555
+'gap','gap',1555,1951
+' python how to read a dictionary from txt','search',1951,2142
+'gap','gap',2142,2169
+' imagenet food classes','search',2169,2446
+'gap','gap',2446,2707
+' stackoverflow question - list of common foods','search',2707,4468
+'gap','gap',4468,4746
+' ruffed grouse','search',4746,4760
+'gap','gap',4760,6195
+' imagenet downloader','search',6195,6629
+'gap','gap',6629,9842
+' imagenet downloader','search',9842,10405
+'gap','gap',10405,10791
+' python how to pass list as command line argument','search',10791,12572
+'gap','gap',12572,13433
+' tensorlfow load images','search',13433,13454
+'gap','gap',13454,14557
+' python random select k','search',14557,15825
+'gap','gap',15825,17789
+' efficient net B0','search',17789,20988
+'gap','gap',20988,26304
+' weights and biases page (his account)','search',26304,28857
+'gap','gap',28857,36026

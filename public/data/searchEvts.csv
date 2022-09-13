@@ -1,0 +1,188 @@
+eventID,time,filename
+10,1365,"search: ""imagenet data downloader""; he's got this search pre-done and is returning to it. happened before the video started."
+11,1372,"visit: imagenet downloader; ""this is what we want"""
+12,1413,"search: imagenet class list; downloader page talks about getting images from different classes. goal is to get not food, classes may play into that (my inference)"
+13,1416,visit: imagenet class labels; the goal here is to find out how many of these correspond to food
+15,1485,visit: raw imagenet class labels list; intending to use this list to select classes
+17,1551,revisit: imagenet class list; wants to download the class list
+18,1555,visit: imagenet class list download zip; downloading
+33,1951,search: python how to read a dictionary from txt; search is tied to previous goal statement
+34,1957,"visit: how to read a dictionary from a file in Python; ""dictionary from a file"""
+35,1976,"visit: literal_eval (method docs); ""is this in the python standard library?"""
+36,1982,"revisit: how to read a dictionary from a file in Python; ""ok, we just want read"""
+37,1993,revisit: how to read a dictionary from a file in Python; he's copying the literal_eval method call
+44,2132,search: python check if string contains string; in response to error about non-existent contains method
+45,2142,"visit: does python have a string ""contains"" substring method?;"
+48,2169,search: imagenet food classes; I think that he's looking for a list of food words that he can use to filter the list
+49,2183,"visit: food image classification; ""no way"" this is a medium article done by someone who has basically done this same problem"
+50,2318,search: python list of common eaten foods; he's looking for a way to get food based keywords
+51,2322,visit: wikipedia list of common eaten foods; top link
+52,2328,"search: python list of commonly eaten foods; ""nope"" on wikipedia page."
+53,2364,"visit: stackoverflow question - list of common foods; ""here we go"""
+54,2417,"visit: usda foods list; ""this is beautiful, we're just going to combine a bunch of data here"""
+55,2430,visit: usda food data central;
+56,2446,revisit: stackoverflow question - list of common foods;
+58,2457,search: wordnet subset downloader; this is based on the words around the nltk example
+59,2505,visit: stack overflow - what does nltk download 'wordnet' accomplish?;
+60,2525,visit: nltk documentation; he's skimmed the stack overflow download explanations
+63,2577,"visit: installing nltk; ""what's the recommended..."""
+67,2707,revisit: stackoverflow question - list of common foods; copying the nltk example code.
+74,2806,"search: conda how to install in current env with pip; ntlk not in installed packages, but lists as installed when he tries to re-install. is available as a site package."
+75,2808,visit: stackoverflow - using pip to install packages to Anaconda environment;
+92,3493,"search: python create a list from list of lists; ""I always get this mixed up"""
+93,3495,"visit: stackoverflow how to make a flat list out of a list of lists; he's looking up the syntax to flatten his split lists into a single list. (which I'm not sure is a good idea, but...)"
+106,4078,search: get items from a list; it seems to have added python to it for him in that the results are all python based.
+121,4466,search: python set intersection; he's tried several variations on intersection now looking for an example
+122,4468,visit: Python set intersection method; skims examples
+138,4746,search: ruffed grouse; trying to determine whether this should be food or not.
+139,4760,search: ruffed grouse images; is this food or a bird?
+140,4922,"search: cardoon; ""who knows what a cardoon is?"""
+153,6012,"search: chickadee images; ""is that food?"""
+157,6195,revisit: imagenet downloader; he's had this stashed for quite a while and is now coming back to it.
+158,6227,visit: csv overview of the imagenet classes; he gets to this b/c the example code seems to use a numeric key for each class that doesn't correspond with the key that he's just gotten for each.
+160,6434,visit: words.txt; link from imagenet downloader page
+161,6444,revisit: classes in imagenet (csv overview); I think he's going to redo the filtering using this instead of his imagenet list of classes approach from before. I personally wonder whether his key is one of the entries in the table and could therefore be used to get the numeric code with just some csv lookup.
+162,6458,visit: raw csv of imagenet classes; this is just plain text
+163,6474,revisit: imagenet downloader; he's pointing out the codes in the example code and saying he didn't realize they were necessary
+164,6491,"visit: downloader.py; ""let's read the script"" I think he's starting to look for an approach that isn't start again from the csv."
+167,6629,revisit: raw csv of imagenet classes; he's just getting the url here to use in reading the csv using pandas.
+213,7277,"search: dataframe filter column by strings in list; he hasn't quite articulated a goal here, but has noted that the classnames might contain other characters and that currently isin will require a perfect match."
+214,7279,visit: stackoverflow - filter out rows based on list of strings in pandas;
+226,7754,"search: periwinkle; ""what is a periwinkle?"""
+253,9842,revisit: imagenet downloader; let's get the downloader script
+254,9967,visit: Downloading the ImageNet; this is a blog post that details the download script process
+255,10168,visit: imagenet downloader; getting the url to clone the downloader repo
+256,10399,"visit: imagenet downloader; ""So how do we use this?"" He's cloned it's git repo and set it up within his project."
+257,10405,"revisit: downloader.py; perusing what it's doing, I imagine."
+259,10791,search: python how to pass list as command line argument; he's downloaded a few test images using a downloader downloader.py script and is now trying to figure out how to connect his dictionary of numeric codes with that download script
+260,10801,visit: how to pass an entire list as command line argument in python;
+272,11323,search: how to pass python list to command line
+273,11338,"visit: pass list as a command line argument in python; he has this up as a split screen, code on one side, web on the other."
+274,11370,revisit: stackoverflow pass list as command line arg.; he's got this open in another tab and just goes back
+275,11416,visit: python command line arguments;
+276,11467,visit: downloader script (in IDE now); I think he may be thinking he needs to modify it to eval the input it gets?
+277,11509,search: pass string from file to python command line; interestingly he's looking at the correct argument in the downloader file and that spurs this question
+278,11517,visit: passing strings as python command-line arguments;
+289,11744,search: python use contexts of txt file in command line;
+290,11747,visit: execute a command by reading contents of a text file;
+305,12479,search: maximum length of python arg list; so how long is it allowed to be?
+307,12533,revisit: imagenet downloader; he's looking back and syntax for random class downloading.
+308,12572,revisit: imagenet downloader; getting the example back for reference
+324,13341,search: turn off tensorflow warnings;
+325,13375,visit: Disable Tensorflow debugging information; stackoverflow page
+330,13433,search: tensorflow load images;
+331,13435,"visit: Load and preprocess images; ""we're going to use something similar to this"""
+332,13451,"search: keras image dataset from directory; here I think he is drawing on existing knowledge - while a follow on search, it's not one that pulled info from the previous one."
+333,13454,visit: keras image dataset from directory; there was actually a mention to karas on the previous page that I missed.
+334,13485,search: tensorflow convert saved model to tflite model; he seems to be trying to make rough connections between pieces of the process here that he'll then come back to.
+335,13488,visit: tensorflow lite converter;
+352,14165,"revisit: keras image dataset from directory; ""does this make test size?"""
+366,14557,"search: python random select k; ""what's the random choice in python?"""
+367,14561,visit: python random sample() to choose multiple items from any sequence;
+368,14572,search: python random seed;
+423,15821,search: python shutil copy; he's got everything set up to do the copy so now looking up the right method I guess
+424,15825,visit: How do I copy a file in python;
+463,17588,revisit: keras image dataset from directory; he found this at the beginning in his preparation to switch over to the model building part of the process
+472,17789,"search: efficient net B0; autocompletion isn't cooperating at the moment ""let's just go to the docs"""
+473,17791,search: images efficient net B0; not sure yet why we want an image here
+474,17802,"visit: EfficientNet: Improving Accuracy and Efficiency through AutoML and Model Scaling; ""this is efficientnet - it's a convolutional neural network"""
+476,17833,search: tensorflow efficientnetb0;
+477,17836,visit: tf.keras.application.efficientnet.EfficientNetB0;
+480,18026,search: tensorflow functional api; he's got half written code on the left and is looking for the syntax for something
+482,18058,revisit: tf.keras.application.efficientnet.EfficientNetB0;
+483,18063,search: tensorflow functional api; this is actually a revisit of an earlier search where he didn't use the results but didn't close them either.
+484,18064,visit: tensorflow functional api;
+485,18148,revisit: tf.keras.applications.efficientnet.EfficientNetB0; this is in support of explaining the significance of the include top False option in response to a chat question from an audience member
+486,18253,"revisit: tf.keras.applications.efficientnet.EfficientNetB0; ""could we use?.."" he's started to define an output layer in the code."
+490,18331,"revisit: tf.keras.applications.efficientnet.EfficientNetB0; ""inputs to a layer should be tensors, why is that not working?"""
+497,18377,search: keras plot model;
+498,18381,visit: keras model plotting utilities;
+503,18485,"visit: graphviz; this comes from a link in error message - need to install both pydot and graphviz ""oh I have to install a bunch of different things"""
+504,18529,search: weights and biases tensor flow; he seems to be wanting to lump all of the installation madness together.
+505,18535,visit: Visualizing TensorFlow2 models with Weights and Biases;
+506,18557,visit: tf2 CNN with W&B; link from previous page
+510,18646,revisit: tf2 CNN with W&B; not sure what he's looking for exactly
+513,18718,"revisit: Visualizing TensorFlow 2 models with Weights and Biases; ""how do they do that here"""
+514,18748,search: weights and biases tensor flow guide;
+515,18755,"visit: Introduction to TensorFlow with Weights and Biases; ""what's this one saying"""
+516,18776,visit: WandB fashionMNIST tensorflow; I'm not sure what this page is about
+517,19063,visit: weights and biases page; this is through his account that he has set up.
+518,19071,revisit: WandB fashionMNIST tensorflow; this seems to be a set of steps about how to setup. he's just finished creating account as directed and is maybe returning to see what to do next
+521,19194,revisit: tf2 CNN with W&B; he's muttering about the use of tf1
+522,19223,search: weights and biases sync tensorboard;
+523,19230,visit: TensorBoard;
+524,19252,visit: Configure Experiments with wandb.config; this is a link from the documentation
+525,19265,visit: Quickstart; also a tensorflow docs page
+526,19267,"visit: TensorFlow; ""this is what I want"""
+527,19303,visit: tf-cnn-fashion; this seems to be a github associated with the fashion example project
+532,19366,search: tensorflow keras plot model;
+533,19388,visit: tf.keras.utils.plot_model;
+551,19769,"revisit: tf2 CNN with W&B; ""there's no clear statement here that tells me how to use a log"""
+554,19844,revisit: tensorflow overview page;
+555,19869,revisit: TensorBoard documentation;
+557,19890,visit: book (his) zero to mastery TensorFlow for Deep Learning; this may turn out to be a plug for himself rather than development related.
+563,20124,revisit: book (his) zero to mastery TensorFlow for Deep Learning; he's checking the new code against his example
+569,20216,revisit: weights and biases page; he's checking to see if the data logged into weights and biases.
+578,20333,"search: weights and biases sync tensorboard; he's getting a little frustrated with the feedback ""don't just tell me to..."""
+579,20339,revisit: book (his) zero to mastery TensorFlow for Deep Learning; not sure what he's looking for exactly
+580,20344,revisit: Tensorboard docs;
+581,20365,visit: Experiment Logging with Tensorboard and wandb; this is a link from his weights and biases sync tensorboard search
+582,20411,revisit: book (his) zero to mastery TensorFlow for Deep Learning;
+584,20450,"visit: localhost; ""there we go, ok we're on"" we're getting back weights and biases info "
+587,20583,revisit: weights and biases page (his account); now there's some actual data there.
+588,20664,revisit: Experiment Logging with Tensorboard and wandb; not sure what he's looking for
+590,20813,revisit: weights and biases page (his account); he's trying to add a visualization
+591,20879,search: weights and biases log tensorboard logs;
+592,20887,"visit: Logging with Weights & Biases - Monitoring your neural network's training made easy; ""I actually don't know why this isn't working"" he's now exploring new links but has done this same search before."
+593,20988,revisit: weights and biases page (his account); he got to it this time by clicking something in the ide and now it seems to work
+686,24307,search: python get list of all files in directory;
+687,24321,visit: python list files in a directory: step-by-step guide; I'm not sure why he's looking this up - he's been using listdir.
+736,26304,revisit: weights and biases page (his account); model training is currently underway. he wants to know whether weights and biases is working correctly as there's just been a wandb warning.
+738,26335,"revisit: wandb compute stats (his account); ""hows the compute going?"""
+751,26717,revisit: tensorflow lite conversion page; he's got this in a tab and just goes right there.
+761,26829,"visit: repl.it; he types this in directly ""let's now go to repl"""
+762,26837,visit: see all repls;
+763,26843,visit: fork orderlymintcream2 repl; I have no idea what this is
+765,26858,visit: food-not-food repl repository; this is associated with his account
+770,26954,visit: classification on imbalanced data; someone in the chat has commented that the 95% accuracy might be because of the imbalance in the sizes of the training/test sets by class (lots more non-food images and food images)
+789,27329,revisit: classification on imbalanced data page;
+793,27399,revisit: weights and biases page (his account);
+794,27410,visit: wandb runs (his account);
+800,27676,revisit: wandb runs (his account); watching the comparisons and looking for differences
+805,27855,visit: console.cloud.google.com; he types this in directly
+811,28060,revisit: console.cloud bucket; model is uploaded and he's changing the permissions on it.
+812,28074,visit: colab.research.google.com; also a direct visit.
+813,28084,visit: colab new notebook;
+816,28169,search: google storage pricing; this is not related to the code but in response to a chat questions
+817,28177,visit: cloud storage pricing; not problem related.
+819,28231,search: cors policy google storage bucket;
+820,28236,visit: cross-origin resource sharing (CORS);
+835,28857,revisit: google cloud bucket; he's copying the url for the model
+844,29031,"search: truck; ""what should we try....uhmm truck"""
+861,29452,search: tensorflow lite model inputs;
+862,29458,visit: tensorflow lite inference;
+863,29501,search: how to know what inputs a tflite model take;
+864,29523,revisit: tflite model conversion overview;
+874,29755,search: what input does tensorflow lite model take;
+875,29760,revisit: tensorflow lite inference page;
+879,29926,search:tflite.tfliteconverter.from_saved_model(;
+880,29930,revisit: tf.lite.TFLiteConverter;
+881,29965,search: how to check input type to tflite model;
+882,29968,visit: how to know tensorflow lite model's input/output feature info;
+884,30009,visit: netron.app; has loaded the food_not_food model to see what it looks like.
+885,30030,visit: netron.app input details; confirms that the models input is float32.
+900,30389,revisit: tflite converter overview;
+911,30544,revisit: tflite converter overview;
+946,31514,visit: source code for previous model maker project; he's wondering if this one still works before trying to trouble shoot error in small_model_building
+1003,33299,search: tensorflow.js sigmoid;
+1004,33307,visit: tensors/creation;
+1029,33795,search: tensorflow js argmax;
+1037,33901,"revisit: Tensors/Creation; ""Oh it's tf argMax"""
+1048,34273,visit: 10 food classes previous project; he's looking at how he's getting the prediction from his old code
+1074,34983,search: google storage set cors;
+1075,34987,visit: cross-origin resource sharing (CORS);
+1080,35104,revisit: cross-origin resource sharing (CORS); its cors set not set cors
+1086,35271,visit: twitch ml deploy project; checking his set up against a previous project of his.
+1092,35470,revisit: twitch ml deploy project;
+1095,35691,visit: tflite js distro;
+1101,36026,visit: vercel; - going to make a new project here to deploy on something other than replit

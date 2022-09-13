@@ -1,0 +1,96 @@
+time,action,info
+0,search,python gui projects for beginners
+15,visit,Top 20 Opensource Python Tkinter Projects  - Dunebook
+131,visit,GitHub - parthpanchal3399/Quiz-Application-With-dB-Connectivity-on-Python-Tkinter-: This Project has been developed my me & my friend Veer for our Second Year Python Project. It uses Tkinter Module for GUI and MySQLDb for database connectivity.
+191,search,make a quiz app with python gui
+197,visit,How to Build a GUI Quiz App Using Tkinter and Open Trivia DB
+367,search,fractal generator python
+380,visit,Make Fractal Art With Python! - YouTube
+630,search,python fractal
+641,visit,Draw the Mandelbrot Set in Python – Real Python
+674,re-visit,Make Fractal Art With Python! - YouTube
+723,re-visit,Draw the Mandelbrot Set in Python – Real Python
+736,search,turtle python
+747,visit,turtle â Turtle graphics — Python 3.10.5 documentation
+758,re-visit,Make Fractal Art With Python! - YouTube
+1520,re-visit,turtle â Turtle graphics — Python 3.10.5 documentation
+1532,search,cool fractal equations
+1542,visit,Fractals - Fractal Dimension
+1825,re-visit,Make Fractal Art With Python! - YouTube
+3216,re-visit,Fractals - Fractal Dimension
+3231,search,Sierpinsky Triangle python turtle
+3236,visit,https://pythonguides.com/python-turtle-triangle/
+3337,re-search,cool fractal equations
+3340,visit,https://fractalfoundation.org/OFC/OFC-5-5.html
+3386,search,mandelbrot set
+3388,visit,Mandelbrot set - Wikipedia
+3480,re-visit,https://fractalfoundation.org/OFC/OFC-5-5.html
+3963,re-visit,https://pythonguides.com/python-turtle-triangle/
+4028,search,mandelbrot set python turtle
+4043,visit,mandelbrot with turtles and Python - DEV Community
+4068,visit,Coding Games and Programming Challenges to Code Better
+4186,visit,The Mandelbrot Set - Numberphile - YouTube
+4748,visit,What's so special about the Mandelbrot Set? - Numberphile - YouTube
+4776,re-visit,Coding Games and Programming Challenges to Code Better
+4824,re-visit,mandelbrot with turtles and Python - DEV Community
+4827,visit,mandelbrot with turtle and Python3 · GitHub
+5173,re-visit,Coding Games and Programming Challenges to Code Better
+5177,re-visit,mandelbrot with turtle and Python3 · GitHub
+5178,re-visit,Mandelbrot set - Wikipedia
+5186,re-visit,What's so special about the Mandelbrot Set? - Numberphile - YouTube
+5234,search,opencv anime face
+5249,visit,The Face Detector for Anime/Manga using OpenCV
+5297,search,opencv mask detection
+5310,visit,https://www.mygreatlearning.com/blog/real-time-face-detection/
+15421,visit,Google Drive: Sign-in
+15427,re-visit,https://www.mygreatlearning.com/blog/real-time-face-detection/
+15489,re-search,opencv mask detection
+15502,visit,"COVID-19: Face Mask Detector with OpenCV, Keras/TensorFlow, and Deep Learning - PyImageSearch"
+15571,re-search,opencv mask detection
+15575,visit,GitHub - chandrikadeb7/Face-Mask-Detection: Face Mask Detection system based on computer vision and deep learning using OpenCV and Tensorflow/Keras
+15612,re-search,opencv mask detection
+15622,visit,Learn OpenCV by implementing a face mask detector. | by Brendan Ferris | Towards Data Science
+15662,visit,GitHub - brenfrrs/face_mask_detection: A face mask detector that can be used to train custom Haar Cascades.
+15668,visit,face_mask_detection/maskdetector.py at master · brenfrrs/face_mask_detection · GitHub
+15678,re-visit,GitHub - brenfrrs/face_mask_detection: A face mask detector that can be used to train custom Haar Cascades.
+15679,visit,face_mask_detection/models at master · brenfrrs/face_mask_detection · GitHub
+15683,re-visit,GitHub - brenfrrs/face_mask_detection: A face mask detector that can be used to train custom Haar Cascades.
+15697,re-visit,Learn OpenCV by implementing a face mask detector. | by Brendan Ferris | Towards Data Science
+15881,re-visit,GitHub - brenfrrs/face_mask_detection: A face mask detector that can be used to train custom Haar Cascades.
+15889,re-visit,face_mask_detection/maskdetector.py at master · brenfrrs/face_mask_detection · GitHub
+15924,search,trained mask detection model
+15942,visit,Real Time Face Mask Detection with Tensorflow and Python | Custom Object Detection w/ MobileNet SSD - YouTube
+16344,visit,GitHub - nicknochnack/RealTimeObjectDetection
+16349,visit,RealTimeObjectDetection/Tutorial.ipynb at main · nicknochnack/RealTimeObjectDetection · GitHub
+16375,re-visit,Real Time Face Mask Detection with Tensorflow and Python | Custom Object Detection w/ MobileNet SSD - YouTube
+16396,re-visit,RealTimeObjectDetection/Tutorial.ipynb at main · nicknochnack/RealTimeObjectDetection · GitHub
+16484,visit,GitHub - tensorflow/models: Models and examples built with TensorFlow
+16503,re-visit,Real Time Face Mask Detection with Tensorflow and Python | Custom Object Detection w/ MobileNet SSD - YouTube
+16508,visit,models/tf2_detection_zoo.md at master · tensorflow/models · GitHub
+16524,re-visit,Real Time Face Mask Detection with Tensorflow and Python | Custom Object Detection w/ MobileNet SSD - YouTube
+16605,re-visit,GitHub - nicknochnack/RealTimeObjectDetection
+16607,visit,RealTimeObjectDetection/Tensorflow at main · nicknochnack/RealTimeObjectDetection · GitHub
+16609,re-visit,GitHub - nicknochnack/RealTimeObjectDetection
+16709,re-visit,RealTimeObjectDetection/Tutorial.ipynb at main · nicknochnack/RealTimeObjectDetection · GitHub
+16834,re-visit,Real Time Face Mask Detection with Tensorflow and Python | Custom Object Detection w/ MobileNet SSD - YouTube
+16851,visit,Installation — TensorFlow 2 Object Detection API tutorial  documentation
+16908,re-visit,Real Time Face Mask Detection with Tensorflow and Python | Custom Object Detection w/ MobileNet SSD - YouTube
+16999,search,ModuleNotFoundError: No module named 'object_detection'
+17003,visit,python - ModuleNotFoundError: No module named 'object_detection' - Stack Overflow
+17190,search,AttributeError: module 'tensorflow' has no attribute 'contrib'
+17193,visit,Module 'tensorflow' has no attribute 'contrib' - Stack Overflow
+17270,re-visit,Real Time Face Mask Detection with Tensorflow and Python | Custom Object Detection w/ MobileNet SSD - YouTube
+17585,search,slim  tf.contrib.slim AttributeError: module 'tensorflow' has no attribute 'contrib'
+17590,visit,AttributeError: module tensorflow has no attribute contrib · Issue #7767 · tensorflow/models · GitHub
+17708,re-search,slim  tf.contrib.slim AttributeError: module 'tensorflow' has no attribute 'contrib'
+17719,visit,"python 3.x - How to fix error :"" AttributeError: module 'tensorflow' has no attribute 'contrib' "" on Windows - Stack Overflow"
+17731,re-search,slim  tf.contrib.slim AttributeError: module 'tensorflow' has no attribute 'contrib'
+17737,visit,[FIXED] Module 'tensorflow' has no attribute 'contrib' ~ PythonFixing
+17756,visit,Automatically rewrite TF 1.x and compat.v1 API symbols  |  TensorFlow Core
+17955,re-visit,Module 'tensorflow' has no attribute 'contrib' - Stack Overflow
+18180,search,raise KeyError(key) from None KeyError: 'COLAB_TPU_ADDR'
+18184,visit,deep learning - Google Colab KeyError: 'COLAB_TPU_ADDR' - Stack Overflow
+18202,re-visit,Automatically rewrite TF 1.x and compat.v1 API symbols  |  TensorFlow Core
+18232,search,object_detection.builders tensorflow has no attribute contrib
+18235,visit,Object Detection API with TF2 AtributeError: module 'tensorflow' has no attribute 'contrib' from object_detection.builders import model_builder · Issue #8941 · tensorflow/models · GitHub
+18346,re-visit,Installation — TensorFlow 2 Object Detection API tutorial  documentation

@@ -1,0 +1,79 @@
+'parent','search',1365,1555,search: imagenet class list; downloader page talks about getting images from different classes. goal is to get not food, classes may play into that (my inference)
+'parent','code',1893,2009,   imagenet_classes = ast.literal_eval(f.read())
+'child','search',1951,2142,search: python check if string contains string; in response to error about non-existent contains method
+'parent','code',2120,2157,not available
+'parent','search',2169,2446,search: python list of commonly eaten foods; "nope" on wikipedia page.
+'parent','search',2707,4468,search: python set intersection; he's tried several variations on intersection now looking for an example
+'child','code',2751,3028,food = wn.synset('food.n.02')
+'child','code',3291,3373,not available
+'child','code',3420,3458,food_list = [food_item.lower().split("_") for food_item in food_list]
+'child','code',3703,3821,not available
+'child','code',4273,4355,not available
+'child','code',4409,4429,not available
+'parent','code',4494,4515,intersect_str = set(["string_1", "string_2"]).intersection(set("string_1"))
+'parent','code',4569,4606,   imagenet_class_set = set([space_word.strip(" ") for space_word in v.lower().split(",")])
+'parent','search',4746,4760,search: ruffed grouse images; is this food or a bird?
+'parent','code',5527,5696,non_food_classes_manual_sort = [457, 494, 567, 626, 723, 738, 760, 923, 972,
+'parent','code',5861,5939,food_class_keys = list(imagenet_manual_fitlered_food_classes.keys())
+'parent','search',6195,6629,revisit: raw csv of imagenet classes; he's just getting the url here to use in reading the csv using pandas.
+'parent','code',6699,6702,df = pd.read_csv("https://raw.githubusercontent.com/mf1024/ImageNet—Datasets—Downloader/master/classes_in_imagenet.csv")
+'parent','code',6770,6775,not available
+'parent','code',6914,6944,df_non_food = df[~df["class_name"].str().contains("food")]
+'parent','code',6947,6959,not available
+'parent','code',6995,6996,df_non_food = df[df["class_name"].str.contains("food")]
+'parent','code',7007,7041,df.dropna(inplace=True)
+'parent','code',7072,7072,df_non_food = df[df["class_name"].str.lower().contains("food")]
+'parent','code',7133,7193,df_non_food = df[~df["class_name"].str.isin(flat_food_list)]
+'parent','code',7456,7518,df_non_food = df[~df["class_name"].isin(flat_food_list)]
+'parent','code',8351,9278,not available
+'parent','code',9372,9459,df_non_food = df[~df["class_name"].isin(flat_food_list)]
+'parent','code',9636,10917,imagenet_food_class_ids = df_food["synid"].tolist()
+'child','search',9842,10405,revisit: downloader.py; perusing what it's doing, I imagine.
+'child','search',10791,12572,search: maximum length of python arg list; so how long is it allowed to be?
+'parent','code',11142,11661,test_list_images = ['n13918387', 'n13919547']
+'parent','code',11867,11909,food_class_id_list = list(imagenet_food_class_ids_and_names_dict.keys()) |
+'parent','code',12044,12044,def convert_list_to_long_string(targ_list):
+'parent','code',12325,12424,   -use_class_list=True \
+'parent','code',13226,13232,not available
+'parent','search',13433,13454,search: keras image dataset from directory; here I think he is drawing on existing knowledge - while a follow on search, it's not one that pulled info from the previous one.
+'parent','code',14121,14267,not available
+'parent','code',14365,14395,aircraft_images = os.listdir("data/model_test_images/aircraft")
+'parent','code',14449,14478,train_idx = np.range(len(aircraft_images))
+'parent','search',14557,15825,search: python shutil copy; he's got everything set up to do the copy so now looking up the right method I guess
+'child','code',14603,15156,def create_train_test_list(target_dir):
+'child','code',15182,16424,data_dir = "data/model_test_images"
+'parent','code',16688,16752,data_dir = "data/model_test_images"
+'parent','code',16829,16922,def copy_images_to_file(img_path_list, target_dir, train=True):
+'parent','code',16963,16988,target_dir = "data/model_test_images_split"
+'parent','search',17789,20988,search: weights and biases log tensorboard logs;
+'child','code',17894,18354,base_model = tf.keras.applications.EfficientNetB0(include_top=False)
+'child','code',18394,18632,not available
+'child','code',18666,19137,wandb.init(project="100k-livestream-video", sync_tensorboard=True)
+'child','code',19360,19488,input_tayer = tf.keras.input(shape=(224, 243, 3))
+'child','code',19531,19639,early_stopping = tf.keras.callbacks.EarlyStopping(patience=5,
+'child','code',19733,19735,not available
+'child','code',19961,19986,not available
+'child','code',20105,20180,   monitor="val_loss"
+'child','code',20257,20324,wandb.init(project="100k-livestream-video", sync_tensorboard=True)
+'parent','code',21239,21274,image_files = []
+'parent','code',21324,21428,image_files = []
+'parent','code',21553,21690,image_dirs = []
+'parent','code',21690,21729,image_dirs = []
+'parent','code',21964,21989,def create_train_test_list(target_dir):
+'parent','code',22003,22016,def create_train_test_list(target_dir):
+'parent','code',22112,22123,food_list_filter = df_food.class_name.tolist()
+'parent','code',22192,22246,imagenet_downloaded_image_folders = os.listdir("data/imagenet_images/")
+'parent','code',22673,23735,start_dir = "data/imagenet_images"
+'parent','code',24279,24379,food_image_filepaths = []
+'parent','code',24564,24592,non_food_image_filepaths = []
+'parent','code',24650,25739,target_dir = "data/train/food_images/"
+'parent','search',26304,28857,search: cors policy google storage bucket;
+'child','code',26728,26771,save_model_dir = "food_not_food_model_v0"
+'child','code',27156,27186,test_dir = "data/test"
+'child','code',27231,27324,weight_for_0 = (1 / num_food_samples) * (total_samples / 2.0)
+'child','code',27370,27391,# wandb.tensorboard.patch(root_logdir="logs")
+'child','code',27583,27641,not available
+'child','code',27757,27769,not available
+'child','code',28609,28665,      <meta charset="utf-8" />
+'child','code',28696,28963,const classes = {
+'parent','code',29128,29704,const classes = {

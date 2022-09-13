@@ -1,0 +1,410 @@
+{
+    " ImageNet-Datasets-Downloader": {
+      "search": " \"imagenet data downloader\"",
+      "count": 1
+    },
+    " imagenet class labels": {
+      "search": " imagenet class list",
+      "count": 1
+    },
+    " raw imagenet class labels list": {
+      "search": " imagenet class list",
+      "count": 1
+    },
+    " imagenet class list": {
+      "search": " imagenet class list",
+      "count": 1
+    },
+    " imagenet class list download zip": {
+      "search": " imagenet class list",
+      "count": 1
+    },
+    " how to read a dictionary from a file in Python": {
+      "search": " python how to read a dictionary from txt",
+      "count": 3
+    },
+    " literal_eval (method docs)": {
+      "search": " python how to read a dictionary from txt",
+      "count": 1
+    },
+    " does python have a string \"contains\" substring method?": {
+      "search": " python check if string contains string",
+      "count": 1
+    },
+    " food image classification": {
+      "search": " imagenet food classes",
+      "count": 1
+    },
+    " wikipedia list of common eaten foods": {
+      "search": " python list of common eaten foods",
+      "count": 1
+    },
+    " stackoverflow question - list of common foods": {
+      "search": " python list of commonly eaten foods",
+      "count": 3
+    },
+    " usda foods list": {
+      "search": " python list of commonly eaten foods",
+      "count": 1
+    },
+    " usda food data central": {
+      "search": " python list of commonly eaten foods",
+      "count": 1
+    },
+    " stack overflow - what does nltk download 'wordnet' accomplish?": {
+      "search": " wordnet subset downloader",
+      "count": 1
+    },
+    " nltk documentation": {
+      "search": " wordnet subset downloader",
+      "count": 1
+    },
+    " installing nltk": {
+      "search": " wordnet subset downloader",
+      "count": 1
+    },
+    " stackoverflow - using pip to install packages to Anaconda environment": {
+      "search": " conda how to install in current env with pip",
+      "count": 1
+    },
+    " stackoverflow how to make a flat list out of a list of lists": {
+      "search": " python create a list from list of lists",
+      "count": 1
+    },
+    " Python set intersection method": {
+      "search": " python set intersection",
+      "count": 1
+    },
+    " imagenet downloader": {
+      "search": " chickadee images",
+      "count": 5
+    },
+    " csv overview of the imagenet classes": {
+      "search": " chickadee images",
+      "count": 1
+    },
+    " words.txt": {
+      "search": " chickadee images",
+      "count": 1
+    },
+    " classes in imagenet (csv overview)": {
+      "search": " chickadee images",
+      "count": 1
+    },
+    " raw csv of imagenet classes": {
+      "search": " chickadee images",
+      "count": 2
+    },
+    " downloader.py": {
+      "search": " chickadee images",
+      "count": 2
+    },
+    " stackoverflow - filter out rows based on list of strings in pandas": {
+      "search": " dataframe filter column by strings in list",
+      "count": 1
+    },
+    " Downloading the ImageNet": {
+      "search": " periwinkle",
+      "count": 1
+    },
+    " ImageNet Downloader": {
+      "search": " periwinkle",
+      "count": 2
+    },
+    " how to pass an entire list as command line argument in python": {
+      "search": " python how to pass list as command line argument",
+      "count": 1
+    },
+    " pass list as a command line argument in python": {
+      "search": " python how to pass list as command line argument",
+      "count": 1
+    },
+    " stackoverflow pass list as command line arg.": {
+      "search": " python how to pass list as command line argument",
+      "count": 1
+    },
+    " python command line arguments": {
+      "search": " python how to pass list as command line argument",
+      "count": 1
+    },
+    " downloader script (in IDE now)": {
+      "search": " python how to pass list as command line argument",
+      "count": 1
+    },
+    " passing strings as python command-line arguments": {
+      "search": " pass string from file to python command line",
+      "count": 1
+    },
+    " execute a command by reading contents of a text file": {
+      "search": " python use contexts of txt file in command line",
+      "count": 1
+    },
+    " Disable Tensorflow debugging information": {
+      "search": " turn off tensorflow warnings",
+      "count": 1
+    },
+    " Load and preprocess images": {
+      "search": " tensorlfow load images",
+      "count": 1
+    },
+    " karas - image dataset from directory": {
+      "search": " keras image dataset from directory",
+      "count": 1
+    },
+    " tensorflow lite converter": {
+      "search": " tensorflow convert saved model to tflite model",
+      "count": 1
+    },
+    " keras image dataset from directory": {
+      "search": " tensorflow convert saved model to tflite model",
+      "count": 2
+    },
+    " python random sample() to choose multiple items from any sequence": {
+      "search": " python random select k",
+      "count": 1
+    },
+    " How do I copy a file in python": {
+      "search": " python shutil copy",
+      "count": 1
+    },
+    " EfficientNet": {
+      "search": " images efficient net B0",
+      "count": 1
+    },
+    " tf.keras.application.efficientnet.EfficientNetB0": {
+      "search": " tensorflow efficientnetb0",
+      "count": 2
+    },
+    " TensorFlow Functional API": {
+      "search": " tensorflow functional api",
+      "count": 1
+    },
+    " tf.keras.applications.efficientnet.EfficientNetB0": {
+      "search": " tensorflow functional api",
+      "count": 3
+    },
+    " keras model plotting utilities": {
+      "search": " keras plot model",
+      "count": 1
+    },
+    " graphviz": {
+      "search": " keras plot model",
+      "count": 1
+    },
+    " Visualizing TensorFlow2 models with Weights and Biases": {
+      "search": " weights and biases tensor flow",
+      "count": 1
+    },
+    " TensorFlow 2 CNN with Weights & Biases": {
+      "search": " weights and biases tensor flow",
+      "count": 1
+    },
+    " tf2 CNN with W&B": {
+      "search": " weights and biases tensor flow",
+      "count": 3
+    },
+    " Visualizing TensorFlow 2 models with Weights and Biases": {
+      "search": " weights and biases tensor flow",
+      "count": 1
+    },
+    " Introduction to TensorFlow with Weights and Biases": {
+      "search": " weights and biases tensor flow guide",
+      "count": 1
+    },
+    " WandB fashionMNIST tensorflow": {
+      "search": " weights and biases tensor flow guide",
+      "count": 2
+    },
+    " weights and biases page": {
+      "search": " weights and biases tensor flow guide",
+      "count": 2
+    },
+    " TensorBoard": {
+      "search": " weights and biases sync tensorboard",
+      "count": 1
+    },
+    " Configure Experiments with wandb.config": {
+      "search": " weights and biases sync tensorboard",
+      "count": 1
+    },
+    " Quickstart": {
+      "search": " weights and biases sync tensorboard",
+      "count": 1
+    },
+    " TensorFlow": {
+      "search": " weights and biases sync tensorboard",
+      "count": 1
+    },
+    " tf-cnn-fashion": {
+      "search": " weights and biases sync tensorboard",
+      "count": 1
+    },
+    " tf.keras.utils.plot_model": {
+      "search": " tensorflow keras plot model",
+      "count": 1
+    },
+    " tensorflow overview page": {
+      "search": " tensorflow keras plot model",
+      "count": 1
+    },
+    " TensorBoard documentation": {
+      "search": " tensorflow keras plot model",
+      "count": 1
+    },
+    " book (his) zero to mastery TensorFlow for Deep Learning": {
+      "search": " tensorflow keras plot model",
+      "count": 4
+    },
+    " Tensorboard docs": {
+      "search": " weights and biases sync tensorboard",
+      "count": 1
+    },
+    " Experiment Logging with Tensorboard and wandb": {
+      "search": " weights and biases sync tensorboard",
+      "count": 2
+    },
+    " localhost": {
+      "search": " weights and biases sync tensorboard",
+      "count": 1
+    },
+    " weights and biases page (his account)": {
+      "search": " weights and biases sync tensorboard",
+      "count": 4
+    },
+    " Logging with Weights & Biases - Monitoring your neural network's training made easy": {
+      "search": " weights and biases log tensorboard logs",
+      "count": 1
+    },
+    " python list files in a directory": {
+      "search": " python get list of all files in directory",
+      "count": 1
+    },
+    " wandb compute stats (his account)": {
+      "search": " python get list of all files in directory",
+      "count": 1
+    },
+    " tensorflow lite conversion page": {
+      "search": " python get list of all files in directory",
+      "count": 1
+    },
+    " repl.it": {
+      "search": " python get list of all files in directory",
+      "count": 1
+    },
+    " see all repls": {
+      "search": " python get list of all files in directory",
+      "count": 1
+    },
+    " fork orderlymintcream2 repl": {
+      "search": " python get list of all files in directory",
+      "count": 1
+    },
+    " food-not-food repl repository": {
+      "search": " python get list of all files in directory",
+      "count": 1
+    },
+    " classification on imbalanced data": {
+      "search": " python get list of all files in directory",
+      "count": 1
+    },
+    " classification on imbalanced data page": {
+      "search": " python get list of all files in directory",
+      "count": 1
+    },
+    " back to the wandb account page": {
+      "search": " python get list of all files in directory",
+      "count": 1
+    },
+    " wandb runs (his account)": {
+      "search": " python get list of all files in directory",
+      "count": 2
+    },
+    " console.cloud.google.com": {
+      "search": " python get list of all files in directory",
+      "count": 1
+    },
+    " console.cloud bucket": {
+      "search": " python get list of all files in directory",
+      "count": 1
+    },
+    " colab.research.google.com": {
+      "search": " python get list of all files in directory",
+      "count": 1
+    },
+    " colab new notebook": {
+      "search": " python get list of all files in directory",
+      "count": 1
+    },
+    " cloud storage pricing": {
+      "search": " google storage pricing",
+      "count": 1
+    },
+    " cross-origin resource sharing (CORS)": {
+      "search": " cors policy google storage bucket",
+      "count": 3
+    },
+    " google cloud bucket": {
+      "search": " cors policy google storage bucket",
+      "count": 1
+    },
+    " tensorflow lite inference": {
+      "search": " tensorflow lite model inputs",
+      "count": 1
+    },
+    " tflite model conversion overview": {
+      "search": " how to know what inputs a tflite model take",
+      "count": 1
+    },
+    " tensorflow lite inference page": {
+      "search": " what input does tensorflow lite model take",
+      "count": 1
+    },
+    " tf.lite.TFLiteConverter": {
+      "search": "tflite.tfliteconverter.from_saved_model(",
+      "count": 1
+    },
+    " how to know tensorflow lite model's input/output feature info": {
+      "search": " how to check input type to tflite model",
+      "count": 1
+    },
+    " netron.app": {
+      "search": " how to check input type to tflite model",
+      "count": 1
+    },
+    " netron.app input details": {
+      "search": " how to check input type to tflite model",
+      "count": 1
+    },
+    " tflite converter overview": {
+      "search": " how to check input type to tflite model",
+      "count": 2
+    },
+    " source code for previous model maker project": {
+      "search": " how to check input type to tflite model",
+      "count": 1
+    },
+    " tensors/creation": {
+      "search": " tensorflow.js sigmoid",
+      "count": 1
+    },
+    " Tensors/Creation": {
+      "search": " tensorflow js argmax",
+      "count": 1
+    },
+    " 10 food classes previous project": {
+      "search": " tensorflow js argmax",
+      "count": 1
+    },
+    " twitch ml deploy project": {
+      "search": " google storage set cors",
+      "count": 2
+    },
+    " tflite js distro": {
+      "search": " google storage set cors",
+      "count": 1
+    },
+    " vercel": {
+      "search": " google storage set cors",
+      "count": 1
+    }
+  }

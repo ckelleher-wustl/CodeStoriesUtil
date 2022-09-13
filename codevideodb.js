@@ -8,18 +8,12 @@ const levenshtein = require('js-levenshtein');
 
 const app = express();
 const port = 3000;
-myDB = new CodingDB("./test.db");
-// myDB = new CodingDB("./foodNotFood.db");
+myDB = new CodingDB("./foodNotFood.db");
+//myDB = new CodingDB("./slam.db");
 ocr = new OCR();
 
-// var directory = 'C:/Users/ckelleher/Downloads/screencap/foodNotFood'; 
-var directory = 'C:/Users/ckelleher/Downloads/screencap/test'; 
-
-console.log(myDB + " " + ocr);
-// db = myDB.getDB();
-// console.log(db);
-
-
+var directory = ':/Users/ckelleher/Downloads/screencap/foodNotFood'; 
+console.log("DB = " + myDB + "; OCR = " + ocr);
 
 // body-parser has been incorporated into express, so no need to have a separate thing
 app.use(express.urlencoded());
@@ -159,7 +153,9 @@ app.post("/newcode", async (req, res, next) => {
     // start the process to get the code image and do text recognition on it.
     // var directory = 'C:/Users/ckelleher/Downloads/screencap_onlineChat'; 
     // taking out the image recognition part for now - just grab the most recent file and record.
+    console.log("pre-result: " + result);
     captureAndRecordWeb(directory)
+    console.log("post-result: " + result);
 
     console.log("done " + result);
 })
@@ -186,7 +182,9 @@ app.post("/newweb", async (req, res, next) => {
 
     // start the process to get the code image and do text recognition on it.
     // var directory = 'C:/Users/ckelleher/Downloads/screencap_onlineChat'; 
+    console.log("pre-result: " + result);
     captureAndRecordWeb(directory)
+    console.log("post-result: " + result);
 
     console.log("done " + result);
 })
@@ -287,7 +285,7 @@ app.get('/getCodeText', async (req, res) => {
     }
 
     const rows = await myDB.getCodeText(sourceVideoID, req.query.offset, req.query.order, limit);
-    console.log("rows " + rows);
+    console.log("rows " + rows.length + rows );
     res.json(rows);
 });
 
