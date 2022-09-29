@@ -200,14 +200,27 @@ class GitHistory {
 
                 // if event action is "commit", then get code text
                 if (event.action == "commit") {
-                    // get id from info
-                    let id = event.info.split(" ")[1];
+                    let id = event.commitId;
                     let hashObj = this.hashObjsList.find(hashObj => hashObj.commitId == id);
-                    entry.code_text = await this.getCodeTextHelper(hashObj.hash, "output.txt");
-                    if(entry.code_text.stderr !== "") {
-                        entry.code_text = entry.code_text.stderr.toString();
+
+                    let excludeList = ['.png', '.jpg', '.jpeg', '.gif', '.mp4', 
+                                        '.mov', '.avi', '.mpg', '.mpeg', '.wmv', 
+                                        '.flv', '.mkv', '.webm', '.DS_Store', '.otf', 
+                                        '.eot', '.svg', '.ttf', '.woff', '.woff2',
+                                        '.pyc', '.sqlite3', '.db'];
+
+                    let res = excludeList.filter((ext) => event.info.includes(ext));
+                    if (res.length > 0) {
+                        // these files contain non-text data
+                        entry.code_text = null;
                     } else {
-                        entry.code_text = entry.code_text.stdout.toString();
+                        // event.info contains the filename that was changed
+                        entry.code_text = await this.getCodeTextHelper(hashObj.hash, event.info, this.gitFolder);
+                        if(entry.code_text.stderr !== "") {
+                            entry.code_text = entry.code_text.stderr.toString();
+                        } else {
+                            entry.code_text = entry.code_text.stdout.toString();
+                        }
                     }
                 } else {
                     entry.code_text = null;
@@ -257,14 +270,23 @@ class GitHistory {
                 for (let i = 0; i < combinedTimeList.length; i++) {
                     // filter out the events that have the same time as the combined time list
                     let filteredEvents = this.eventsList.filter(event => event.time == combinedTimeList[i]);
+
+                    // either [] or [event]
+                    // these are web events so they are unique
                     if(filteredEvents.length > 0) {
-                        for (let j = 0; j < filteredEvents.length; j++) {
-                            newEventsList.push(filteredEvents[j]);
-                        }
+                        newEventsList.push(filteredEvents[0]);
                     }
+
+                    // filter out the commits that have the same time as the combined time list
                     let filteredHashObjs = this.hashObjsList.filter(hashObj => hashObj.time == combinedTimeList[i]);
+                    
                     if (filteredHashObjs.length > 0) {
-                        newEventsList.push({time: filteredHashObjs[0].time, action: "commit", info: "number " + filteredHashObjs[0].commitId.toString()});
+                        // for each file changed, add a new event
+                        for (let j = 0; j < filteredHashObjs[0].filesChanged.length; j++) {
+                            let fileChanged = filteredHashObjs[0].filesChanged[j];
+                            let newEvent = {time: filteredHashObjs[0].time, action: "commit", info: fileChanged, commitId: filteredHashObjs[0].commitId};
+                            newEventsList.push(newEvent);
+                        }
                     }
                 }
                 console.log('Timeline between events and commits updated!');
@@ -366,10 +388,23 @@ class GitHistory {
         return result; //JavaScript object
     }
 
-    async getCodeTextHelper(hash, file) {
-        try {
-            let codeText = await this.exec(`git show ${hash}:${file}`, {cwd: this.gitFolder});
+    async getCodeTextHelper(hash, file, gitFolder) {
+        try {    
+            let codeText = await this.exec(`git show ${hash}:${file}`, {cwd: gitFolder});
             return codeText;
+        } catch (error) {
+            console.log("ERROR: " + err);
+            return null;
+        }
+    }
+
+    async getFilesChangedInCommit(hash, gitFolder) {
+        try {
+            let filesChanged = await this.exec(`git show --name-only --pretty="" ${hash}`, {cwd: gitFolder});
+            filesChanged = filesChanged.stdout.toString().split('\n');
+            filesChanged = filesChanged.filter(file => file !== '');
+            // filesChanged = filesChanged.filter(file => file.endsWith('.py') || file == "output.txt" || file == "data");
+            return filesChanged;
         } catch (error) {
             console.log("ERROR: " + err);
             return null;
