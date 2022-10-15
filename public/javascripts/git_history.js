@@ -49,7 +49,7 @@ class GitHistory {
                 selectedEvents = selectedEvents.reverse();
             }
 
-            // return time, notes, and img_file
+            // return only time, notes, and img_file from gitData
             let rows = [];
             for (let i = 0; i < selectedEvents.length; i++) {
                 let selectedEvent = selectedEvents[i];
@@ -83,7 +83,7 @@ class GitHistory {
             }
             selectedEvents = selectedEvents.slice(0, limit);
 
-            // return id, time, notes, and code_text
+            // make json object containing the following fields: id, time, notes, code_text
             let rows = [];
             for (let i = 0; i < selectedEvents.length; i++) {
                 let selectedEvent = selectedEvents[i];
@@ -111,8 +111,7 @@ class GitHistory {
             let gitData = await this.gitData;
             let selectedEvents = gitData.filter(event => event.code_text !== null);
             selectedEvents = selectedEvents.filter(event => event.time >= startTime && event.time <= endTime);
-            
-            // return id, time, notes and code_text
+            // return only id, time, notes and code_text from gitData
             let rows = [];
             for (let i = 0; i < selectedEvents.length; i++) {
                 let selectedEvent = selectedEvents[i];
@@ -134,9 +133,16 @@ class GitHistory {
         try{
             let gitData = await this.gitData;
             let selectedEvents = gitData.filter(event => event.code_text === null);
-            selectedEvents = selectedEvents.filter(event => event.time >= startTime && event.time <= endTime);
-            
-            // return id, time, notes and img_file
+            selectedEvents = selectedEvents.filter(event => !event.notes.startsWith("commit:"));
+
+            // if end time < 0, then return all events (mostly for accessing searchEvts in CodeStoriesViz)
+            if(startTime >= 0 && endTime >= 0) {
+                let smallerTime = Math.min(startTime, endTime);
+                let largerTime = Math.max(startTime, endTime);
+                selectedEvents = selectedEvents.filter(event => event.time >= smallerTime && event.time <= largerTime);
+            }
+
+            // return only id, time, notes and img_file from gitData
             let rows = [];
             for (let i = 0; i < selectedEvents.length; i++) {
                 let selectedEvent = selectedEvents[i];
@@ -195,7 +201,7 @@ class GitHistory {
                 entry.id = i + 1;
                 entry.time_url = event.time_url;
                 entry.time = event.time;
-                entry.notes = event.action + ": " + event.info; // combine action and info
+                entry.notes = event.action + ": " + event.info + ";"; // combine action and info
                 entry.img_file = null;
 
                 // if event action is "commit", then get code text
@@ -227,6 +233,7 @@ class GitHistory {
                 }
 
                 entry.coords = null;
+                // console.log(i, event.info);
                 gitData.push(entry);
             }
             console.log('Git data constructed!');
@@ -323,7 +330,11 @@ class GitHistory {
             
                 // convert time to epoch in seconds
                 time = new Date(time).getTime() / 1000;
-                hashObjsList.push({hash: hash, time: time, commitId: i+1});
+
+                // get files changed
+                let filesChanged = await this.getFilesChangedInCommit(hash, gitFolder);
+
+                hashObjsList.push({hash: hash, time: time, commitId: i+1, filesChanged: filesChanged});
             }
             console.log('Hash objects list constructed!');
             return hashObjsList;
@@ -403,7 +414,7 @@ class GitHistory {
             let filesChanged = await this.exec(`git show --name-only --pretty="" ${hash}`, {cwd: gitFolder});
             filesChanged = filesChanged.stdout.toString().split('\n');
             filesChanged = filesChanged.filter(file => file !== '');
-            // filesChanged = filesChanged.filter(file => file.endsWith('.py') || file == "output.txt" || file == "data");
+            filesChanged = filesChanged.filter(file => file.endsWith('.py'));
             return filesChanged;
         } catch (error) {
             console.log("ERROR: " + err);
