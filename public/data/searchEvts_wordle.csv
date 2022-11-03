@@ -1,0 +1,182 @@
+eventID,time,filename
+5,139,search: wordle; searches for wordle to show eventual website design
+6,143,"visit: wordle; showing website to viewers, giving demonstration"
+10,406,revisit: wordle; looking at styles underneath
+13,516,revisit: wordle; looking at styles
+15,539,revisit: wordle;
+17,631,revisit: wordle
+19,642,revisit: wordle
+21,682,revisit: wordle;
+23,721,revisit: wordle;
+25,874,revisit: wordle;
+27,1043,search: clear sans; let's see if this is a google font or not
+28,1052,search: google fonts; reframes search
+29,1056,visit: google fonts; looking at similar fonts to wordle font--not copying exactly
+30,1073,revisit: wordle; checking wordle font vs google fonts
+31,1076,revisit: google fonts; checking out fonts
+39,1182,revisit: wordle; getting fonts
+40,1262,revisit: google fonts;
+44,1327,revisit: wordle; getting background and colors of text
+48,1448,revisit: wordle; everything is centered
+53,1506,revisit: wordle; it looks a little bit bigger here
+59,1670,revisit: wordle; looking at sizing
+64,1864,revisit: wordle; checking measurements of tiles
+74,2227,revisit: wordle; checking if height of blocks is defined explicitly
+77,2333,revisit: wordle; deleting local storage
+79,2583,"visit: css place-items; she clicks the place-items keyword in her IDE, and an MDN reference pops up with a little usage information and an external link. She clicks the external link to take her to the Mozilla developer site for place-items"
+84,2714,revisit: wordle; checking how underlying code changes when she interacts with website
+91,3282,search: javascript detect keypress; trying to learn how to detect a keypress
+92,3288,visit: how to detect keypress using javascript?; 
+93,3314,"search: javascript es6 detect keypress; she closed prev website and said ""I don't like that blog"""
+94,3317,visit: detecting arrow key presses in javascript; stackoverflow
+96,3364,"search: javscript window.event; she saw this keyword in prev answer and it opened up more questions. She then says ""look I never said I was good at javascript"""
+97,3367,"visit: Window.event; MDN, ""I try to use MDN when it comes up because it's pretty good"" -- reputable resource"
+98,3373,search: onkeypress; this was an MDN site search
+99,3376,visit: onkeypress; clicks suggested page from Mozilla Developer Network (MDN) search result
+100,3384,visit: onkeydown; MDN link from previous page. The last two API calls she looked at on MDN had tags that said they were deprecated. this one does not.
+101,3432,visit: Document: keydown event; clicks link from onkeydown page and opens this in new tab. still MDN
+111,3623,search: javascript keydown detect if letter; moving onto next phase of dev
+112,3627,visit: determine if a letter or a number was pressed - javascript; stackoverflow
+116,3702,visit: How to detect if the pressed key will produce a character inside an <input> text-box?; she goes back to last search and clicks this link
+117,3714,"search: javascript is string a letter; didnt like resource, but didnt spend much time on it"
+118,3717,visit: How to check if character is a letter in Javascript?;
+119,3734,search: regex is string a letter; she sees regex solution in previous website and decides to accept the strategy but not the exact example
+124,3736,visit: what is the regex for first character is a letter; 
+120,3753,revisit: wordle; what happens if you do a capital letter in wordle? nothing different..
+121,3768,search: regex tester; she finds an example but wants to test it using online tool. interesting that different strategies for testing things--regex vs logging api calls.
+122,3770,visit: RegEx Testing; 
+123,3774,revisit: what is the regex for first character is a letter; stackoverflow
+125,3795,"revisit: RegEx Testing; pastes example regex from prev website in, verifies that it works through testing"
+126,3816,search: javascript test string regex; 
+127,3819,visit: RegExp.prototype.test(); 
+128,3848,visit: JavaScript RegExp test(); 
+131,3967,revisit: RegEx Testing; debugging issue
+135,4053,revisit: RegEx Testing; hovering over different symbols to see what they mean
+136,4077,search: regex contains letters; 
+137,4086,search: regex contains only letters;
+138,4090,visit: regex to match only letters;
+141,4121,search: regex contains letters not numbers; 
+142,4128,visit: how do I get only letters in regex?; 
+143,4150,revisit: RegEx Testing; verifies that her regex works in tester. doesn't know why not in website
+144,4162,"search: javascript test regex; she believes the issue may be in her code, not regexp"
+145,4170,search: flavio javascript test regex; searching for specific resource
+146,4173,"visit: A guide to JavaScript Regular Expressions; flavio website, she likes his stuff"
+154,4506,search: wordle; getting back into workflow after calling it a day previously.
+156,4607,revisit: A guide to JavaScript Regular Expressions; she is just going here to link to flavio website
+157,4612,visit: search; flaviocopes.com search site-- interesting do programmers have favorite resources? why?
+159,4620,"search: data; flavio site, does not like results"
+158,4622,search: data attribute; flavio site search
+160,4632,search: javascript store data in html; uses original search engine (duck duckgo)
+161,4636,visit: store data locally using html and javascript; even though this isnt a jquery question
+162,4663,search: javascript set data attribute html; 
+163,4668,visit: how to set the data attribute of an element with javascript?; 
+164,4694,"visit: using data attributes; MDN she has interesting strategy, the last webpage she says is a good resource, but wants to do more research before trying anything. She goes back, opens that site in new tab, then opens this site."
+165,4712,"revisit: how to set the data attribute of an element with javascript?; she gets an element recommended by MDN network and sees if it is also used in this resource. Since the two resources corroborate each other, she is more invested in the suggestion"
+172,5003,revisit: A guide to JavaScript Regular Expressions; she is just going here to use search function of Flavio site
+173,5007,search: function; flavio site search
+174,5010,visit: a tutorial to javascript arrow functions; flavio site
+176,5043,revisit: a tutorial to javascript arrow functions; checking syntax
+181,5283,revisit: using data attributes; checking if using dataset keyword correctly
+220,6271,"revisit: A guide to JavaScript Regular Expressions; I need to look up how to do that, because I know that ""innerHTML"" is not like 'good'."
+221,6277,search: innerhtml; previous revisit was only to get to this search bar (flavio site). she mentions that she knows that using innerhtml is not secure
+222,6288,search: javascript set content of div; duckduckgo search
+223,6292,visit: How can I change div content with JavaScript?; 
+224,6311,"search: javascript innertext; she learned that this call was always better than innerHTML for security reasons, so she searches it to understand it better before using it"
+225,6312,visit: HTMLElement innerText; HTMLElement.innerText in MDN web docs
+239,6742,search: javascript remove last character from string; 
+240,6746,"visit: How to remove the last character of a string in JavaScript; ""i'll go to Flavio because I like his blog"""
+261,7509,"search: javascript, array; this is an interesting search! She tags search by two distinct keys, instead of searching ""javascript array"", there's some functionality of this flavio website that lets her filter for both javascript and array separately"
+262,7515,visit: an introduction to javascript arrays; flavio blog site
+265,7658,revisit: an introduction to javascript arrays; sees that you can manually choose an item
+266,7690,search: javascript array; searching for recommendations to potentially see other tutorials that might give her ideas on how to select random object from array.
+267,7696,visit: how to shuffle elements in a javascript array; idea spawned by blog search flavio site
+268,7727,visit: Array prototype sort; mdn link from flavio site.
+270,7761,"revisit: Array prototype sort; checking why she ""must have done something wrong"""
+272,7846,revisit: Array prototype sort; checking what she did wrong
+274,7869,revisit: Array prototype sort; 
+275,7881,"revisit: how to shuffle elements in a javascript array; after trying to figure out how sorting and shuffling arrays works, she goes to the example code posted by flavio. interesting, she wanted to understand her code, yet couldn't get an example she understood working, so she is going to an example that is more confusing to see if it does everything for her."
+279,7920,revisit: how to shuffle elements in a javascript array; tries to understand code that seems to be working but she is uncertain about it
+282,7954,revisit: how to shuffle elements in a javascript array; checking what the example syntax was (math.random()-.5)
+284,7976,revisit: Array prototype sort; scrolling through documentation
+285,7984,revisit: how to shuffle elements in a javascript array;
+286,7989,revisit: Array prototype sort; 
+287,7994,"revisit: how to shuffle elements in a javascript array; ""okay I'm going to be honest, I don't fully understand the list sort thing"": const shuffled = list.sort(() => Math.random() - 0.5), interesting"
+288,7998,"revisit: Array prototype sort; ""default list sorts descending"""
+293,8062,search: run function on page load; searches flavio site. interesting that she defaults to flavio search before web search. Good resources are rare and valuable?
+294,8067,search: page load; flavio site
+295,8072,search: javascript run function on page load; searches on duckduckgo
+296,8075,"visit: How to run a function when the page is loaded?; stackoverflow, first search result."
+297,8094,visit: how do I call a javascript function on page load?; curious to best practices
+298,8101,search: window.onload; this was inspired by code she saw in answer of previous website
+299,8104,visit: javascript when to use window.onload;
+306,8252,search: javascript random number;
+307,8255,visit: Math.random(); 
+309,8349,revisit: Math.random();
+332,8861,search: javascript get character from string based on position;
+333,8870,visit: javascript string charat(); 
+334,8879,"search: javascript charat; interesting, ""let's look this (function) up, and make sure its not deprecated or something"""
+335,8883,visit: string prototype charat; 
+342,9084,search: javascript for loop;
+343,9088,visit: for javascript; MDN page
+350,9299,search: javascript string contains;
+351,9303,visit: javascript string contains how to use javascript includes; 
+352,9310,visit: javascript string includes; 
+377,9915,search: javascript switch;
+378,9918,visit: switch javascript; mdn site
+380,9934,revisit: switch javascript; checking syntax
+382,9937,revisit: switch javascript;
+384,9952,revisit: switch javascript;
+388,10033,search: wordle;
+389,10037,revisit: wordle; wants to check colors
+415,10762,revisit: wordle; checking animations
+417,10827,"revisit: wordle; watching animation and deeming what the logic behind it is. she notes ""they seem to be changing the color of the tile when the tile is vertical (invisible to viewer in flip animation)"
+419,10886,"visit: codepen.io; (typed) interesting ""a lot of times when something like this comes up and I just don't know it, I go to codepen"""
+420,10894,"search: flip animation; interesting, she says she goes to codepen because they have really good animations. searches on codepen site"
+421,10900,visit: css flip animation; she picks it because it has a lot of views
+424,11095,"revisit: wordle; trying to determine what she should flip, how wordle layout looked"
+425,11207,search: css flip; codepen search
+426,11222,"visit: pure css flip card; she determines it is the same kind of thing as previous example, not quite what she wants. "
+430,11320,"search: css transform mirror; interesting, she is back to duckduckgo search. when and why would a programmer abandon an example site like we just looked at. Should this site want to detect their abandonment and provide extra help? connect them to someone, recommend example, etc?"
+431,11328,visit: how to flip an image (add a mirror effect) with CSS?; 
+433,11401,"revisit: wordle; ""let's try it again""--watching flip animation and monitoring class changes in css"
+437,11631,search: css keyframe animation;
+438,11635,visit: an interactive guide to keyframe animations; 
+441,11760,"revisit: an interactive guide to keyframe animations; ""let's keep reading"""
+444,11881,revisit: wordle; checking animation styles
+446,11904,revisit: an interactive guide to keyframe animations; 
+457,12252,search: javascript delay;
+458,12261,visit: javascript delay; 
+459,12276,visit: javascript settimeout() - js timer to delay n seconds;
+460,12293,search: javascript settimeout;
+461,12296,visit: setTimeout(); MDN site
+463,12325,search: javascript es6 syntax settimeout; 
+464,12328,"visit: ""settimeout es6"" Code Answer's; "
+466,12362,"revisit: ""settimeout es6"" Code Answer's; checks syntax"
+479,12705,search: css animation end state; 
+480,12708,visit: maintaining the final state at end of a css3 animation; 
+481,12730,revisit: an interactive guide to keyframe animations; she is looking to see if this example from previous site is mentioned in this blog that she trusts. interesting
+492,12859,"revisit: wordle; interesting, this reminds me so much of LG when someone clicks ""Play Mine"" and ""Play Correct"" and tries to determine the differences. She is trying to figure out exactly how to mimic the flip of wordle letters in her code."
+536,13933,"revisit: wordle; she says ""let's cheat"" and checks local storage to figure out what to do if they win"
+545,14312,"search: javascript promises; she knows this may be useful for waiting for something to be completed before continuing, but doesnt know much about the topic"
+546,14314,visit: using promises; using javascript promises
+556,14563,"revisit: using promises; she believes she is using the syntax she is unfamiliar with incorrectly, when her code actually is just not syntactically correct"
+557,14596,"visit: promise; ""I'm not even sure that promises are the right thing to do here"""
+558,14622,search: javascript run function after loop;
+560,14626,visit: run a function after a loop;
+561,14641,search: flavio javascript run function after loop;
+562,14648,search: flavio javascript promises;
+563,14649,visit: understanding javascript promises; 
+565,14723,revisit: understanding javascript promises; 
+567,14743,revisit: understanding javascript promises; 
+569,14749,revisit: understanding javascript promises; 
+571,14754,revisit: understanding javascript promises; interesting how quickly she goes between example and her code and types on the fly. is there an advantage to not copying and pasting this example? or is there a deterrent from doing so?
+573,14776,revisit: understanding javascript promises; 
+575,14787,revisit: understanding javascript promises; 
+577,14804,revisit: understanding javascript promises; 
+579,14829,"revisit: understanding javascript promises; there had been so much switching between code and this example. I could see an argument for it being classified as one long revisit, instead of all these revisits. the cause for all the revisits is still kind of self-regulated cognitive load, interesting"
+581,14845,revisit: understanding javascript promises; she never forces herself to remember more than one thing at a time
+583,14857,revisit: understanding javascript promises; 
+585,14875,revisit: understanding javascript promises; 
+587,14882,revisit: understanding javascript promises; 
+589,14902,revisit: understanding javascript promises; 
+591,15004,revisit: understanding javascript promises; 
