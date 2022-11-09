@@ -10,13 +10,12 @@ const app = express();
 const port = 3000;
 // myDB = new CodingDB("./foodNotFood.db");
 // myDB = new CodingDB("./techWithTim1.db");
-myDB = new CodingDB("./wordle_polished.db");
+myDB = new CodingDB("./slam.db");
 //myDB = new CodingDB("./slam.db");
 ocr = new OCR();
 
-var directory = ':/Users/ckelleher/Downloads/screencap/foodNotFood'; 
+var directory = '/Users/joeyallen/Downloads/screencap_slam'; 
 console.log("DB = " + myDB + "; OCR = " + ocr);
-
 
 // body-parser has been incorporated into express, so no need to have a separate thing
 app.use(express.urlencoded());
