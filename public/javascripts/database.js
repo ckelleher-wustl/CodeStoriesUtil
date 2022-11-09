@@ -68,7 +68,7 @@ class CodingDB {
         console.log("limit " + limit);
         // (videoID, timed_url, time, notes) VALUES(2, "test.html", 123, "These are some witty observations");
         let sql = 'SELECT eventID as id, time as time, code_text as code_text, notes as notes FROM CodingEvents \
-        WHERE code_text IS NOT NULL AND time>=' + offset + ' ORDER BY time ' + order + ' LIMIT ' + limit;
+        WHERE code_text IS NOT NULL AND LENGTH(code_text) > 0 AND time>=' + offset + ' ORDER BY time ' + order + ' LIMIT ' + limit;
         console.log(sql);
 
             //WHERE time>=" + offset + "
@@ -112,7 +112,7 @@ class CodingDB {
 
     async getSearchesInRange(startTime, endTime) {
         let sql = 'SELECT eventID as id, time as time, notes as notes, img_file as img_file FROM CodingEvents \
-        WHERE code_text IS NULL AND time>=' + startTime + ' AND time<=' + endTime + ' ORDER BY time ASC';
+        WHERE (code_text IS NULL OR LENGTH(code_text) == 0) AND time>=' + startTime + ' AND time<=' + endTime + ' ORDER BY time ASC';
         console.log(sql);
 
         try {
