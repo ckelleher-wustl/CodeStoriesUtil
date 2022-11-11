@@ -9,8 +9,8 @@ const levenshtein = require('js-levenshtein');
 const app = express();
 const port = 3000;
 // myDB = new CodingDB("./foodNotFood.db");
-// myDB = new CodingDB("./techWithTim1.db");
-myDB = new CodingDB("./wordle_polished.db");
+myDB = new CodingDB("./techWithTim1.db");
+// myDB = new CodingDB("./wordle_polished.db");
 //myDB = new CodingDB("./slam.db");
 ocr = new OCR();
 
