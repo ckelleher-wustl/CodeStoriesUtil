@@ -1,13 +1,20 @@
 import json
+import os
+import sys
+
 import requests
 import urllib
 import pandas as pd
-from requests_html import HTML, HTMLSession
+from PyQt5.QtWidgets import QApplication
 from bs4 import BeautifulSoup
-import difflib
+import datetime
+import time
+from generate_screencapture_helper import Screenshot
 
 # data (or webData) refers to web data recorded by the browser extension
 DATA_FILE_NAME = r'C:\Users\thien\Box\project\project\data'
+
+# output file name
 CSV_FILE_NAME = 'data_garbage_classification_original_time.csv'
 
 
@@ -160,6 +167,11 @@ def final_check(dataframe):
     # if the former title has visit and the latter title has revisit, drop the latter title
     dataframe.drop(dataframe[dataframe['title_info'].shift(1) == dataframe['title_info']].index, inplace=True)
 
+    # remove quotation marks from the title_info column
+    dataframe['title_info'] = dataframe['title_info'].apply(lambda x: x.replace('"', ''))
+    # trim the title_info column
+    dataframe['title_info'] = dataframe['title_info'].apply(lambda x: x.strip())
+
     # check if action column has value has "("
     # then check if the action column has value has ")"
     # if so, grab the value between the "(" and ")"
@@ -238,10 +250,65 @@ def run():
 
     # make a new dataframe with only the columns we want in order
     # first column is timestamp, second column is new_action, third column is title_info, fourth column is curUrl, fifth column is prevUrl
-    df_copy = df_copy[['time', 'new_action', 'title_info', 'curTitle']]
+    df_copy = df_copy[['time', 'new_action', 'title_info', 'curTitle', 'curUrl']]
 
     # rename the columns
-    df_copy.columns = ['time', 'action', 'info', 'title']
+    df_copy.columns = ['time', 'action', 'info', 'title', 'timed_url']
+
+    # make a new dataframe with column img_file and set it to None
+    img_file_df = pd.DataFrame(columns=['img_file'])
+    img_file_df['img_file'] = None
+
+    # check if images folder exists
+    if not os.path.exists('imgs_git_webdata'):
+        # if not, create it
+        os.makedirs('imgs_git_webdata')
+    else:
+        # else, delete all files in the folder
+        for file in os.listdir('imgs_git_webdata'):
+            os.remove('imgs_git_webdata/' + file)
+        # delete the folder
+        os.rmdir('imgs_git_webdata')
+
+        # create the folder again
+        os.makedirs('imgs_git_webdata')
+
+    start_time = time.time()
+
+    app = QApplication(sys.argv)
+
+    # iterate through the dataframe
+    for i in range(0, len(df_copy)):
+        print(i)
+        # get the current row
+        row = df_copy.iloc[i]
+        # get the timestamp
+        timestamp = row['time']
+        # get the timed_url
+        timed_url = row['timed_url']
+
+        # convert the timestamp to this format 2022-08-09-14_52_58
+        timestamp = datetime.datetime.fromtimestamp(timestamp)
+        timestamp = timestamp.strftime('%Y-%m-%d-%H_%M_%S')
+
+        s = Screenshot()
+        s.app = app
+
+        if 'youtube.com' in timed_url:
+            s.capture(timed_url, 'imgs_git_webdata/screencapture-n' + str(i) + '_' + str(timestamp) + '-youtube.png')
+            app.exec_()
+
+            # set the img_file column to the name of the image file
+            img_file_df.loc[i, 'img_file'] = 'screencapture-n' + str(i) + '_' + str(timestamp) + '-youtube.png'
+        else:
+            s.capture(timed_url, 'imgs_git_webdata/screencapture-n' + str(i) + '_' + str(timestamp) + '.png')
+            app.exec_()
+
+            # set the img_file column to the name of the image file
+            img_file_df.loc[i, 'img_file'] = 'screencapture-n' + str(i) + '_' + str(timestamp) + '.png'
+
+    end_time = time.time()
+    print("--- %s minutes ---" % ((end_time - start_time) / 60))
 
     """ generate searchEvts.csv, note that this is stand alone and not in incorporate commit events
     # subtract every time by the first time
@@ -257,7 +324,24 @@ def run():
 
     # generate events.csv with original timestamp and tab separated for CodeStoriesUtil
     df_copy.to_csv(CSV_FILE_NAME, index=False, encoding='utf-8-sig', sep='\t')
+    img_file_df.to_csv('temp_img_file.csv', index=False, encoding='utf-8-sig', sep='\t')
 
 
 if __name__ == '__main__':
     run()
+
+    # take two csv files and merge them
+    # to avoid weird encoding issues where img_file column not tab separated correctly
+
+    # read in the csv files
+    df1 = pd.read_csv(CSV_FILE_NAME, sep='\t')
+    df2 = pd.read_csv('temp_img_file.csv', sep='\t')
+
+    # merge the two dataframes
+    df3 = pd.concat([df1, df2], axis=1)
+
+    # write to csv
+    df3.to_csv(CSV_FILE_NAME, index=False, encoding='utf-8-sig', sep='\t')
+
+    # delete the temp csv file
+    os.remove('temp_img_file.csv')
