@@ -1,5 +1,6 @@
 var CodingDB = require("./public/javascripts/database.js")
 var OCR = require("./public/javascripts/ocr.js")
+var GitHistory = require("./public/javascripts/git_history.js")
 const canvas = require('canvas'); // need this for images
 const express = require('express'); // handling web routes
 const cors = require('cors'); // cross origin requests to allow external sites to use this api
@@ -14,6 +15,15 @@ ocr = new OCR();
 
 var directory = ':/Users/ckelleher/Downloads/screencap/foodNotFood'; 
 console.log("DB = " + myDB + "; OCR = " + ocr);
+
+// e.g. for using git history
+// if git folder is on Box, need to verify that it's safe to access
+// "git config --global --add safe.directory C:/Users/thien/Box/project/project"
+// cd to that directory and run "git prune" to resolve any corrupted files
+// make sure to comment out myDB, ocr, and log statement above and uncomment the following
+// var userDir = String.raw`C:\Users\thien\Box\project\project`;
+// var eventsFile = String.raw`C:\Users\thien\Box\data_garbage_classification_original_time.csv`;
+// myDB = new GitHistory(userDir, eventsFile);
 
 
 // body-parser has been incorporated into express, so no need to have a separate thing

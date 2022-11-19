@@ -1,6 +1,8 @@
 const cp = require('child_process');
 const util = require('util');
 const fs = require('fs');
+const path = require('path');
+const sqlite3 = require('sqlite3').verbose();
 
 class GitHistory {
 
@@ -13,6 +15,43 @@ class GitHistory {
         this.readFile = util.promisify(fs.readFile);
 
         this.gitData = this.constructGitData();
+
+        let dbFile = "./gitData.db";
+
+        // if db file exists, delete it
+        if (fs.existsSync(dbFile)) {
+            fs.unlink(dbFile, (err) => {
+                if (err) {
+                    console.log(err);
+                }
+            });
+        }
+
+        // create new db file
+        console.log("creating new db file");
+        this.db = new sqlite3.Database(dbFile);
+        console.log("db file created");
+        this.db.run = util.promisify(this.db.run);
+
+        // create table
+        this.db.run(`CREATE TABLE IF NOT EXISTS gitData (
+            eventID INTEGER PRIMARY KEY,
+            videoID INTEGER,
+            timed_url VARCHAR(255),
+            time INTEGER,
+            img_file VARCHAR(255),
+            text_file VARCHAR(255),
+            notes VARCHAR(255),
+            code_text TEXT,
+            coords VARCHAR(255)
+        );`).then(() => {
+            console.log("Table created!");
+        }).catch((err) => {
+            console.log("ERROR: " + err);
+        });
+
+        // this.exportToJSON();
+        this.exportToDB();
     }
 
     async getEntries(sourceVideoID, offset, end, order, limit) {
@@ -135,8 +174,10 @@ class GitHistory {
             let selectedEvents = gitData.filter(event => event.code_text === null);
             selectedEvents = selectedEvents.filter(event => !event.notes.startsWith("commit:"));
 
-            // if end time < 0, then return all events (mostly for accessing searchEvts in CodeStoriesViz)
-            if(startTime >= 0 && endTime >= 0) {
+            // if end time <= 0, then return all events (mostly for accessing searchEvts in CodeStoriesViz)
+            if(endTime <= 0) {
+                selectedEvents = selectedEvents.filter(event => event.time >= startTime);
+            } else {
                 let smallerTime = Math.min(startTime, endTime);
                 let largerTime = Math.max(startTime, endTime);
                 selectedEvents = selectedEvents.filter(event => event.time >= smallerTime && event.time <= largerTime);
@@ -194,15 +235,15 @@ class GitHistory {
             let events = await this.updateTimeline();
             let gitData = [];
 
-            // make json object containing the following fields: id, time_url, time, notes, img_file, code_text, coords
+            // make json object containing the following fields: id, timed_url, time, notes, img_file, code_text, coords
             for (let i = 0; i < events.length; i++) {
                 let event = events[i];
                 let entry = {};
                 entry.id = i + 1;
-                entry.time_url = event.time_url;
+                entry.timed_url = event.timed_url;
                 entry.time = event.time;
                 entry.notes = event.action + ": " + event.info + ";"; // combine action and info
-                entry.img_file = null;
+                entry.img_file = event.img_file;
 
                 // if event action is "commit", then get code text
                 if (event.action == "commit") {
@@ -228,7 +269,12 @@ class GitHistory {
                             entry.code_text = entry.code_text.stdout.toString();
                         }
                     }
+                    entry.timed_url = null;
+                    entry.img_file = null;
                 } else {
+                    if(event.img_file.includes("\r")) {
+                        entry.img_file = entry.img_file.replace("\r", "");
+                    }
                     entry.code_text = null;
                 }
 
@@ -237,6 +283,10 @@ class GitHistory {
                 gitData.push(entry);
             }
             console.log('Git data constructed!');
+
+            // db
+            // this.exportToDB(gitData);
+
             return gitData;
         } catch (err) {
             return ("ERROR: " + err);
@@ -419,6 +469,66 @@ class GitHistory {
         } catch (error) {
             console.log("ERROR: " + err);
             return null;
+        }
+    }
+
+    async exportToJSON() {
+        try {
+            let json = JSON.stringify(await this.gitData);
+            fs.writeFile('gitData.json', json, 'utf8', function (err) {
+                if (err) {
+                    console.log("An error occured while writing JSON Object to File.");
+                    return console.log(err);
+                }
+            });
+            console.log('JSON file exported!');
+        } catch (err) {
+            console.log("ERROR: " + err);
+        }
+    }
+
+    async exportToDB() {
+        try {
+            let gitData = await this.gitData;
+
+            // insert data
+            let i = 0;
+            while (i < gitData.length) {
+                let event = gitData[i];
+                let eventID = event.id;
+                let videoID = 2;
+                let timed_url = event.timed_url;
+                let time = event.time;
+                let img_file = event.img_file;
+                let text_file = null;
+                let notes = event.notes;
+                let code_text = event.code_text;
+                let coords = null;
+
+                this.db.run(`INSERT or REPLACE INTO gitData 
+                            (eventID, videoID, timed_url, time, img_file, text_file, notes, code_text, coords) 
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);`, 
+                            [eventID, videoID, timed_url, time, img_file, text_file, notes, code_text, coords]
+                            ).then(() => {
+                                console.log(`Event ${eventID} inserted!`);
+                            }).catch((err) => {
+                                console.log("ERROR: " + err);
+                            });
+
+                i++;
+            }
+
+            if (i == gitData.length) {
+                // close the database connection
+                this.db.close(err => {
+                    if (err) {
+                        return console.error(err.message);
+                    }
+                    console.log('Close the database connection.');
+                });
+            }            
+        } catch (err) {
+            console.log("ERROR: " + err);
         }
     }
 }
