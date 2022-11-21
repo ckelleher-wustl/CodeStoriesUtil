@@ -246,7 +246,7 @@ class GitHistory {
                 entry.img_file = event.img_file;
 
                 // if event action is "commit", then get code text
-                if (event.action == "commit") {
+                if (event.action == "commit" || event.action == "output") {
                     let id = event.commitId;
                     let hashObj = this.hashObjsList.find(hashObj => hashObj.commitId == id);
 
@@ -283,10 +283,6 @@ class GitHistory {
                 gitData.push(entry);
             }
             console.log('Git data constructed!');
-
-            // db
-            // this.exportToDB(gitData);
-
             return gitData;
         } catch (err) {
             return ("ERROR: " + err);
@@ -341,7 +337,11 @@ class GitHistory {
                         // for each file changed, add a new event
                         for (let j = 0; j < filteredHashObjs[0].filesChanged.length; j++) {
                             let fileChanged = filteredHashObjs[0].filesChanged[j];
-                            let newEvent = {time: filteredHashObjs[0].time, action: "commit", info: fileChanged, commitId: filteredHashObjs[0].commitId};
+                            let action = "commit";
+                            if(fileChanged == "output.txt") {
+                                action = "output";
+                            }
+                            let newEvent = {time: filteredHashObjs[0].time, action: action, info: fileChanged, commitId: filteredHashObjs[0].commitId};
                             newEventsList.push(newEvent);
                         }
                     }
@@ -464,7 +464,7 @@ class GitHistory {
             let filesChanged = await this.exec(`git show --name-only --pretty="" ${hash}`, {cwd: gitFolder});
             filesChanged = filesChanged.stdout.toString().split('\n');
             filesChanged = filesChanged.filter(file => file !== '');
-            filesChanged = filesChanged.filter(file => file.endsWith('.py'));
+            filesChanged = filesChanged.filter(file => file.endsWith('.py') || file == 'output.txt');
             return filesChanged;
         } catch (error) {
             console.log("ERROR: " + err);
