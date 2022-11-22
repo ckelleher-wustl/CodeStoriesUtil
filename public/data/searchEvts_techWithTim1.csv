@@ -1,0 +1,117 @@
+eventID,time,filename
+10,630,"visit: python docs;
+16.3 thread - multiple threads of control"
+9,635,search: python thread start new thread
+29,2734,search:  ConnectionAbortedError: [winError 10053] An established connection was aborted by the software in your host machine
+30,2734,"visit: stackOverflow;
+clicked on the first page that offered advice on ConnectionAbortedError"
+40,3624,search: shared concurrent memory python
+41,3624,"visit: python docs;
+multiprocessing shared memory"
+43,3731,search: thread lock python
+44,3734,"visit: effect.org;
+Thread Synchronization in Python"
+58,5129,search: techwithtim
+59,5134,"visit: techwithtim.net;
+he's looking at his own flask tutorials"
+64,5676,search: call python function in flask from javascript
+65,5677,"visit: StackOverflow;
+visited page about calling flask functions from js"
+69,6150,search: bootstrap website themes
+70,6154,"visit: bootstrapmade.com;
+looking for a website template"
+71,6223,search: simple free website themes
+79,6437,search: bootstrap website themes
+82,6646,"visit: getbootstrap.com;
+reading bootstrap docs overview to refresh before he makes GUI"
+84,6705,"visit: getbootstrap.com/docs/4.4/components/navbar;
+looking for a nice navbar to steal"
+86,6857,"revisit: techwithtim.net;
+looking at his flask tutorial again, trying to figure out template inheritance"
+91,7065,"revisit: getbootstrap.com;
+reading docs to see how to make a button call a javascript function"
+92,7119,search: github
+93,7119,"visit: github.com;
+he checks one of his repositories to see how to set up buttons"
+94,7238,search: loading javascript flask
+95,7248,"revisit: stackOverflow;
+trying to find out how to load js in flask"
+101,7604,"revisit: StackOverflow;
+still stuck on figuring out why the button press isn't triggering a function"
+107,7785,search: javascript fetch api
+118,8328,"revisit: getbootstrap.com;
+finding a good form to use"
+122,8627,"revisit: techwithtim.net;
+flask tutorial"
+125,8942,"revisit: stackOverflow;
+reading about dropdown button problem"
+126,9038,"revisit: getbootstrap.com;
+trying to figure out why dropdown button can't be clicked"
+128,9045,revisit: getbootstrap.com
+130,9114,"revisit: getbootstrap.com;
+looking for a navbar that doesn't collapse"
+137,9708,"revisit: techwithtim.net;
+looking at his flask tutorial again, finding out how to send params through render_template()"
+139,9779,"revisit: github.com;
+looking at his old projects to see how to pass data through render_template()"
+144,9970,search: scroll view html bootstrap
+145,9972,"visit: w3schools.com;
+Bootstrap Scrollspy Plugin (Advanced)"
+146,10052,search: html scroll view updated from flask backend
+147,10058,"revisit: stackOverflow;
+Flask Dynamic update without reloading page"
+148,10115,"visit: mdbootstrap.com;
+table scroll - horizontal and vertical"
+150,10133,"revisit: getbootstrap.com;
+finding a form to use for message submission"
+152,10314,search: call python function from JavaScript with parameter
+153,10337,revisit: stackOverflow;
+155,10425,search: ajax getjson pass parameters
+156,10425,"revisit: stackOverflow;
+learning how to pass parameters to getjson() in ajax"
+165,11367,search: jquery call python function with parameters
+166,11367,"revisit: stackOverflow;
+passing arguments from javascript to python function"
+169,11542,search: flask get request
+168,11542,"revisit: techwithtim.net;
+viewing his flask tutorial to find how to get data from get request to flask"
+170,11563,"visit: flask.palletsprokects.com;
+learning how to receive data from GET request to flask app"
+176,11823,search: flask session object of type is not json serializable
+177,11826,"revisit: stackOverflow;
+making item json serializable in flask"
+182,12278,"revisit: stackOverflow;
+flask dynamic data update without reloading page"
+183,12298,"visit: medium;
+add dynamic components to HTML templates"
+184,12322,search: update html without reloading page flask
+185,12339,"revisit: stackOverflow;
+update div content without refreshing page"
+189,12660,"visit: www.odoo.com;
+run python function from jquery ajax get request"
+190,12688,"visit: healeycodes.com;
+how to return AJAX post value?"
+201,13570,search: javascript constantly run function
+202,13570,"visit: rafaelservantez.com;
+javascript & continuous updating"
+203,13678,search: javascript on document load
+204,13678,"revisit: stackOverflow;
+javascript on document load"
+210,14081,search: document getelementbyid innerhtml value
+211,14083,"revisit: w3schools.com;
+HTML DOM innerHTML Property"
+220,14861,search: uncaught in promise
+221,14861,"revisit: stackOverflow;
+uncaught in promise"
+222,15011,search: javascript not finding element by id
+223,15011,"revisit: stackOverflow;
+javascript not finding element by id"
+228,15294,search: javascript json object
+230,15320,search: javascript for loop of
+231,15323,"revisit: w3schools.com;
+javascript for loop of"
+233,15498,search: add elements to html list view javascript
+234,15500,"revisit: w3schools.com;
+appendChild() = HTML DOM appendChild() method"
+236,15902,"revisit: github.com;
+he's going to make a repo"

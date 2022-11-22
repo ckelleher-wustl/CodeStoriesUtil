@@ -1,0 +1,1608 @@
+eventID,videoID,timed_url,time,img_file,text_file,notes,code_text,coords
+3,2,https://www.youtube.com/watch?t=61&v=i824zN0DGIo,61,screencapture-localhost-9000-2022-07-19-10_01_19,,goal: I'm going to make a chat app using sockets with Flask for the server and custom HTML/JS for the front end,,
+4,2,https://www.youtube.com/watch?t=205&v=i824zN0DGIo,205,screencapture-localhost-9000-2022-07-19-10_25_21,,"goal: I want the app to have a screen where you enter your name, and then puts you in a random chat room","Cm Youtube C3
+",433;287;1466;787
+5,2,https://www.youtube.com/watch?t=345&v=i824zN0DGIo,345,screencapture-localhost-9000-2022-07-19-10_27_19,,"goal: I'm going to start by programming the chat server, I want to make a good interface for communicating",,1168;313;731;761
+6,2,https://www.youtube.com/watch?t=390&v=i824zN0DGIo,390,screencapture-localhost-9000-2022-07-19-10_30_06,,other: he just pulled up some reference code from the internet for creating the socket architecture for the chat app,none,150;150;935;724
+7,2,https://www.youtube.com/watch?t=466&v=i824zN0DGIo,466,screencapture-localhost-9000-2022-07-19-10_31_34,,"goal: This will be a multi threaded application, meaning there will be threads so that things don't hang",none,150;150;935;724
+8,2,https://www.youtube.com/watch?t=562&v=i824zN0DGIo,562,screencapture-localhost-9000-2022-07-19-10_32_43,,"code: server.py;
+adding in the boilerplate architecture for the chat room","from socket import AF_INET, socket, SOCK_STREAM
+from threading import Thread
+
+HOST = 'localhost'
+POST = 5500
+BUFSIZ = 1024
+ADDR = (HOST, PORT)
+
+SERVER = socket(AF_INET, SOCK_STREAM)
+SERVER.bind(ADDR)
+
+if __name__ == ""__main__"":
+  SERVER.listen(5)
+  print('Waiting for connection...')
+  ACCEPT_THREAD = Thread(target=wait_for_connection)
+  ACCEPT_THREAD.start()
+  ACCEPT_THREAD.join()
+  server.close()",150;150;484;617
+9,2,https://www.youtube.com/watch?t=635&v=i824zN0DGIo,635,screencapture-localhost-9000-2022-07-19-10_34_07,,search: python thread start new thread,not code,274;314;338;299
+10,2,https://www.youtube.com/watch?t=630&v=i824zN0DGIo,630,screencapture-localhost-9000-2022-07-19-10_34_46,,"visit: python docs;
+16.3 thread - multiple threads of control",not a code,274;318;347;299
+11,2,https://www.youtube.com/watch?t=691&v=i824zN0DGIo,691,screencapture-localhost-9000-2022-07-19-10_35_22,,"code: server.py; 
+added a function (wait_for_connection()) that loops infinitely to wait for a connection from the client","from socket import AF_INET, socket, SOCK_STREAM
+from threading import Thread
+
+def client_communication(client):
+
+def wait_for_connection(SERVER):
+  run = True
+  while run:
+    client, addr = SERVER.accept()
+    Thread(target=client_communication, args=(client,).start())
+
+HOST = 'localhost'
+PORT = 5500
+BUFSIZ = 1024
+ADDR = (HOST, PORT)
+
+SERVER = socket(AF_INET, SOCK_STREAM)",270;316;353;305
+12,2,https://www.youtube.com/watch?t=691&v=i824zN0DGIo,691,screencapture-localhost-9000-2022-07-19-10_35_34,,"goal: I'm going to create some client objects, each client objects will store a name and an IP address",,
+13,2,https://www.youtube.com/watch?t=1298&v=i824zN0DGIo,1298,screencapture-localhost-9000-2022-07-19-10_42_34,,"code: person.py;
+created a class called Person(), has fields for ip address, name, and client along with a __repr__() method","class Person:
+  def __init__(self, addr, name, client):
+    self.addr = addr
+    self.name = name
+    self.client = client
+  def __repr__(self):
+    return f""Person({self.addr}, {self.name})""",267;316;357;415
+14,2,https://www.youtube.com/watch?t=1632&v=i824zN0DGIo,1632,screencapture-localhost-9000-2022-07-19-10_46_44,,"code: server.py; 
+worked on client_communication() function that handles all messages from client, also created a global list to store all Person instances","client = person.client
+addr = person.addr
+
+# get persons name
+name = client.recv(BUFSIZ).decode(""utf8"")
+msg = f""{name} has joined the chat!""
+broadcast(msg)
+
+while True:
+  msg = client.recv(BUFSIZ)
+  if msg == bytes(""[quit]"", ""utf8""):
+    client.send(bytes(""[quit]"", ""utf8""))
+    client.close()
+    persons.remove(person)
+  else:",274;322;336;284
+15,2,https://www.youtube.com/watch?t=1754&v=i824zN0DGIo,1754,screencapture-localhost-9000-2022-07-19-10_48_04,,"code: server.py;
+worked on broadcast() function that broadcasts valid new messages to all clients","def broadcast(msg, name):
+  for person in persons:
+    client = person.client
+    client.send(bytes(name + ""! "", ""utf8"") + msg)",265;404;332;158
+16,2,https://www.youtube.com/watch?t=1917&v=i824zN0DGIo,1917,screencapture-localhost-9000-2022-07-19-10_49_53,,"code: server.py;
+added more to client_communication(), now sends message when person disconnects and added try catch block","client = person.client
+
+name = client.recv(BUFSIZ).decode(""utf8"")
+msg = f""{name} has joined the chat!""
+broadcast(msg)
+
+while True:
+  try:
+    msg = client.recv(BUFSIZ)
+    if msg == bytes(""[quit]"", ""utf8"")):
+      broadcast(f""{name} has left the chat..."")
+      client.send(bytes(""[quit]"", ""utf8""))
+      client.close()
+      person.remove(person)
+    else:
+      broadcast(msg, name)
+  except Exception as e:
+    print('[EXCEPTION]', e)",289;373;353;284
+17,2,https://www.youtube.com/watch?t=2022&v=i824zN0DGIo,2022,screencapture-localhost-9000-2022-07-19-10_51_26,,"output: [STARTED] Waiting for connection...;
+he ran the backend server, no errors were thrown and it ran successfully",,
+18,2,https://www.youtube.com/watch?t=2095&v=i824zN0DGIo,2095,screencapture-localhost-9000-2022-07-19-10_53_44,,"code: test.py;
+created a test case to verify that we can receive messages from the server and that we can send messages to the server (this one has multiple screenshots)","client_socket = socket(AF_INET, SOCK_STREAM)
+client_socket.connect(ADDR)
+
+def receive_messages():
+  while True:
+    msg = client_socket.recv(BUFSIZ).decode()
+    messages.append(msg)
+    print(msg)
+
+receive_thread = Thread(target = receive_messages)
+receive_thread.start()",316;329;307;206
+19,2,https://www.youtube.com/watch?t=2095&v=i824zN0DGIo,2095,screencapture-localhost-9000-2022-07-19-10_55_23,,"code: test.py;
+added code to send messages",glitched screenshot,320;339;501;337
+20,2,https://www.youtube.com/watch?t=2443&v=i824zN0DGIo,2443,screencapture-localhost-9000-2022-07-19-10_56_18,,output: TypeError: broadcast() missing 1 required positional argument: 'name',,
+21,2,https://www.youtube.com/watch?t=2453&v=i824zN0DGIo,2453,screencapture-localhost-9000-2022-07-19-10_56_32,,"code: server.py;
+added correct params to broadcast() call to fix error","client = person.client
+
+name = client.recv(BUFSIZ).decode('utf8')
+msg = f""{name} has joined the chat!""
+broadcast(msg, name)
+
+while True:
+  try:
+    msg = client.read(BUFSIZ)
+    print(f""{name}: "", msg.decode(""utf8""))
+",331;322;353;257
+22,2,https://www.youtube.com/watch?t=2463&v=i824zN0DGIo,2463,screencapture-localhost-9000-2022-07-19-10_57_07,,output: TypeError: can't concat str to bytes,"client = person.client
+
+name = client.recv(BUFSIZ).decode('utf8')
+msg = f""{name} has joined the chat!""
+broadcast(msg, name)
+
+while True:
+  try:
+    msg = client.read(BUFSIZ)
+    print(f""{name}: "", msg.decode(""utf8""))
+",
+23,2,https://www.youtube.com/watch?t=2503&v=i824zN0DGIo,2503,screencapture-localhost-9000-2022-07-19-10_57_42,,"code: server.py;
+fixed previous error by fixing typo","client = person.client
+
+name = client.recv(BUFSIZ).decode('utf8')
+msg = f""{name} has joined the chat!""
+broadcast(msg, name)
+
+while True:
+  try:
+    msg = client.read(BUFSIZ)
+    print(f""{name}: "", msg.decode(""utf8""))
+    
+    if msg == bytes(""[quit]"", ""utf8""):
+      broadcast(f""{name} has left the chat..."",'')
+      client.send(bytes(""[quit]"", ""utf8"")",333;316;341;267
+24,2,https://www.youtube.com/watch?t=2503&v=i824zN0DGIo,2503,screencapture-localhost-9000-2022-07-19-10_58_07,,output: [CONNECTION] connected to the server,,
+25,2,https://www.youtube.com/watch?t=2513&v=i824zN0DGIo,2513,screencapture-localhost-9000-2022-07-19-10_58_07,,"output: Tim: hello;
+the test.py file successfully sent a message to the chat app and the message was successfully broadcasted",,
+26,2,https://www.youtube.com/watch?t=2575&v=i824zN0DGIo,2575,screencapture-localhost-9000-2022-07-19-10_59_53,,goal: we need to make it possible to properly leave the chat room without throwing a windows error,,
+27,2,https://www.youtube.com/watch?t=2684&v=i824zN0DGIo,2684,screencapture-localhost-9000-2022-07-19-11_08_06,,output: [EXCEPTION] [WinError 10038] An operation was attempted on something that is not a socket,,
+28,2,https://www.youtube.com/watch?t=2725&v=i824zN0DGIo,2725,screencapture-localhost-9000-2022-07-19-11_08_59,,output: ConnectionAbortedError: [winError 10053] An established connection was aborted by the software in your host machine,,
+29,2,https://www.youtube.com/watch?t=2734&v=i824zN0DGIo,2734,screencapture-localhost-9000-2022-07-19-11_08_59,,search:  ConnectionAbortedError: [winError 10053] An established connection was aborted by the software in your host machine,,
+30,2,https://www.youtube.com/watch?t=2734&v=i824zN0DGIo,2734,screencapture-localhost-9000-2022-07-19-11_11_06,,"visit: stackOverflow;
+clicked on the first page that offered advice on ConnectionAbortedError","ot saod_nossagat msg)
+
+para
+
+cient socket send(oyten(me. »
+at mag =
+client socket close)
+
+eeceave thread - Thread( saree receive messages?
+receive cnvead. stare()
+
+.
+
+sena_nessagel ©}
+
+tine stee()
+
+‘snd nes sazel ,
+",314;333;294;261
+31,2,https://www.youtube.com/watch?t=2734&v=i824zN0DGIo,2734,screencapture-localhost-9000-2022-07-19-11_11_06,,"code: test.py;
+made test cases more detailed","ot sand messager msg
+
+para
+
+cient socket send(oyten(me. »
+at mag =
+client socket close)
+
+eeceave thread - Thread( saree receive messages?
+receive cnvead. stare()
+
+.
+
+sena_nessagel ©}
+
+tine stee()
+
+‘snd nes sazel ,
+",316;326;286;278
+32,2,https://www.youtube.com/watch?t=2939&v=i824zN0DGIo,2939,screencapture-localhost-9000-2022-07-19-11_14_51,,output: [EXCEPTION] [WinError 10054] An existing connection was forcibly closed by the remote host,,
+33,2,https://www.youtube.com/watch?t=3025&v=i824zN0DGIo,3025,screencapture-localhost-9000-2022-07-19-11_14_09,,"code: server.py;
+attempted to fix bug causing errors by making sure to close the client before broadcasting that somebody left the room","while True:
+  try:
+    msg = client.read(BUFSIZ)
+    print(f""{name}: "", msg.decode(""utf8""))
+    
+    if msg == bytes(""[quit]"", ""utf8""):
+      client.send(bytes(""[quit]"", ""utf8"")
+      client.close()
+      broadcast(f""{name} has left the chat..."",'')
+      persons.remove(person)
+      break
+    else:
+      broadcast(msg, name="": ""_
+      print(f""{name}: "", msg.decode(""utf8""))
+  except Exception as e:",329;333;296;251
+34,2,https://www.youtube.com/watch?t=3058&v=i824zN0DGIo,3058,screencapture-localhost-9000-2022-07-19-11_14_51,,output: [EXCEPTION] [WinError 10053] An established connection was aborted by the software in your host machine,,
+35,2,https://www.youtube.com/watch?t=3191&v=i824zN0DGIo,3191,screencapture-localhost-9000-2022-07-19-11_21_13,,other: tried to turn off windows firewall to solve connection error didn't work,,
+36,2,https://www.youtube.com/watch?t=3217&v=i824zN0DGIo,3217,screencapture-localhost-9000-2022-07-19-11_21_57,,"code: server.py;
+moved code to remove person from list of people in chat app to before the broadcast function is called (instead of after) to fix errors","while True:
+  try:
+    msg = client.read(BUFSIZ)
+    print(f""{name}: "", msg.decode(""utf8""))
+    
+    if msg == bytes(""[quit]"", ""utf8""):
+      client.send(bytes(""[quit]"", ""utf8"")
+      client.close()
+      broadcast(f""{name} has left the chat..."",'')
+      persons.remove(person)
+      break
+    else:
+      broadcast(msg, name="": ""_
+      print(f""{name}: "", msg.decode(""utf8""))
+  except Exception as e:
+    print(""[EXCEPTION]"", e)
+    break",312;322;307;265
+37,2,https://www.youtube.com/watch?t=3258&v=i824zN0DGIo,3258,screencapture-localhost-9000-2022-07-19-11_23_23,,"output: [DISCONNECTED] Joe disconnected;
+disconnecting now works",,
+38,2,https://www.youtube.com/watch?t=3267&v=i824zN0DGIo,3267,screencapture-localhost-9000-2022-07-19-11_24_07,,goal: I want to make it possible for two clients to chat at the same time,,
+39,2,https://www.youtube.com/watch?t=3570&v=i824zN0DGIo,3570,screencapture-localhost-9000-2022-07-19-11_27_59,,"code: client.py;
+Made a class called Client() that has the ability to send and receive messaged to/from server (this makes testing multiple people chatting at once easy) [multiple pictures]","def __init__(self, name):
+  self.client_socket = socket(AF_INET, SOCK_STREAM)
+  self.client_socket.connect(self.ADDR)
+  self.messages = []
+  receive_thread = Thread(target=self.receive_messages)
+
+def receive_messages(self):
+  while True:
+    try:
+      msg = self.client_socket.recv(self.BUFSIZ).decode(""utf8"")
+      self.messages.append(msg)
+    except Exception as e:
+      print(""[EXCEPTION]"", e)
+      break",362;333;359;337
+40,2,https://www.youtube.com/watch?t=3624&v=i824zN0DGIo,3624,screencapture-localhost-9000-2022-07-19-11_29_49,,search: shared concurrent memory python,,
+41,2,https://www.youtube.com/watch?t=3624&v=i824zN0DGIo,3624,screencapture-localhost-9000-2022-07-19-11_32_55,,"visit: python docs;
+multiprocessing shared memory","ont + mg
+edient socker.senainytes(ase, By
+ve ngp
+Fetdemt seeker closet)
+et get_messages(°1)
+retvers free
+
+retucn on *onaeeages
+",369;350;290;259
+42,2,https://www.youtube.com/watch?t=3709&v=i824zN0DGIo,3709,screencapture-localhost-9000-2022-07-19-11_36_17,,"code: client.py;
+added a get_messages() method","def __init__(self, name):
+  self.client_socket = socket(AF_INET, SOCK_STREAM)
+  self.client_socket.connect(self.ADDR)
+  self.messages = []
+  receive_thread = Thread(target=self.receive_messages)
+
+def receive_messages(self):
+  while True:
+    try:
+      msg = self.client_socket.recv(self.BUFSIZ).decode(""utf8"")
+      self.lock.acquire()
+      self.messages.append(msg)
+      print(msg)
+    except Exception as e:
+      print(""[EXCEPTION]"", e)
+      break
+
+def send_message(self, msg):
+  pass",364;320;387;331
+43,2,https://www.youtube.com/watch?t=3731&v=i824zN0DGIo,3731,screencapture-localhost-9000-2022-07-19-11_29_49,,search: thread lock python,,
+44,2,https://www.youtube.com/watch?t=3734&v=i824zN0DGIo,3734,screencapture-localhost-9000-2022-07-19-11_32_55,,"visit: effect.org;
+Thread Synchronization in Python","ont + mg
+edient socker.senainytes(ase, By
+ve msg
+
+Fetdemt seeker closet)
+et get_messages(
+
+retvers foe
+
+retucn on *onaeeages
+",364;350;290;265
+45,2,https://www.youtube.com/watch?t=3959&v=i824zN0DGIo,3959,screencapture-localhost-9000-2022-07-19-11_36_17,,"code: client.py;
+added code to aquire and release the client when needed","def receive_messages(self):
+  while True:
+    try:
+      msg = self.client_socket.recv(self.BUFSIZ).decode(""utf8"")
+      self.lock.acquire()
+      self.messages.append(msg)
+      self.lock.release()
+      print(msg)
+    except Exception as e:
+      print(""[EXCEPTION]"", e)
+      break
+
+def send_message(self, msg):
+  pass",356;375;383;263
+46,2,https://www.youtube.com/watch?t=4057&v=i824zN0DGIo,4057,screencapture-localhost-9000-2022-07-19-11_38_24,,"code: test.py;
+created new tests using the new Client() class","from client import Client
+import time
+
+c1 = Client(""Tim"")
+c2 = Client(""Joe"")
+
+c1.send_message(""hello"")
+c2.send_message(""whats up"")
+time.sleep(1)
+c1.send_message(""nothing much, hbu"")
+time.sleep(1)
+c2.send_message(""Boring..."")",347;316;229;206
+47,2,https://www.youtube.com/watch?t=4074&v=i824zN0DGIo,4074,screencapture-localhost-9000-2022-07-19-11_41_43,,"code: client.py;
+added a disconnect() method","  self.client_socket.send(bytes(msg, ""utf8""))
+  if msg == ""[quit]"":
+    self.client_socket.close()
+
+def get_messages(self):
+  self.lock.acquire()
+  self.lock.release()
+  return self.messages
+
+def disconnect(self):
+  self.send_messages(""[quit]"")",369;331;301;295
+48,2,https://www.youtube.com/watch?t=4200&v=i824zN0DGIo,4200,screencapture-localhost-9000-2022-07-19-11_42_04,,output: [EXCEPTION] can't concat str to bytesP,,
+53,2,https://www.youtube.com/watch?t=4495&v=i824zN0DGIo,4495,screencapture-localhost-9000-2022-07-19-11_45_33,,"code: test.py;
+made a thread for update_messages() so that it can be run in parallel to other code","time.sleep(5)
+
+c1.disconnect()
+time.sleep(2)
+c2.disconnect()
+
+def update_messages():
+  msgs = []
+  while True:
+    time.sleep(0.1)
+    new_messages = c1.get_messages()
+    msg.extend(new_messages)
+    for msg in new_messages:
+      print(msg)",343;312;246;219
+54,2,https://www.youtube.com/watch?t=4570&v=i824zN0DGIo,4570,screencapture-localhost-9000-2022-07-19-11_48_36,,output: [EXCEPTION] 'Client' object has no attribute 'lock',,
+55,2,https://www.youtube.com/watch?t=4760&v=i824zN0DGIo,4760,screencapture-localhost-9000-2022-07-19-11_52_09,,output: [EXCEPTION] can't concat str to bytes,"preatinng)
+if msg =
+ron + False
+
+break
+Uceadt eo gr -upuate messages ) start
+
+ci .send messaze( >
+tame ssleepts)
+
+cls send,aezsaget >
+
+tame. sleapts)
+
+ci send messages >
+Line sleeots)
+
+cdo vend nessagel >
+tame sLeeof 5)
+
+hedincomert)
+tie. sleep(?)
+",347;318;269;263
+56,2,https://www.youtube.com/watch?t=4827&v=i824zN0DGIo,4827,screencapture-localhost-9000-2022-07-19-11_53_21,,"code: server.py;
+added a bytes() conversion to his broadcast() call to fix the TypeError","while True:
+  try:
+    msg = client.recv(BUFSIZ)
+    if msg == bytes(""[quit]"", ""utf8""):
+      client.close()
+      persons.remove(person)
+      broadcast(bytes(f""{name} has left the chat..."", ""utf8"")
+      print(f""[DISCONNECTED] {name} disconnected"")
+      break
+    else:
+      broadcast(msg, name="": "")
+      print(f""{name}: "", msg.decode(""utf8""))
+  except Exception as e:
+    print(""[EXCEPTION]"", e)
+    break",362;318;477;253
+57,2,https://www.youtube.com/watch?t=5124&v=i824zN0DGIo,5124,screencapture-localhost-9000-2022-07-19-11_57_34,,goal: now we need to build out the web app,,
+58,2,https://www.youtube.com/watch?t=5129&v=i824zN0DGIo,5129,screencapture-localhost-9000-2022-07-19-11_57_45,,search: techwithtim,,
+59,2,https://www.youtube.com/watch?t=5134&v=i824zN0DGIo,5134,screencapture-localhost-9000-2022-07-19-11_57_45,,"visit: techwithtim.net;
+he's looking at his own flask tutorials",,
+60,2,https://www.youtube.com/watch?t=5165&v=i824zN0DGIo,5165,screencapture-localhost-9000-2022-07-19-11_58_39,,"code: main.py;
+began creation of the flask web server","From flask import Flask
+app = FLask(__name__)
+
+if __name__ == ""__main__"":
+  app.run()
+",337;316;286;366
+61,2,https://www.youtube.com/watch?t=5613&v=i824zN0DGIo,5613,screencapture-localhost-9000-2022-07-19-13_07_45,,"code: main.py;
+added home app route
+","from flask import Flask, render_template
+
+app = Flask(__name__)
+
+@app.route(""/"")
+def home():
+  return render_template("""")
+
+if __name__ == ""__main__"":
+  app.run(debug=True)  ",354;316;271;198
+62,2,https://www.youtube.com/watch?t=5693&v=i824zN0DGIo,5693,screencapture-localhost-9000-2022-07-19-13_09_48,,"goal: I want one page that pops up at beginning that asks your name, and then you get placed in a 10-person chat room. Messages will be sent from frontend to flask, which will handle them",,
+64,2,https://www.youtube.com/watch?t=5676&v=i824zN0DGIo,5676,screencapture-localhost-9000-2022-07-19-13_09_48,,search: call python function in flask from javascript,,
+65,2,https://www.youtube.com/watch?t=5677&v=i824zN0DGIo,5677,screencapture-localhost-9000-2022-07-19-13_09_48,,"visit: StackOverflow;
+visited page about calling flask functions from js",,
+66,2,https://www.youtube.com/watch?t=5948&v=i824zN0DGIo,5948,screencapture-localhost-9000-2022-07-19-13_12_08,,"code: main.py;
+added login route and a few global variables ","from flask import Flask, render_template
+
+NAME_KEY = 'name'
+
+app = Flask(__name__)
+app.secret_key = ""kawjdnawkjdnawkjdn""
+
+@app.route(""/login"")
+def login():
+  return render_template("""")
+
+
+@app.route(""/"")
+@app.route(""/home"")
+def home():
+  if NAME_KEY not in session:
+    return redirect(url_for(""login""))
+  return render_template("""")
+
+if __name__ == ""__main__"":
+  app.run(debug=True)  ",354;316;265;345
+67,2,https://www.youtube.com/watch?t=5948&v=i824zN0DGIo,5948,screencapture-localhost-9000-2022-07-19-13_09_48,,"goal: the front end will be just a side bar with options to login, logout, or chat",,
+68,2,https://www.youtube.com/watch?t=6009&v=i824zN0DGIo,6009,screencapture-localhost-9000-2022-07-19-13_12_08,,"code: main.py;
+added logout route","from flask import Flask, render_template
+
+NAME_KEY = 'name'
+
+app = Flask(__name__)
+app.secret_key = ""kawjdnawkjdnawkjdn""
+
+@app.route(""/login"")
+def login():
+  return render_template("""")
+
+
+@app.route(""/"")
+@app.route(""/home"")
+def home():
+  if NAME_KEY not in session:
+    return redirect(url_for(""login""))
+  return render_template("""")
+
+if __name__ == ""__main__"":
+  app.run(debug=True)  ",350;318;273;329
+69,2,https://www.youtube.com/watch?t=6150&v=i824zN0DGIo,6150,screencapture-localhost-9000-2022-07-19-13_15_31,,search: bootstrap website themes,,
+70,2,https://www.youtube.com/watch?t=6154&v=i824zN0DGIo,6154,screencapture-localhost-9000-2022-07-19-13_15_31,,"visit: bootstrapmade.com;
+looking for a website template",,
+71,2,https://www.youtube.com/watch?t=6223&v=i824zN0DGIo,6223,screencapture-localhost-9000-2022-07-19-13_16_59,,search: simple free website themes,,
+79,2,https://www.youtube.com/watch?t=6437&v=i824zN0DGIo,6437,screencapture-localhost-9000-2022-07-19-13_16_59,,search: bootstrap website themes,,
+80,2,https://www.youtube.com/watch?t=6535&v=i824zN0DGIo,6535,screencapture-localhost-9000-2022-07-19-13_27_13,,"code: base.html;
+makes the base template that others will inherit from, adds all necessary imports and creates blocks as needed","<doctype html>
+<html lang=""en"">
+  <head>
+    <meta charset=""utf-8"">
+    <meta name=""viewport"">
+    <link rel=""stylesheet"">
+    <title>{% block title%}{% endblock %}</title>
+  </head>
+
+  <body>
+    <div class=""container"">
+      {% block content %}
+      {% endblock %}
+    </div>
+  
+    <script src=""https://.."">
+    <script src=""https://.."">
+    <script src=""https://.."">
+
+  </body>
+</html>",345;316;279;350
+81,2,https://www.youtube.com/watch?t=6646&v=i824zN0DGIo,6646,screencapture-localhost-9000-2022-07-19-13_28_35,,"code: index.html;
+made index template (inherits from base layout)","{% extends ""base.html"" %}
+
+{% block title %}Home{% endblock %}
+{% block content %}
+{% endblock %}",335;314;263;204
+82,2,https://www.youtube.com/watch?t=6646&v=i824zN0DGIo,6646,screencapture-localhost-9000-2022-07-19-13_29_03,,"visit: getbootstrap.com;
+reading bootstrap docs overview to refresh before he makes GUI","Ys extends ""base html"" %}
+Yh block title SHonef endblack 9}
+AK blocle content
+
+4% endblock 3}
+",337;318;277;143
+83,2,https://www.youtube.com/watch?t=6685&v=i824zN0DGIo,6685,screencapture-localhost-9000-2022-07-19-13_29_03,,goal: let's build a sidebar first,,
+84,2,https://www.youtube.com/watch?t=6705&v=i824zN0DGIo,6705,screencapture-localhost-9000-2022-07-19-13_30_07,,"visit: getbootstrap.com/docs/4.4/components/navbar;
+looking for a nice navbar to steal",,
+85,2,https://www.youtube.com/watch?t=6795&v=i824zN0DGIo,6795,screencapture-localhost-9000-2022-07-19-13_31_13,,"code: base.html;
+imported code for a navbar","<doctype html>
+<html lang=""en"">
+  
+  <nav class=""navbar navbar-expand-lg navbar-light bg-light"">
+    <h1 class=""navbar-brand"" href=""#""> CHAT APP </h1>
+    <button class=""navbar-toggler"">
+    <button class=""navbar-toggler"">
+      <span class=""navbar-toggler-icon""></span>
+    </button>
+    <div class=""collapse navbar-collapse"">
+      <div class=""navbar nav"">
+        <a href=""#""> Chat </a>
+        <a href=""#""> Login </a>
+        <a href=""#""> Logout </a>
+      </div>
+    </div>
+  </nav>
+
+  <body>
+    <div class=""container"">
+      {% block content %}
+      {% endblock %}
+    </div>
+  
+    <script src=""https://.."">
+    <script src=""https://.."">
+    <script src=""https://.."">
+
+  </body>
+</html>",356;337;715;373
+86,2,https://www.youtube.com/watch?t=6857&v=i824zN0DGIo,6857,screencapture-localhost-9000-2022-07-19-13_32_14,,"revisit: techwithtim.net;
+looking at his flask tutorial again, trying to figure out template inheritance",,
+87,2,https://www.youtube.com/watch?t=6905&v=i824zN0DGIo,6905,screencapture-localhost-9000-2022-07-19-13_32_54,,output: jinja2.exceptions.TemplateNotFound,"{& extends *hase-html* x}
+{% block title sivlomefx endbLeck ‘Sh
+1% block content €}
+
+chBpTESTe/h>
+
+{& endblock &}
+",333;316;284;88
+88,2,https://www.youtube.com/watch?t=6965&v=i824zN0DGIo,6965,screencapture-localhost-9000-2022-07-19-13_34_05,,"output:  ;
+front end works as desired","Boppsroute(’ "")
+‘app-route("" “rame"")
+ef home()
+
+cee et
+retuen render template ‘uncesshe-U}
+if name = * main
+
+‘Son ru aebug=TeWe)
+",343;326;282;219
+89,2,https://www.youtube.com/watch?t=6984&v=i824zN0DGIo,6984,screencapture-localhost-9000-2022-07-19-13_35_07,,goal: now it's time to make the chat window and the login screen,,
+90,2,https://www.youtube.com/watch?t=6986&v=i824zN0DGIo,6986,screencapture-localhost-9000-2022-07-19-17_24_24,,goal: I want to be able to click a button on the front end that calls a python function from flask,,
+91,2,https://www.youtube.com/watch?t=7065&v=i824zN0DGIo,7065,screencapture-localhost-9000-2022-07-19-17_25_51,,"revisit: getbootstrap.com;
+reading docs to see how to make a button call a javascript function",,
+92,2,https://www.youtube.com/watch?t=7119&v=i824zN0DGIo,7119,screencapture-localhost-9000-2022-07-19-17_26_38,,search: github,"extends ‘hase html x}
+
+block title slanef% endbLeck
+block content €}
+
+I>TEST</ht>
+ieton type:
+endblock %}
+
+ut tan"" class:
+
+bn ota-priaey ote
+
+",354;316;265;345
+93,2,https://www.youtube.com/watch?t=7119&v=i824zN0DGIo,7119,screencapture-localhost-9000-2022-07-19-17_26_55,,"visit: github.com;
+he checks one of his repositories to see how to set up buttons",,
+94,2,https://www.youtube.com/watch?t=7238&v=i824zN0DGIo,7238,screencapture-localhost-9000-2022-07-19-17_27_56,,search: loading javascript flask,,
+95,2,https://www.youtube.com/watch?t=7248&v=i824zN0DGIo,7248,screencapture-localhost-9000-2022-07-19-17_27_56,,"revisit: stackOverflow;
+trying to find out how to load js in flask",,
+96,2,https://www.youtube.com/watch?t=7356&v=i824zN0DGIo,7356,screencapture-localhost-9000-2022-07-19-17_32_47,,"code: index.html;
+added code to make button work","{% extends 'base.html' %}
+
+(% block title %} Home {% endblock %}
+{% block content %}
+  <h1>TEST</h1>
+  <button id=""test"" type=""button"" class=""btn btn-primary btn-lg"">Large button</button>
+  <script type=""text/javascript"" src=""{{ url_for{'static', filename='index.js'} }}'></script>
+{% endblock %}",341;320;535;144
+97,2,https://www.youtube.com/watch?t=7378&v=i824zN0DGIo,7378,screencapture-localhost-9000-2022-07-19-17_33_24,,"code: index.js;
+added code to make button work","$.function() {
+           $('#test').bind('click, function() {
+             $.getJSON('/run',
+               function(data) {
+                 //do nothing
+               });
+               return False;
+              });
+            });",339;318;291;140
+98,2,https://www.youtube.com/watch?t=7404&v=i824zN0DGIo,7404,screencapture-localhost-9000-2022-07-19-17_33_52,,output: the button is not calling a function when clicked as intended,,
+99,2,https://www.youtube.com/watch?t=7433&v=i824zN0DGIo,7433,screencapture-localhost-9000-2022-07-19-17_34_36,,"output: Uncaught ReferenceError;
+came from chrome dev tools console",,
+100,2,https://www.youtube.com/watch?t=7506&v=i824zN0DGIo,7506,screencapture-localhost-9000-2022-07-19-17_36_02,,"output: Uncaught TypeError: $.getJSON is not a function at HTMLButtonElement.<anonymous> (index.js:3);
+output in chrome dev tools console",,
+101,2,https://www.youtube.com/watch?t=7604&v=i824zN0DGIo,7604,screencapture-localhost-9000-2022-07-19-17_38_12,,"revisit: StackOverflow;
+still stuck on figuring out why the button press isn't triggering a function",,
+104,2,https://www.youtube.com/watch?t=7720&v=i824zN0DGIo,7720,screencapture-localhost-9000-2022-07-19-17_39_28,,"code: index.js;
+copied in new code to try and fix button glitch","| Mfunction(> 4
+
+SC stim "")binwl 0 sy function)
+
+$.gerI80UC fru, fe ee oats
+Funetion(sata) {
+a2 ovna2
+D:
+return false;
+be
+Dr
+",333;318;277;138
+105,2,https://www.youtube.com/watch?t=7717&v=i824zN0DGIo,7717,screencapture-localhost-9000-2022-07-19-17_39_28,,output: Uncaught TypeError: $.getJSON is not a function at HTMLElement.<anonymous> (index.js:3),"$.function() {
+           $('a#test').bind('click, function() {
+             $.getJSON('/run', // < HERE
+               function(data) {
+                 //do nothing
+               });
+               return False;
+              });
+            });",337;314;279;148
+106,2,https://www.youtube.com/watch?t=7760&v=i824zN0DGIo,7760,screencapture-localhost-9000-2022-07-19-17_41_35,,"code: index.html;
+changed version of javascript being imported","{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+{% block content %}
+<h1>TEST</h1>
+<form>
+  <button id=""test"" type=""button"" class=""btn btn-primary btn-lg"">Large button</button>
+</form>
+<script src=""""></script>
+<script type=""test/javascript"" src=""""></script>
+{% endblock %}",339;318;535;173
+107,2,https://www.youtube.com/watch?t=7785&v=i824zN0DGIo,7785,screencapture-localhost-9000-2022-07-19-17_41_58,,search: javascript fetch api,,
+108,2,https://www.youtube.com/watch?t=7816&v=i824zN0DGIo,7816,screencapture-localhost-9000-2022-07-19-17_43_07,,"code: base.html;
+removed the ajax slim library that he imported to try and fix button error","‘nav-iter nav-Link active’ href=""#""aChat <span closs=""sr-only""2(current}</spanze/a>
+1av-iten nay-link* hwef=""#""sLagine/a>
+£a Clasee""nnemitem nan-Link! hee Fs""@sl ogoute/a>
+<ftiv>
+<i>
+<faaye
+
+diy class="" container"">
+{a block content 8}
+{8 endblock ®
+stave
+
+script arce""https://ean.jedel Lue-oet/npa/popper JoM116.6/dist/una/ papperain.js"" integrity=""shasn-qscaRivb1yzFIaft+2A1
+<script sze-""https://stackpath.bootstrapedn.con/bootstrap/'s.4,1/js/boatsteap.rin.js” integrity-""sha3Bi-uFSDF2E5820tuld j
+</body>
+c{neol>
+
+",347;316;720;269
+109,2,https://www.youtube.com/watch?t=7855&v=i824zN0DGIo,7855,screencapture-localhost-9000-2022-07-19-17_47_55,,output: clicking the button calls a function,,
+110,2,https://www.youtube.com/watch?t=7851&v=i824zN0DGIo,7851,screencapture-localhost-9000-2022-07-19-17_43_59,,output: GET http://127.0.0.1:5000/run    jquery.min.js:5  500 (INTERNAL SERVER ERROR),,
+113,2,https://www.youtube.com/watch?t=7947&v=i824zN0DGIo,7947,screencapture-localhost-9000-2022-07-19-17_48_39,,other: moved the client folder inside of the website folder,,
+114,2,https://www.youtube.com/watch?t=8025&v=i824zN0DGIo,8025,screencapture-localhost-9000-2022-07-19-17_49_51,,goal: let's now add login functionality,,
+115,2,https://www.youtube.com/watch?t=8108&v=i824zN0DGIo,8108,screencapture-localhost-9000-2022-07-19-17_52_26,,"code: main.py;
+added code to allow users to login","from flask import Flask
+
+NAME_KEY = 'name'
+
+app = Flask(__name__)
+app.secret_key = ""alajnmfeslkfmselfkm""
+
+@app.route(""/login"", methods=[""POST"",""GET""])
+def login():
+  if request.method == ""POST"":
+    session[NAME_KEY] = request.form[""name""]
+    return redirect(url_for(""home""))
+  return render_template(""login.html"")
+
+@app.route(""/logout"")
+def logout():
+  session.pop(NAME_KEY, None)
+  return redirect(url_for(""login""))
+
+",389;320;454;364
+116,2,https://www.youtube.com/watch?t=8188&v=i824zN0DGIo,8188,screencapture-localhost-9000-2022-07-19-17_54_31,,"code: login.html;
+created a template for the login page","{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+{% block content %}
+<h1>TEST</h1>
+<form>
+  <button id=""test"" type=""button"" class=""btn btn-primary btn-lg"">Large Button</button>
+</form>
+<script src="""">
+<script type=""text/javascript"">
+{% endblock %}",
+117,2,https://www.youtube.com/watch?t=8291&v=i824zN0DGIo,8291,screencapture-localhost-9000-2022-07-19-17_55_53,,"code: index.js;
+created a function to check whether a username is a valid username","$.function() {
+           $('#test').bind('click, function() {
+             $.getJSON('/run',
+               function(data) {
+                 //do nothing
+               });
+               return False;
+              });
+            });
+
+function validate(name) {
+  if(name.length >= 2) {
+    return true
+  }
+  return false
+}",
+118,2,https://www.youtube.com/watch?t=8328&v=i824zN0DGIo,8328,screencapture-localhost-9000-2022-07-19-17_56_41,,"revisit: getbootstrap.com;
+finding a good form to use",,341;320;535;144
+119,2,https://www.youtube.com/watch?t=8495&v=i824zN0DGIo,8495,screencapture-localhost-9000-2022-07-19-17_58_33,,"code: login.html;
+copied in form code from bootstrap website","AN extends “base wt? xb
+
+fa block Wate MtLogin’y enatiteck 1
+fa Black santent &}
+<form class-""forn inline” method-""70S1*>
+giv clans “term group ab 2
+label fors*statichome?™ clagss*se-only aHanee/Tabel>
+input types""tent” readonly <Lasee“turr-contzol-plainteat” 2dz7starsalame2” values “tater Your Mame’>
+cider
+‘div class “form group ox sm 5 no 2°
+elabel for “anputhane’ class “sr only""oManec/label>
+‘input type “test* class “Form contral’ id “anputtone” placehalocr “Foext ane’>
+cdi
+‘button type-tsubmit™ class-""btn ota pramary nb 2"">Sebmit e/butten>
+<form
+
+caeeipt type “teat ssovo euet? MeL uel fet stan ie, Glesomee andes 1s) HP se /seripey
+{8 endblark &}
+",389;316;612;287
+120,2,https://www.youtube.com/watch?t=8516&v=i824zN0DGIo,8516,screencapture-localhost-9000-2022-07-19-17_59_12,,output: ImportError: cannot import name 'Client' from 'client',,
+121,2,https://www.youtube.com/watch?t=8574&v=i824zN0DGIo,8574,screencapture-localhost-9000-2022-07-19-18_00_03,,"output: werkzeug.exceptions.BadRequestKeyError;
+caused by submitting the form",,
+122,2,https://www.youtube.com/watch?t=8627&v=i824zN0DGIo,8627,screencapture-localhost-9000-2022-07-19-18_01_15,,"revisit: techwithtim.net;
+flask tutorial",,
+123,2,https://www.youtube.com/watch?t=8764&v=i824zN0DGIo,8764,screencapture-localhost-9000-2022-07-19-18_03_12,,"code: login.html;
+added a name field to the First Name input to make the form work","{% block title %} Login {% endblock %}
+{% block content %}
+<form class=""form-inline"" action=""#"" method=""POST"">
+  <div class=""form-group mb-2>
+    <label for=""staticName2"" class=""sr=only"">Name</label>
+    <input type=""text"" readonly class=""form-control-plaintext"" id=""staticName2"" value=""Enter your Name"">
+  </div>
+  <div class=""form-group"">
+    <label for=""inputName"" class=""sr-only"">Name</label>
+    <input type=""text"" class=""form-control"" name=""inputName"">
+  </div>
+  <button type=""submit"" class=""btn btn-primary"">Submit</button>
+</form>",389;318;670;223
+124,2,https://www.youtube.com/watch?t=8942&v=i824zN0DGIo,8942,screencapture-localhost-9000-2022-07-19-18_06_44,,"goal: dropdown button isn't working anymore (can't be clicked), I want to fix that",,
+125,2,https://www.youtube.com/watch?t=8942&v=i824zN0DGIo,8942,screencapture-localhost-9000-2022-07-19-18_07_09,,"revisit: stackOverflow;
+reading about dropdown button problem","A tune taal df
+* dabanat + fumctian€ ¢
+Segresouc
+funervon(aatar |
+
+by
+he
+ny
+
+function validatetmane) {
+HFfoame.tengin > 204
+'
+
+eeturs false;
+",297;314;308;265
+126,2,https://www.youtube.com/watch?t=9038&v=i824zN0DGIo,9038,screencapture-localhost-9000-2022-07-20-12_10_33,,"revisit: getbootstrap.com;
+trying to figure out why dropdown button can't be clicked",,
+127,2,https://www.youtube.com/watch?t=9023&v=i824zN0DGIo,9023,screencapture-localhost-9000-2022-07-20-12_09_25,,"code: base.html;
+takes out the collapse button, but doesn't like how it looks","<body>
+  <nav class=""navbar navbar-expand-lg navbar-light bg-light"">
+    <h1 class=""navbar-brand"" href=""#"">CHAT APP</h1>
+    <div class=""navbar-nav"">
+      <a class=""nav-item nav-link active"" href=""#"">Chat</a>
+      <a class=""nav-item nav-link"" href=""#"">Login</a>
+      <a class=""nav-item nav-link"" href=""#"">Logout</a>
+    </div>
+  </nav>
+
+  <div class=""container"">
+    {% block content %}
+    {% endblock %}
+  </div>
+
+
+</body>",372;362;853;389
+128,2,https://www.youtube.com/watch?t=9045&v=i824zN0DGIo,9045,screencapture-localhost-9000-2022-07-20-12_11_44,,revisit: getbootstrap.com,,
+129,2,https://www.youtube.com/watch?t=9066&v=i824zN0DGIo,9066,screencapture-localhost-9000-2022-07-20-12_12_30,,"code: base.html;
+copies in new navbar code","<body>
+  <nav class=""navbar navbar-expand-lg navbar-light bg-light"">
+    <a class=""navbar-brand"" href=""#"">Navbar</a>
+    <div class=""collapse navbar-collapse"" id=""navbarNav"">
+      <ul clas=""navbar-nav"">
+        <li class=""nav-item active"">
+          <a class=""nav-item nav-link active"" href=""#"">Chat</a>
+        </li>
+        <li class=""nav-item"">
+          <a class=""nav-item nav-link"" href=""#"">Login</a>
+        </li>
+        <li class=""nav-item"">
+          <a class=""nav-item nav-link"" href=""#"">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class=""container"">
+    {% block content %}
+    {% endblock %}
+  </div>
+
+
+</body>",370;389;712;304
+130,2,https://www.youtube.com/watch?t=9114&v=i824zN0DGIo,9114,screencapture-localhost-9000-2022-07-20-12_11_44,,"revisit: getbootstrap.com;
+looking for a navbar that doesn't collapse",,
+131,2,https://www.youtube.com/watch?t=9182&v=i824zN0DGIo,9182,screencapture-localhost-9000-2022-07-20-12_12_30,,"code: base.html;
+redoing navbar code","<body>
+  <nav class=""navbar navbar-expand-lg navbar-light bg-light"">
+    <a class=""navbar-brand"" href=""#"">Navbar</a>
+    <div class=""collapse navbar-collapse"" id=""navbarNav"">
+      <ul clas=""navbar-nav"">
+        <li class=""nav-item active"">
+          <a class=""nav-item nav-link active"" href=""#"">Chat</a>
+        </li>
+        <li class=""nav-item"">
+          <a class=""nav-item nav-link"" href=""#"">Login</a>
+        </li>
+        <li class=""nav-item"">
+          <a class=""nav-item nav-link"" href=""#"">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+",374;399;693;300
+132,2,https://www.youtube.com/watch?t=9316&v=i824zN0DGIo,9316,screencapture-localhost-9000-2022-07-20-12_14_09,,"code: base.html;
+fixed dropdown button not working by adding the necessary jquery import ",,
+133,2,https://www.youtube.com/watch?t=9424&v=i824zN0DGIo,9424,screencapture-localhost-9000-2022-07-20-12_15_42,,"code: base.html;
+adds a block called message","button «las
+
+svbar-taggler™ types""button™ data-togdles*i ot Lapse” dat act arget oa rNava markup
+
+span Closs=""navbar-toggler-icon?9¢/span>
+cfeatton>
+ediy classs""rol lapse navbar-col lapse’ ads “navbarNaval Markup"" >
+ediv Class “nasbar-nay"">
+4a class. ""hay item nay Link active’ href. */hame""schat cspan class""se aely"">( current )</$paa>c/a>
+
+ea class-""pay item nay Link” href-“/logia*Logine/ay
+<a class: “nav stem nay Link href */Logout“sLogout </a>
+eidiv>
+aie
+<feav>
+
+(% block message 4}
+1% endblock 4)
+
+ediv class-""container"">
+{% nlock content x}
+1% endblock &F
+</diva
+",403;360;816;329
+134,2,https://www.youtube.com/watch?t=9536&v=i824zN0DGIo,9536,screencapture-localhost-9000-2022-07-20-12_16_58,,"code: base.html;
+added more message blocks","ee wrens
+
+<button «Lire Tnavtar-taggl og gg Btg Ig”
+
+capan classs""navbar-toggle
+</button>
+ediv class=""col Lapse navhar-ral lapse” id
+
+Gdiv (Layee nawbar-nay"">
+
+@ Class thay aten muy Link seraveT href.
+ka class-Tnoy item nav-Link” nref-“/togiay
+¢a class “nay stem aay Link” href -""/tagout
+
+endive
+</i>
+ina
+
+ediv class ‘alert alert dark’ rote ‘alert“>
+{4 block messagesrey 3}
+1% endblock %)
+
+“itive
+
+ediv Classe ‘alert alert-success* rolesatere Oy
+13 endolork 4}
+
+eidiv>
+
+",389;320;454;364
+135,2,https://www.youtube.com/watch?t=9755&v=i824zN0DGIo,9755,screencapture-localhost-9000-2022-07-20-12_19_28,,"code: index.html;
+added messages for if the user logs in or logs out","{3 extends “base. html"" 4}
+
+(4 dlock Lite XPLoging® enddloek X}
+x block nessagesrey 8}
+
+{isessionl *name"" | logged out +H)
+
+{x endbtock ¥}]
+
+{8 block conteat 4}
+cHorm ¢class-""form- inline’ action
+ediv class “farm group mb 2°>
+<label for ‘statichore2” class “sr only’ ohamec/label>
+
+methog-""POSI"">
+
+eamput typesteet? readonly clay statichane!” values “tater Your Nane"">
+<i>
+ediv class “form group m sn 3 mb 2""
+
+label tor-Tinputhane™ class-""sr only” >Manee/label>
+
+form-control-plaanzext™ i
+
+input type-""text? clasa-‘form-cont rol” nane-‘nputNane” id-""inputNane” placeholder-""birst Name"">
+cfdiwe
+button types*vutmit” cLavee""bin btn-pramicy mb-7"">Submit</button>
+
+</fore>
+
+escript type-“teet/javascrigt” sre-""H url fort 'static’, filename-‘andex.ys 1 i) >¢/script>
+
+{% endbiock 8}
+",345;362;733;371
+136,2,https://www.youtube.com/watch?t=9659&v=i824zN0DGIo,9659,screencapture-localhost-9000-2022-07-20-12_19_54,,"code: main.py;
+added code to pass needed parameters to the templates","dapp. routet yo teine ate
+ef Login()
+ME request sethod
+SessronL Mane KEY] = request.fornl 1
+return redirectCurl fort »
+
+return rendertemplatel vtec on
+
+Sapp. rouret )
+get Lopout():
+session pop(MaMt, KEY, None)
+
+retuen redirect(url fort »
+aopp-routel
+opp. routet )
+def howe ):
+MONAME_KEY notin session:
+return redicect(url fort »
+
+return render. tenplatet te Tee, '
+
+sessiont)
+",347;362;589;381
+137,2,https://www.youtube.com/watch?t=9708&v=i824zN0DGIo,9708,screencapture-localhost-9000-2022-07-20-12_20_23,,"revisit: techwithtim.net;
+looking at his flask tutorial again, finding out how to send params through render_template()",,
+138,2,https://www.youtube.com/watch?t=9749&v=i824zN0DGIo,9749,screencapture-localhost-9000-2022-07-20-12_20_54,,"output: TypeError: render_template() takes 1 positional argument, but 2 were given",,
+139,2,https://www.youtube.com/watch?t=9779&v=i824zN0DGIo,9779,screencapture-localhost-9000-2022-07-20-12_20_54,,"revisit: github.com;
+looking at his old projects to see how to pass data through render_template()",,
+140,2,https://www.youtube.com/watch?t=9804&v=i824zN0DGIo,9804,screencapture-localhost-9000-2022-07-20-12_22_15,,"code: main.py;
+added asterisks to correctly pass data to render_template()","Bap -routel over ial ooo
+Bet Logan)
+
+AO request net hod
+
+SeSSionLMANE KEY] = request. forml
+
+return redirect(url fort »”
+Fetuen render templates vat
+app. rouret )
+
+ef Logout):
+‘wessian pop(MANe_KEY, Kone}
+return redirect(url_tort ”
+
+aopp.routel
+
+Aapp-routet )
+def howe):
+Vf -NAME_NEY mot 1a session:
+return redirect(urt fort »
+
+return render template oat
+
+»
+
+session) )
+",347;364;579;375
+141,2,https://www.youtube.com/watch?t=9810&v=i824zN0DGIo,9810,screencapture-localhost-9000-2022-07-20-12_22_57,,output: jinja2.exceptions.TemplateSyntaxError,,
+142,2,https://www.youtube.com/watch?t=9825&v=i824zN0DGIo,9825,screencapture-localhost-9000-2022-07-20-12_23_21,,"code: login.html;
+fixed typo causing error",,
+143,2,https://www.youtube.com/watch?t=9963&v=i824zN0DGIo,9963,screencapture-localhost-9000-2022-07-20-12_25_05,,goal: Now I am going to make it so that you can type in messages,,
+144,2,https://www.youtube.com/watch?t=9970&v=i824zN0DGIo,9970,screencapture-localhost-9000-2022-07-20-12_25_05,,search: scroll view html bootstrap,,
+145,2,https://www.youtube.com/watch?t=9972&v=i824zN0DGIo,9972,screencapture-localhost-9000-2022-07-20-12_25_38,,"visit: w3schools.com;
+Bootstrap Scrollspy Plugin (Advanced)",,
+146,2,https://www.youtube.com/watch?t=10052&v=i824zN0DGIo,10052,screencapture-localhost-9000-2022-07-20-12_27_00,,search: html scroll view updated from flask backend,,
+147,2,https://www.youtube.com/watch?t=10058&v=i824zN0DGIo,10058,screencapture-localhost-9000-2022-07-20-12_28_22,,"revisit: stackOverflow;
+Flask Dynamic update without reloading page",,
+148,2,https://www.youtube.com/watch?t=10115&v=i824zN0DGIo,10115,screencapture-localhost-9000-2022-07-20-12_28_22,,"visit: mdbootstrap.com;
+table scroll - horizontal and vertical",,
+149,2,https://www.youtube.com/watch?t=10125&v=i824zN0DGIo,10125,screencapture-localhost-9000-2022-07-20-12_28_39,,goal: let's make something that sends the chat to all users,,
+150,2,https://www.youtube.com/watch?t=10133&v=i824zN0DGIo,10133,screencapture-localhost-9000-2022-07-20-12_28_58,,"revisit: getbootstrap.com;
+finding a form to use for message submission",,
+151,2,https://www.youtube.com/watch?t=10192&v=i824zN0DGIo,10192,screencapture-localhost-9000-2022-07-20-12_29_44,,"code: index.html;
+copied in a new form","{% extends ""base.html"" %}
+
+{% block title %}Home{% endblock %}
+{% block content %}
+
+<h1>TEST</h1>
+
+<div class=""input-group mb-3"">
+  <input type=""text"" class=""form-control"">
+  <div class=""input-group-append"">
+    <button class=""btn btn-outline-primary"" type=""button"">Button</button>
+  </div>
+</div>
+
+{% endblock %}",
+152,2,https://www.youtube.com/watch?t=10314&v=i824zN0DGIo,10314,screencapture-localhost-9000-2022-07-20-12_31_25,,search: call python function from JavaScript with parameter,"ont) d
+).binat
+$.get 150M .
+functson(aata) {
+value + document -get€lement y10(
+vi
+return fas
+
+valadate(name) {
+
+wane. lengeh >= 131
+return true:
+
+yen false:
+
+",403;360;816;329
+153,2,https://www.youtube.com/watch?t=10337&v=i824zN0DGIo,10337,screencapture-localhost-9000-2022-07-20-12_31_57,,revisit: stackOverflow;,"Meunctvont) 1
+
+“ De binet = tuner rant) {
+$-get 50M . 1
+functson(aata) {
+value = document -get€lenentByID( 1.¢
+
+Di
+eaturn Halse:
+De
+Ds
+
+function valadate(nane) {
+a
+
+at(nane, Lenget
+return true:
+
+)
+
+return (aise:
+",344;365;368;270
+155,2,https://www.youtube.com/watch?t=10425&v=i824zN0DGIo,10425,screencapture-localhost-9000-2022-07-20-12_32_56,,search: ajax getjson pass parameters,,
+156,2,https://www.youtube.com/watch?t=10425&v=i824zN0DGIo,10425,screencapture-localhost-9000-2022-07-20-12_33_17,,"revisit: stackOverflow;
+learning how to pass parameters to getjson() in ajax","Sfurctionc) {
+¥ ).binat + tome t sot) {
+Seger isoKl '
+functaontaata) {
+value + document get€lenentoyidt
+ni
+eeturn false:
+Ds
+De
+
+function valadate( name) {
+affnane Length >= 131
+return true:
+,
+return false:
+",350;363;365;263
+157,2,https://www.youtube.com/watch?t=10667&v=i824zN0DGIo,10667,screencapture-localhost-9000-2022-07-20-12_40_54,,"code: index.html;
+edited messageSend button code to try and get it to work
+
+","a
+
+control” placeholder. “Message’ aria Label.“Wessage” ad.
+
+ve-secondary” type-""butten” id-“senattn"">Send</buhton>
+",350;367;361;206
+158,2,https://www.youtube.com/watch?t=10755&v=i824zN0DGIo,10755,screencapture-localhost-9000-2022-07-20-12_42_32,,"code: index.html;
+put the submit button inside of a form, this didn't solve issue","{% extends ""base.html"" %}
+
+{% block title %}Home{% endblock %}
+{% block content %}
+
+<h1>TEST</h1>
+
+<div class=""input-group mb-3"">
+  <form>
+    <input type=""text"" class=""form-control"">
+    <div class=""input-group-append"">
+      <button class=""btn btn-outline-primary"" type=""button"">Button</button>
+    </div>
+  </form>
+</div>
+
+{% endblock %}",357;365;353;251
+159,2,https://www.youtube.com/watch?t=10815&v=i824zN0DGIo,10815,screencapture-localhost-9000-2022-07-20-12_43_31,,"other: cleared his web cache, which caused button to begin working again",,
+160,2,https://www.youtube.com/watch?t=10824&v=i824zN0DGIo,10824,screencapture-localhost-9000-2022-07-20-12_43_48,,output: Uncaught ReferenceError: $ is not defined at VM272_index.js:1,,
+161,2,https://www.youtube.com/watch?t=10888&v=i824zN0DGIo,10888,screencapture-localhost-9000-2022-07-20-12_44_56,,"code: base.html;
+removed an old jquery import","  <div class=""container"">
+    {% block content %}
+    {% endblock %}
+  </div>
+
+  <script src=""""></script>
+  <script src=""""></script>
+  <script src=""""></script>
+</body>",350;393;875;210
+162,2,https://www.youtube.com/watch?t=10898&v=i824zN0DGIo,10898,screencapture-localhost-9000-2022-07-20-12_44_05,,output: Uncaught TypeError: $.getJSON is not a function at HTMLButtonElement.<anonymous> (index.js:3),,
+163,2,https://www.youtube.com/watch?t=10945&v=i824zN0DGIo,10945,screencapture-localhost-9000-2022-07-20-12_46_31,,"code: base.html;
+deleted and readded jquery import to try and fix bugs","  <div class=""container"">
+    {% block content %}
+    {% endblock %}
+  </div>
+
+  <script src=""""></script>
+  <script src=""""></script>
+  <script src=""""></script>
+  <script src=""""></script>
+</body>",
+164,2,https://www.youtube.com/watch?t=11247&v=i824zN0DGIo,11247,screencapture-localhost-9000-2022-07-20-12_49_55,,"code: index.js;
+adding code to get and pass parameters to .getJSON() ","$.function() {
+           $('#sendBtn').bind('click, function() {
+             var value = document.getElementById(""msg"").value()
+             console.log(value)
+             $.getJSON('/run',
+               function(data) {
+                 //do nothing
+               });
+               return False;
+              });
+            });
+
+function validate(name) {
+  if(name.length >= 2) {
+    return true
+  }
+  return false
+}",346;361;368;306
+165,2,https://www.youtube.com/watch?t=11367&v=i824zN0DGIo,11367,screencapture-localhost-9000-2022-07-20-12_50_33,,search: jquery call python function with parameters,,
+166,2,https://www.youtube.com/watch?t=11367&v=i824zN0DGIo,11367,screencapture-localhost-9000-2022-07-20-12_50_47,,"revisit: stackOverflow;
+passing arguments from javascript to python function",,
+167,2,https://www.youtube.com/watch?t=11429&v=i824zN0DGIo,11429,screencapture-localhost-9000-2022-07-20-12_51_28,,output: GET 404 (NOT FOUND),,
+168,2,https://www.youtube.com/watch?t=11542&v=i824zN0DGIo,11542,screencapture-localhost-9000-2022-07-20-12_52_52,,"revisit: techwithtim.net;
+viewing his flask tutorial to find how to get data from get request to flask",,
+169,2,https://www.youtube.com/watch?t=11542&v=i824zN0DGIo,11542,screencapture-localhost-9000-2022-07-20-12_53_04,,search: flask get request,,
+170,2,https://www.youtube.com/watch?t=11563&v=i824zN0DGIo,11563,screencapture-localhost-9000-2022-07-20-12_53_47,,"visit: flask.palletsprokects.com;
+learning how to receive data from GET request to flask app",,
+171,2,https://www.youtube.com/watch?t=11622&v=i824zN0DGIo,11622,screencapture-localhost-9000-2022-07-20-12_54_31,,"code: main.py;
+added code to get and print message sent to server","mapp.routed
+
+pape. route >
+Jef home()
+AF NAME KEY not in sevston
+Feture redirect(uel_fort »
+
+retura render templatet true
+
+Dap routel pret tb 1)
+seF runt ) -
+mag + request.args.gett *
+prnat(asg) .
+",357;372;357;251
+173,2,https://www.youtube.com/watch?t=11747&v=i824zN0DGIo,11747,screencapture-localhost-9000-2022-07-20-12_56_36,,"code: main.py;
+a client is now created when somebody visits the home page","@app.route('/home')
+def home():
+  if NAME_KEY not in session:
+    return redirect(url_for('login'))
+  
+  client = Client(session[NAME_KEY])
+  session[""client""] = client
+  return render_template(""index.html"", **['login':True, ""session"":session})
+
+@app.route(""/run/"", methods=[""GET""]):
+def run(url=None):
+  msg = request.args.get(""url"")
+  if ""client"" not in session:
+    return ""none""",350;363;507;268
+174,2,https://www.youtube.com/watch?t=11786&v=i824zN0DGIo,11786,screencapture-localhost-9000-2022-07-20-12_57_20,,"code: main.py;
+added code to send messages to the client when posted","Meunctvont) 1
+
+“ De binet = tuner rant) {
+$-get 50M . 1
+functson(aata) {
+value = document -get€lenentByID( 1.¢
+
+Di
+eaturn Halse:
+De
+Ds
+
+function valadate(nane) {
+a
+
+at(nane, Lenget
+return true:
+
+)
+
+return (aise:
+f",348;361;363;284
+175,2,https://www.youtube.com/watch?t=11786&v=i824zN0DGIo,11786,screencapture-localhost-9000-2022-07-20-12_57_36,,output: TypeError: Object of type Client is not JSON serializable,,
+176,2,https://www.youtube.com/watch?t=11823&v=i824zN0DGIo,11823,screencapture-localhost-9000-2022-07-20-12_58_36,,search: flask session object of type is not json serializable,,
+177,2,https://www.youtube.com/watch?t=11826&v=i824zN0DGIo,11826,screencapture-localhost-9000-2022-07-20-12_58_56,,"revisit: stackOverflow;
+making item json serializable in flask",,
+178,2,https://www.youtube.com/watch?t=11919&v=i824zN0DGIo,11919,screencapture-localhost-9000-2022-07-20-13_00_03,,"code: main.py;
+fixed client creation code (and run() code)","@app.route('/home')
+def home():
+  if NAME_KEY not in session:
+    return redirect(url_for('login'))
+  
+  client = Client(session[NAME_KEY])
+  return render_template(""index.html"", **['login':True, ""session"":session})
+
+@app.route(""/run/"", methods=[""GET""]):
+def run(url=None):
+  msg = request.args.get(""val"")
+  if client != None:
+    client.send_message(msg)
+
+  return ""none""
+
+if __name__ == ""__main__"":
+  app.run(debug=True)",353;376;516;268
+179,2,https://www.youtube.com/watch?t=11984&v=i824zN0DGIo,11984,screencapture-localhost-9000-2022-07-20-13_01_30,,output: OK; server now successfully receives and prints messages from web,"aap. route fu anny
+det run(ii | mars):
+
+global client
+
+msg = request.args.get(""vul"")
+if client. J. None:
+
+‘client. send_nessage(nsg)
+
+return “iu
+",355;397;332;193
+180,2,https://www.youtube.com/watch?t=12128&v=i824zN0DGIo,12128,screencapture-localhost-9000-2022-07-20-13_03_26,,"code: main.py;
+added code to ensure client is always disconnected properly (disconnect() should always be called before client disconnects from server)","NAME_KEY = 'name'
+client = None
+app = Flask(__name__)
+app.secret_key = ""kjawndkajnwdka""
+
+def disconnect():
+  global client
+  if client:
+    client.disconnect()
+
+@app.route(""/login"", methods=[""POST"",""GET""])
+def login():
+  disconnect()
+  if request.method == ""POST"":
+    session[NAME_KEY] = request.formn[""inputName""]
+    return redirect(url_for(""home""))",350;384;668;382
+181,2,https://www.youtube.com/watch?t=12243&v=i824zN0DGIo,12243,screencapture-localhost-9000-2022-07-20-13_18_54,,goal: the clients must update to show the messages being sent ,,
+182,2,https://www.youtube.com/watch?t=12278&v=i824zN0DGIo,12278,screencapture-localhost-9000-2022-07-20-13_18_54,,"revisit: stackOverflow;
+flask dynamic data update without reloading page",,
+183,2,https://www.youtube.com/watch?t=12298&v=i824zN0DGIo,12298,screencapture-localhost-9000-2022-07-20-13_19_29,,"visit: medium;
+add dynamic components to HTML templates",,
+184,2,https://www.youtube.com/watch?t=12322&v=i824zN0DGIo,12322,screencapture-localhost-9000-2022-07-20-13_20_51,,search: update html without reloading page flask,,
+185,2,https://www.youtube.com/watch?t=12339&v=i824zN0DGIo,12339,screencapture-localhost-9000-2022-07-20-13_21_12,,"revisit: stackOverflow;
+update div content without refreshing page",,
+186,2,https://www.youtube.com/watch?t=12399&v=i824zN0DGIo,12399,screencapture-localhost-9000-2022-07-20-13_22_08,,goal: I'm going to make a function that will return the messages from the client,,
+187,2,https://www.youtube.com/watch?t=12496&v=i824zN0DGIo,12496,screencapture-localhost-9000-2022-07-20-13_23_14,,"code: main.py;
+makes a Thread in the background for the update_messages() function that constantly updates all of the messages that have been sent to the server (gathers new messages every few milliseconds)","msgs = []
+run = True
+while run:
+  time.sleep(0.1)
+  if not client: continue
+  new_messages = client.get_messages()
+  msgs.extend(new_messages)
+ 
+  for msg in new_messages:
+    print(msg)
+
+    if msg == ""[quit]"":
+      run = False
+      break
+
+if __name__ == ""__main__"":
+  app.run(debug==True)
+  Thread(target=update_messages).start()",361;363;549;386
+188,2,https://www.youtube.com/watch?t=12544&v=i824zN0DGIo,12544,screencapture-localhost-9000-2022-07-20-13_24_23,,goal: make an api endpoint that returns all messages,,
+189,2,https://www.youtube.com/watch?t=12660&v=i824zN0DGIo,12660,screencapture-localhost-9000-2022-07-20-13_25_54,,"visit: www.odoo.com;
+run python function from jquery ajax get request",,
+190,2,https://www.youtube.com/watch?t=12688&v=i824zN0DGIo,12688,screencapture-localhost-9000-2022-07-20-13_27_05,,"visit: healeycodes.com;
+how to return AJAX post value?","pi function() £
+$C erend8le').bind( Tics , Funetion() {
+var value = document .getFlenent ByTdC ag""). valu
+console.Log¢value)
+Seger ISONC' Saercd wessace
+{val:value},
+function(data) {
+
+Dy
+return false;
+
+oH
+
+Function validate(name) {
+if{name length >= 2)4
+retuen true;
+}
+
+return false;
+",359;363;353;329
+191,2,https://www.youtube.com/watch?t=12837&v=i824zN0DGIo,12837,screencapture-localhost-9000-2022-07-20-13_28_30,,"code: main.py;
+added an endpoint called get_messages() that returns a JSON response of all messages","@app.route(""/get_messages"")
+def get_messages():
+  return jsonify({""messages"": messages})",357;372;357;251
+192,2,https://www.youtube.com/watch?t=13003&v=i824zN0DGIo,13003,screencapture-localhost-9000-2022-07-20-13_30_51,,"code: index.js;
+adds JS block that uses fetch API to make a GET request for all messages","function validate(name) {
+  if (name.length >= 2) {
+    return True;
+  }
+  return False;
+}
+
+fetch(""/get_messages"")
+  .then(function (resposne) {
+    return response.text();
+  }).then(function (text) {
+      console.log(""GET response text:"");
+      console.log(text);
+  }};",355;365;357;354
+193,2,https://www.youtube.com/watch?t=13084&v=i824zN0DGIo,13084,screencapture-localhost-9000-2022-07-20-13_31_51,,"code: index.js;
+moved fetch call inside a function so that it gets called","      {val:value}
+      function(data)
+      });
+  fetch(""/get_messages"")
+    .then(function (resposne) {
+      return response.text();
+    }).then(function (text) {
+        console.log(""GET response text:"");
+        console.log(text);
+    }};",355;370;353;236
+194,2,https://www.youtube.com/watch?t=13125&v=i824zN0DGIo,13125,screencapture-localhost-9000-2022-07-20-13_32_28,,output: OSError [WinError 10038] An operation was attempted on something that is not a socket,,
+195,2,https://www.youtube.com/watch?t=13158&v=i824zN0DGIo,13158,screencapture-localhost-9000-2022-07-20-13_33_19,,"output: OK;
+fetch is correctly making GET request",,
+196,2,https://www.youtube.com/watch?t=13214&v=i824zN0DGIo,13214,screencapture-localhost-9000-2022-07-20-13_34_09,,"code: main.py;
+he had the wrong endpoint link in line 65, fixed it","@app.route(""/send_message"", methods=[""GET""])
+def send_message():
+  global client
+  msg = request.args.get(""val"")
+
+  if client:
+    client.send_message(msg)
+
+  return ""none""",361;370;325;246
+197,2,https://www.youtube.com/watch?t=13233&v=i824zN0DGIo,13233,screencapture-localhost-9000-2022-07-20-13_34_29,,output: OK;,,
+199,2,https://www.youtube.com/watch?t=13364&v=i824zN0DGIo,13364,screencapture-localhost-9000-2022-07-20-13_36_28,,goal: messages are not being saved correctly (list is empty when it shouldn't be),,
+200,2,https://www.youtube.com/watch?t=13436&v=i824zN0DGIo,13436,screencapture-localhost-9000-2022-07-20-13_37_49,,"code: main.py;
+added line 107 to try and make message saving work correctly (the problem was something with the thread)","  for msg in new_messages:
+    print(msg)
+    if msg == ""{quit}"":
+      run = False
+      break
+
+if __name__ == ""__main__"":
+  Thread(target=update_messages).start()
+  app.run(debug=True)",361;370;353;200
+201,2,https://www.youtube.com/watch?t=13570&v=i824zN0DGIo,13570,screencapture-localhost-9000-2022-07-20-13_39_25,,search: javascript constantly run function,,
+202,2,https://www.youtube.com/watch?t=13570&v=i824zN0DGIo,13570,screencapture-localhost-9000-2022-07-20-13_39_41,,"visit: rafaelservantez.com;
+javascript & continuous updating",,
+203,2,https://www.youtube.com/watch?t=13678&v=i824zN0DGIo,13678,screencapture-localhost-9000-2022-07-20-13_41_01,,search: javascript on document load,,
+204,2,https://www.youtube.com/watch?t=13678&v=i824zN0DGIo,13678,screencapture-localhost-9000-2022-07-20-13_41_12,,"revisit: stackOverflow;
+javascript on document load",,
+205,2,https://www.youtube.com/watch?t=13755&v=i824zN0DGIo,13755,screencapture-localhost-9000-2022-07-20-13_42_02,,code; index.js; added the update messages fetch call into a setTimeout so that it gets called every 0.1 seconds,"window.addEventListener(""load"", function(){
+  var update_loop = setInterval(update,100)
+  update()
+});
+
+function update(){
+  fetch(""/get_messages"")
+    .then(function (resposne) {
+      return response.text();
+    }).then(function (text) {
+        console.log(""GET response text:"");
+        console.log(text);
+    }};",355;370;359;361
+206,2,https://www.youtube.com/watch?t=13786&v=i824zN0DGIo,13786,screencapture-localhost-9000-2022-07-20-13_42_41,,"output: tim has joined the chat;
+app is now correctly broadcasting when a user joins the chat room",,
+207,2,https://www.youtube.com/watch?t=13858&v=i824zN0DGIo,13858,screencapture-localhost-9000-2022-07-20-13_43_53,,"output: OSError [WinError 10038] An operation was attempted on something that is not a socket;
+happened when he tried to put a second user in the chat room",,
+208,2,https://www.youtube.com/watch?t=13915&v=i824zN0DGIo,13915,screencapture-localhost-9000-2022-07-20-13_45_48,,"code: client.py;
+fixed up send_message() code to make it so that multiple people can join chat room and to display any exceptions it causes","def send_message(self, msg):
+  try: 
+    self.client_socket.send(bytes(msg, ""utf8""))
+    if msg == ""{quit}"":
+      self.client_socket.close()
+  except Exception as e:
+    self.client_socket = socket(AF_INET, SOCK_STREAM)
+    self.client_socket.connect(self.ADDR)
+    print(e)",355;393;355;363
+209,2,https://www.youtube.com/watch?t=14009&v=i824zN0DGIo,14009,screencapture-localhost-9000-2022-07-20-13_46_44,,"code: index.js;
+added code to update HTML with messages","function update(){
+  fetch(""/get_messages"")
+    .then(function (resposne) {
+      return response.text();
+    }).then(function (text) {
+        console.log(""GET response text:"");
+        document.getElementById(""test"").innerHTML = text
+    }};
+    return False
+};",355;410;353;268
+210,2,https://www.youtube.com/watch?t=14081&v=i824zN0DGIo,14081,screencapture-localhost-9000-2022-07-20-13_47_43,,search: document getelementbyid innerhtml value,"Q .
+
+pdate(
+“eels enseges )
+sthea( function (response) {
+return response.text(;
+¥.then(function (text) {
+document. getELenenteyrd(«
+De
+return false;
+
+Jeinmertext = text;
+
+‘NApacondattenustchat Apotuuth:
+",359;363;353;328
+211,2,https://www.youtube.com/watch?t=14083&v=i824zN0DGIo,14083,screencapture-localhost-9000-2022-07-20-13_47_43,,"revisit: w3schools.com;
+HTML DOM innerHTML Property","pdated
+
+alesneges )
+
+sthea( function (response) {
+return response.text(;
+
+¥.then(function (text) {
+document. getELenenteyrd(«
+
+De
+
+return false;
+
+Jeinmertext = text;
+
+",357;397;351;183
+212,2,https://www.youtube.com/watch?t=14127&v=i824zN0DGIo,14127,screencapture-localhost-9000-2022-07-20-13_48_39,,other: switched to incognito mode to try and solve errors,,
+213,2,https://www.youtube.com/watch?t=14265&v=i824zN0DGIo,14265,screencapture-localhost-9000-2022-07-20-13_48_39,,"goal: sending messages to server and displaying messages both are not working, goal is to fix these",,
+214,2,https://www.youtube.com/watch?t=14419&v=i824zN0DGIo,14419,screencapture-localhost-9000-2022-07-20-13_52_04,,other: clears cache to fix errors,,
+215,2,https://www.youtube.com/watch?t=14419&v=i824zN0DGIo,14419,screencapture-localhost-9000-2022-07-20-13_52_04,,output: Uncaught SyntaxError: Unexpected token ')'  VM31_index.js:27,,
+216,2,https://www.youtube.com/watch?t=14582&v=i824zN0DGIo,14582,screencapture-localhost-9000-2022-07-20-13_54_10,,"code: index.js;
+just trying to find any typos to fix that could be causing error","$(function() {
+  $('#sendBtn').bind('click', function() {
+    var msg = document.getElementById('msg)
+    var value = msg.value
+    msg.value = ''
+    
+    $.getJSON('/send_message',
+      {val:value},
+      function(data) {
+
+      });
+});
+}",350;363;355;217
+217,2,https://www.youtube.com/watch?t=14582&v=i824zN0DGIo,14582,screencapture-localhost-9000-2022-07-20-13_54_10,,output: Uncaught SyntaxError: missing ) after argument list  VM95_index.js:13,"$(function() 1
+$(""asurdesu' }ebind( ""Live, Funetion() {
+var msg = document. getFlementByTd(""s2"")
+var value = msg.value
+nsg-value =
+
+$.BetISONG sont nessaac
+{val:value},
+
+function(data)
+
+Dp:
+",350;363;336;223
+218,2,https://www.youtube.com/watch?t=14726&v=i824zN0DGIo,14726,screencapture-localhost-9000-2022-07-20-13_54_10,,"code: index.js;
+added parenthesis to line 13 to fix error ","$(function() {
+  $('#sendBtn').bind('click', function() {
+    var msg = document.getElementById('msg)
+    var value = msg.value
+    msg.value = ''
+    
+    $.getJSON('/send_message',
+      {val:value},
+      function(data) {
+
+      });
+});
+}",346;363;348;202
+219,2,https://www.youtube.com/watch?t=14741&v=i824zN0DGIo,14741,screencapture-localhost-9000-2022-07-20-13_57_24,,"output: Uncaught (in promise) TypeError: Cannot set property 'innerHTML' of null at VM199_index.js:23;
+setTimeout() is not working for the update_function() method",,
+220,2,https://www.youtube.com/watch?t=14861&v=i824zN0DGIo,14861,screencapture-localhost-9000-2022-07-20-13_58_52,,search: uncaught in promise,,
+221,2,https://www.youtube.com/watch?t=14861&v=i824zN0DGIo,14861,screencapture-localhost-9000-2022-07-20-13_59_02,,"revisit: stackOverflow;
+uncaught in promise",,
+222,2,https://www.youtube.com/watch?t=15011&v=i824zN0DGIo,15011,screencapture-localhost-9000-2022-07-20-14_00_34,,search: javascript not finding element by id,,
+223,2,https://www.youtube.com/watch?t=15011&v=i824zN0DGIo,15011,screencapture-localhost-9000-2022-07-20-14_00_50,,"revisit: stackOverflow;
+javascript not finding element by id",,
+224,2,https://www.youtube.com/watch?t=15048&v=i824zN0DGIo,15048,screencapture-localhost-9000-2022-07-20-14_01_23,,"code: index.js;
+changed to window.onload to try and fix error, also removed extra parenthesis","window.onload = function (){
+  var update_loop = setInterval(update, 100)
+  var test = document.getElementById(""test"")
+  console.log(test.innerHTML)
+  update()
+};
+
+function update(){
+  fetch('/get_messages')
+    .then(function (text) {
+      document.getElementById(""test"").textContent
+     });
+  return false;
+}",353;429;363;234
+225,2,https://www.youtube.com/watch?t=15167&v=i824zN0DGIo,15167,screencapture-localhost-9000-2022-07-20-14_03_20,,"code: index.js;
+added in part of the promise chain in the fetch call that he accidently deleted earlier (this was causing errors)","window.onload = function (){
+  var update_loop = setInterval(update, 100)
+  var test = document.getElementById(""test"")
+  console.log(test.innerHTML)
+  update()
+};
+
+function update(){
+  fetch('/get_messages')
+    .then(function (response) {
+      return response.text()
+    }.then(function (text) {
+      document.getElementById(""test"").textContent
+    });
+  return false;
+}",355;414;357;236
+226,2,https://www.youtube.com/watch?t=15236&v=i824zN0DGIo,15236,screencapture-localhost-9000-2022-07-20-14_04_21,,"output: OK;
+new messages are now being retrieved and displayed in the web app",,
+227,2,https://www.youtube.com/watch?t=15288&v=i824zN0DGIo,15288,screencapture-localhost-9000-2022-07-20-14_05_17,,"code: index.js;
+edits fetch call so that we turn response data into json (line 23)","window.onload = function (){
+  var update_loop = setInterval(update, 100)
+  var test = document.getElementById(""test"")
+  console.log(test.innerHTML)
+  update()
+};
+
+function update(){
+  fetch('/get_messages')
+    .then(function (response) {
+      return response.json()
+    }.then(function (text) {
+      document.getElementById(""test"").textContent
+    });
+  return false;
+}",357;365;355;333
+228,2,https://www.youtube.com/watch?t=15294&v=i824zN0DGIo,15294,screencapture-localhost-9000-2022-07-20-14_05_30,,search: javascript json object,,
+229,2,https://www.youtube.com/watch?t=15292&v=i824zN0DGIo,15292,screencapture-localhost-9000-2022-07-20-14_06_00,,"visit developer.mozilla.org;
+working with JSON - learn web development",,
+230,2,https://www.youtube.com/watch?t=15320&v=i824zN0DGIo,15320,screencapture-localhost-9000-2022-07-20-14_06_33,,search: javascript for loop of,,
+231,2,https://www.youtube.com/watch?t=15323&v=i824zN0DGIo,15323,screencapture-localhost-9000-2022-07-20-14_06_59,,"revisit: w3schools.com;
+javascript for loop of",,
+232,2,https://www.youtube.com/watch?t=15323&v=i824zN0DGIo,15323,screencapture-localhost-9000-2022-07-20-14_08_03,,"code: index.js;
+added a for loop to add all messages to the page's HTML","window.onload = function (){
+  var update_loop = setInterval(update, 100)
+  var test = document.getElementById(""test"")
+  console.log(test.innerHTML)
+  update()
+};
+
+function update(){
+  fetch('/get_messages')
+    .then(function (response) {
+      return response.json()
+    }.then(function (text) {
+      for (value of text['messages']){
+        document.write(value + ""<br >"");
+      }
+    });
+  return false;
+}",350;416;351;287
+233,2,https://www.youtube.com/watch?t=15498&v=i824zN0DGIo,15498,screencapture-localhost-9000-2022-07-20-14_08_49,,search: add elements to html list view javascript,,
+234,2,https://www.youtube.com/watch?t=15500&v=i824zN0DGIo,15500,screencapture-localhost-9000-2022-07-20-14_09_15,,"revisit: w3schools.com;
+appendChild() = HTML DOM appendChild() method",,
+235,2,https://www.youtube.com/watch?t=15587&v=i824zN0DGIo,15587,screencapture-localhost-9000-2022-07-20-14_10_19,,"code: index.js;
+worked on for loop that displays all messages","window.onload = function (){
+  var update_loop = setInterval(update, 100)
+  var test = document.getElementById(""test"")
+  console.log(test.innerHTML)
+  update()
+};
+
+function update(){
+  fetch('/get_messages')
+    .then(function (response) {
+      return response.json()
+    }.then(function (text) {
+      for (value of text['messages']){
+        messages = messages + ""<br >"" + value
+      }
+      document.getElementById(""test"").innerHTML = messages
+    });
+  return false;
+}",346;393;492;295
+236,2,https://www.youtube.com/watch?t=15902&v=i824zN0DGIo,15902,screencapture-localhost-9000-2022-07-20-14_16_12,,"revisit: github.com;
+he's going to make a repo",,
+237,2,https://www.youtube.com/watch?t=15974&v=i824zN0DGIo,15974,screencapture-localhost-9000-2022-07-20-14_16_12,,"git: clone;
+cloned the repo he created for the project",,
+238,2,https://www.youtube.com/watch?t=16016&v=i824zN0DGIo,16016,screencapture-localhost-9000-2022-07-20-14_16_49,,git: add *,,
+239,2,https://www.youtube.com/watch?t=16043&v=i824zN0DGIo,16043,screencapture-localhost-9000-2022-07-20-14_17_14,,"git: commit -m ""first days work"";
+makes init commit to repo",,

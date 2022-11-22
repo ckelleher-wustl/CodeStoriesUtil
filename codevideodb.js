@@ -9,18 +9,21 @@ const levenshtein = require('js-levenshtein');
 
 const app = express();
 const port = 3000;
-myDB = new CodingDB("./foodNotFood.db");
+// myDB = new CodingDB("./foodNotFood.db");
+myDB = new CodingDB("./techWithTim1.db");
+// myDB = new CodingDB("./wordle_polished.db");
 //myDB = new CodingDB("./slam.db");
 ocr = new OCR();
 
-var directory = ':/Users/ckelleher/Downloads/screencap/foodNotFood'; 
+var directory = '/Users/joeyallen/Downloads/screencap_slam'; 
 console.log("DB = " + myDB + "; OCR = " + ocr);
 
-// e.g. for using git history
-// if git folder is on Box, need to verify that it's safe to access
-// "git config --global --add safe.directory C:/Users/thien/Box/project/project"
-// cd to that directory and run "git prune" to resolve any corrupted files
-// make sure to comment out myDB, ocr, and log statement above and uncomment the following
+
+/* e.g. for using git history
+if git folder is on Box, need to verify that it's safe to access
+"git config --global --add safe.directory C:/Users/thien/Box/project/project"
+cd to that directory and run "git prune" to resolve any corrupted files
+make sure to comment out myDB, ocr, and log statement above and uncomment the following */
 // var userDir = String.raw`C:\Users\thien\Box\project\project`;
 // var eventsFile = String.raw`C:\Users\thien\Box\data_garbage_classification_original_time.csv`;
 // myDB = new GitHistory(userDir, eventsFile);
