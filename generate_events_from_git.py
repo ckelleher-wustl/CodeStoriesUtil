@@ -5,14 +5,13 @@ import sys
 import requests
 import urllib
 import pandas as pd
-from PyQt5.QtWidgets import QApplication
 from bs4 import BeautifulSoup
 import datetime
 import time
-from generate_screencapture_helper import Screenshot
+from generate_screencapture_helper import ScreenCapture
 
 # data (or webData) refers to web data recorded by the browser extension
-DATA_FILE_NAME = r'C:\Users\thien\Box\project\project\data'
+DATA_FILE_NAME = r'C:\Users\thien\Desktop\webDataViz\data_git_classification'
 
 # output file name
 CSV_FILE_NAME = 'data_garbage_classification_original_time.csv'
@@ -80,7 +79,7 @@ def get_source(url):
         return soup
 
     except requests.exceptions.RequestException as e:
-        print(e)
+        print(url, e)
 
 
 def parse_titles(response):
@@ -166,6 +165,17 @@ def final_check(dataframe):
     # check if consecutive titles are the same
     # if the former title has visit and the latter title has revisit, drop the latter title
     dataframe.drop(dataframe[dataframe['title_info'].shift(1) == dataframe['title_info']].index, inplace=True)
+
+    dataframe['dwell_time'] = 0
+
+    # for new action that contains 'visit' or 'revisit', get the difference between the next row's timestamp and the current row's timestamp
+    dataframe.loc[dataframe['new_action'].str.contains('visit'), 'dwell_time'] = dataframe['time'].shift(-1) - dataframe['time']
+
+    # remove row with dwell time less than 2.5 seconds and new action that contains 'visit' or 'revisit'
+    dataframe.drop(dataframe[(dataframe['dwell_time'] < 2.5) & (dataframe['new_action'].str.contains('visit'))].index, inplace=True)
+
+    # remove row with 'research' action
+    dataframe.drop(dataframe[dataframe['new_action'] == 'research'].index, inplace=True)
 
     # remove quotation marks from the title_info column
     dataframe['title_info'] = dataframe['title_info'].apply(lambda x: x.replace('"', ''))
@@ -275,7 +285,7 @@ def run():
 
     start_time = time.time()
 
-    app = QApplication(sys.argv)
+    sc = ScreenCapture()
 
     # iterate through the dataframe
     for i in range(0, len(df_copy)):
@@ -287,25 +297,16 @@ def run():
         # get the timed_url
         timed_url = row['timed_url']
 
+        print(timed_url)
+
         # convert the timestamp to this format 2022-08-09-14_52_58
         timestamp = datetime.datetime.fromtimestamp(timestamp)
         timestamp = timestamp.strftime('%Y-%m-%d-%H_%M_%S')
 
-        s = Screenshot()
-        s.app = app
-
         if 'youtube.com' in timed_url:
-            s.capture(timed_url, 'imgs_git_webdata/screencapture-n' + str(i) + '_' + str(timestamp) + '-youtube.png')
-            app.exec_()
-
-            # set the img_file column to the name of the image file
-            img_file_df.loc[i, 'img_file'] = 'screencapture-n' + str(i) + '_' + str(timestamp) + '-youtube.png'
+            img_file_df.loc[i, 'img_file'] = sc.capture(timed_url, 'imgs_git_webdata/screencapture-n' + str(i) + '_' + str(timestamp) + '-youtube.png')
         else:
-            s.capture(timed_url, 'imgs_git_webdata/screencapture-n' + str(i) + '_' + str(timestamp) + '.png')
-            app.exec_()
-
-            # set the img_file column to the name of the image file
-            img_file_df.loc[i, 'img_file'] = 'screencapture-n' + str(i) + '_' + str(timestamp) + '.png'
+            img_file_df.loc[i, 'img_file'] = sc.capture(timed_url, 'imgs_git_webdata/screencapture-n' + str(i) + '_' + str(timestamp) + '.png')
 
     end_time = time.time()
     print("--- %s minutes ---" % ((end_time - start_time) / 60))

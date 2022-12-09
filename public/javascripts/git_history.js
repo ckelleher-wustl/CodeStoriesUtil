@@ -245,8 +245,8 @@ class GitHistory {
                 entry.notes = event.action + ": " + event.info + ";"; // combine action and info
                 entry.img_file = event.img_file;
 
-                // if event action is "commit", then get code text
-                if (event.action == "commit" || event.action == "output") {
+                // if event action is "code" commit, then get code text
+                if (event.action == "code" || event.action == "output") {
                     let id = event.commitId;
                     let hashObj = this.hashObjsList.find(hashObj => hashObj.commitId == id);
 
@@ -337,7 +337,7 @@ class GitHistory {
                         // for each file changed, add a new event
                         for (let j = 0; j < filteredHashObjs[0].filesChanged.length; j++) {
                             let fileChanged = filteredHashObjs[0].filesChanged[j];
-                            let action = "commit";
+                            let action = "code";
                             if(fileChanged == "output.txt") {
                                 action = "output";
                             }
@@ -346,7 +346,7 @@ class GitHistory {
                         }
                     }
                 }
-                console.log('Timeline between events and commits updated!');
+                console.log('Timeline between events and code commits updated!');
                 return newEventsList;
             }
         } catch (err) {
