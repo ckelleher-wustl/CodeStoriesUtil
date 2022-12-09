@@ -1,33 +1,19 @@
-# https://stackoverflow.com/questions/55231170/taking-a-screenshot-of-a-web-page-in-pyqt5
-from PyQt5.QtWidgets import QApplication
-from PyQt5.QtCore import Qt, QUrl, QTimer
-from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEngineSettings
+from playwright.sync_api import sync_playwright
 
-
-class Screenshot(QWebEngineView):
+class ScreenCapture:
     def capture(self, url, output_file):
-        self.output_file = output_file
-        self.load(QUrl(url))
-        self.loadFinished.connect(self.on_loaded)
-        # Create hidden view without scrollbars
-        self.setAttribute(Qt.WA_DontShowOnScreen)
-        self.page().settings().setAttribute(QWebEngineSettings.ShowScrollBars, True)
-        self.page().settings().setAttribute(QWebEngineSettings.PluginsEnabled, True)
-        self.page().settings().setAttribute(QWebEngineSettings.PdfViewerEnabled, True)
-        self.show()
-
-    def on_loaded(self):
-        size = QApplication.primaryScreen().size()
-        # size = self.page().contentsSize().toSize()
-
-        if size.width() >= 1920 and size.height() >= 1080:
-            self.resize(1920, 1080)
-        else:
-            self.resize(size)
-
-        # Wait for resize
-        QTimer.singleShot(3000, self.take_screenshot)
-
-    def take_screenshot(self):
-        self.grab().save(self.output_file, b'PNG')
-        self.app.quit()
+        try:
+            with sync_playwright() as playwright:
+                chromium = playwright.chromium  # or "firefox" or "webkit".
+                browser = chromium.launch().new_context()
+                page = browser.new_page()
+                page.set_viewport_size({"width": 1920, "height": 1080})
+                page.goto(url, wait_until="load")
+                page.screenshot(path=output_file)
+                browser.close()
+                output_file = output_file.split('/' or '\\')[-1]
+        except Exception as e:
+            print(e)
+            output_file = output_file.split('/' or '\\')[-1]
+            output_file = output_file.replace('.png', '-need-manual.png')
+        return output_file
