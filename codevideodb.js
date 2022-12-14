@@ -89,7 +89,7 @@ app.get('/intervalCode', async (req, res) => {
 });
 
 
-// get code in interval
+// get searches in interval
 app.get('/intervalSearches', async (req, res) => {
     console.log("requesting data..." + JSON.stringify(req.query));
     var begin = 0;

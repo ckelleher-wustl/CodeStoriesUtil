@@ -73,7 +73,7 @@ function getComments(startTime, endTime) {
 
 function loadCodeClusters() {
     clusterFile = 'http://localhost:3000/data/codeClusters.csv'
-    $.csv.toObjects(clusterFile):
+    $.csv.toObjects(clusterFile);
 }
 
 function getCode() {
