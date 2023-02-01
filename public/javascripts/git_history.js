@@ -20,11 +20,12 @@ class GitHistory {
 
         // if db file exists, delete it
         if (fs.existsSync(dbFile)) {
-            fs.unlink(dbFile, (err) => {
-                if (err) {
-                    console.log(err);
-                }
-            });
+            try {
+                fs.unlinkSync(dbFile);
+                console.log("Delete File successfully.");
+            } catch (error) {
+                console.log(error);
+            }
         }
 
         // create new db file
@@ -234,6 +235,7 @@ class GitHistory {
         try {
             let events = await this.updateTimeline();
             let gitData = [];
+            // console.log(events);
 
             // make json object containing the following fields: id, timed_url, time, notes, img_file, code_text, coords
             for (let i = 0; i < events.length; i++) {
@@ -254,7 +256,7 @@ class GitHistory {
                                         '.mov', '.avi', '.mpg', '.mpeg', '.wmv', 
                                         '.flv', '.mkv', '.webm', '.DS_Store', '.otf', 
                                         '.eot', '.svg', '.ttf', '.woff', '.woff2',
-                                        '.pyc', '.sqlite3', '.db'];
+                                        '.pyc', '.sqlite3', '.db', '.pdf', '.ico'];
 
                     let res = excludeList.filter((ext) => event.info.includes(ext));
                     if (res.length > 0) {
@@ -268,6 +270,7 @@ class GitHistory {
                         } else {
                             entry.code_text = entry.code_text.stdout.toString();
                         }
+                        // console.log(entry.code_text);
                     }
                     entry.timed_url = null;
                     entry.img_file = null;
@@ -293,6 +296,8 @@ class GitHistory {
         try {
             this.hashObjsList = await this.constructHashObjsList(this.gitFolder);
             this.eventsList = await this.constructEventsList(this.eventsFile);
+            // console.log(this.hashObjsList);
+            // console.log(this.eventsList);
 
             if(this.eventsList.length > 0 && this.hashObjsList.length > 0) {
                 const firstEventTime = this.eventsList[0].time;
@@ -373,13 +378,10 @@ class GitHistory {
                 } else {
                     commitMessage = null;
                 }
-            
-                // e.g. strip 8/18/2022, 8:55:39 PM from [Commit time: 8/18/2022, 8:55:39 PM]
-                let time = commitMessage.match(/\[(.*?)\]/)[1];
-                time = time.replace('Commit time: ', '');
-            
-                // convert time to epoch in seconds
-                time = new Date(time).getTime() / 1000;
+
+                let time = await this.exec(`git log -1 --pretty=%ct ${hash}`, {cwd: gitFolder});
+                time = parseInt(time.stdout.toString());
+                // console.log(time);
 
                 // get files changed
                 let filesChanged = await this.getFilesChangedInCommit(hash, gitFolder);
@@ -450,11 +452,14 @@ class GitHistory {
     }
 
     async getCodeTextHelper(hash, file, gitFolder) {
-        try {    
-            let codeText = await this.exec(`git show ${hash}:${file}`, {cwd: gitFolder});
+        try {
+            // const { spawn } = require('node:child_process');
+            // let codeText = spawn('git', ['show', `${hash}:"${file}""`], {cwd: gitFolder, shell: true, encoding: 'utf8', maxBuffer: 1024 * 1024 * 1024, stdio: 'pipe'});
+
+            let codeText = await this.exec(`git show ${hash}:"${file}"`, {cwd: gitFolder, encoding: 'utf8', maxBuffer: 1024 * 1024 * 1024});
             return codeText;
         } catch (error) {
-            console.log("ERROR: " + err);
+            console.log("ERROR: " + error);
             return null;
         }
     }
@@ -464,7 +469,8 @@ class GitHistory {
             let filesChanged = await this.exec(`git show --name-only --pretty="" ${hash}`, {cwd: gitFolder});
             filesChanged = filesChanged.stdout.toString().split('\n');
             filesChanged = filesChanged.filter(file => file !== '');
-            filesChanged = filesChanged.filter(file => file.endsWith('.py') || file == 'output.txt');
+            // filesChanged = filesChanged.filter(file => file.endsWith('.py') || file == 'output.txt');
+            // console.log(filesChanged);
             return filesChanged;
         } catch (error) {
             console.log("ERROR: " + err);
