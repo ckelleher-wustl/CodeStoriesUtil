@@ -7,12 +7,18 @@ const sqlite3 = require('sqlite3').verbose();
 class GitHistory {
 
     
-    constructor(gitFolder, eventsFile) {
+    constructor(gitFolder, eventsFile, pseudoGit) {
         this.gitFolder = gitFolder;
         this.eventsFile = eventsFile;
 
         this.exec = util.promisify(cp.exec);
         this.readFile = util.promisify(fs.readFile);
+
+        this.pseudoGitCmd = "";
+
+        if(pseudoGit == "pseudoGit") {
+            this.pseudoGitCmd = "--git-dir=codeHistories.git --work-tree=.";
+        }
 
         this.gitData = this.constructGitData();
 
@@ -265,10 +271,13 @@ class GitHistory {
                     } else {
                         // event.info contains the filename that was changed
                         entry.code_text = await this.getCodeTextHelper(hashObj.hash, event.info, this.gitFolder);
-                        if(entry.code_text.stderr !== "") {
-                            entry.code_text = entry.code_text.stderr.toString();
-                        } else {
-                            entry.code_text = entry.code_text.stdout.toString();
+                        
+                        if(entry.code_text){
+                            if(entry.code_text.stderr !== "") {
+                                entry.code_text = entry.code_text.stderr.toString();
+                            } else {
+                                entry.code_text = entry.code_text.stdout.toString();
+                            }
                         }
                         // console.log(entry.code_text);
                     }
@@ -361,7 +370,8 @@ class GitHistory {
     
     async constructHashObjsList(gitFolder) {
         try{
-            let hashes = await this.exec(`git log --pretty=format:%h`, {cwd: gitFolder});
+            let gitLogAllHashes = `git ${this.pseudoGitCmd} log --pretty=format:%h`;
+            let hashes = await this.exec(gitLogAllHashes, {cwd: gitFolder});
             hashes = hashes.stdout.toString().split('\n');
             hashes = hashes.filter(hash => hash !== '');
             hashes.reverse();
@@ -371,7 +381,8 @@ class GitHistory {
             for (let i = 0; i < hashes.length; i++) {
                 // make an array of objects where each object contains the hash an the commit time
                 let hash = hashes[i];
-                let commitMessage = await this.exec(`git log -1 --pretty=%B ${hash}`, {cwd: gitFolder});
+                let gitLogHash = `git ${this.pseudoGitCmd} log -1 --pretty=%B ${hash}`;
+                let commitMessage = await this.exec(gitLogHash, {cwd: gitFolder});
 
                 if(commitMessage.stdout) {
                     commitMessage = commitMessage.stdout.toString();
@@ -379,7 +390,8 @@ class GitHistory {
                     commitMessage = null;
                 }
 
-                let time = await this.exec(`git log -1 --pretty=%ct ${hash}`, {cwd: gitFolder});
+                let gitLogTime = `git ${this.pseudoGitCmd} log -1 --pretty=%ct ${hash}`;
+                let time = await this.exec(gitLogTime, {cwd: gitFolder});
                 time = parseInt(time.stdout.toString());
                 // console.log(time);
 
@@ -455,8 +467,8 @@ class GitHistory {
         try {
             // const { spawn } = require('node:child_process');
             // let codeText = spawn('git', ['show', `${hash}:"${file}""`], {cwd: gitFolder, shell: true, encoding: 'utf8', maxBuffer: 1024 * 1024 * 1024, stdio: 'pipe'});
-
-            let codeText = await this.exec(`git show ${hash}:"${file}"`, {cwd: gitFolder, encoding: 'utf8', maxBuffer: 1024 * 1024 * 1024});
+            let gitShowFileContent = `git ${this.pseudoGitCmd} show ${hash}:"${file}"`;
+            let codeText = await this.exec(gitShowFileContent, {cwd: gitFolder, encoding: 'utf8', maxBuffer: 1024 * 1024 * 1024});
             return codeText;
         } catch (error) {
             console.log("ERROR: " + error);
@@ -466,7 +478,8 @@ class GitHistory {
 
     async getFilesChangedInCommit(hash, gitFolder) {
         try {
-            let filesChanged = await this.exec(`git show --name-only --pretty="" ${hash}`, {cwd: gitFolder});
+            let gitShowFilesChange = `git ${this.pseudoGitCmd} show --name-only --pretty="" ${hash}`;
+            let filesChanged = await this.exec(gitShowFilesChange, {cwd: gitFolder});
             filesChanged = filesChanged.stdout.toString().split('\n');
             filesChanged = filesChanged.filter(file => file !== '');
             // filesChanged = filesChanged.filter(file => file.endsWith('.py') || file == 'output.txt');

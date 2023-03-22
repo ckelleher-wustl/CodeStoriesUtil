@@ -25,9 +25,9 @@ if git folder is on Box, need to verify that it's safe to access
 "git config --global --add safe.directory C:/Users/thien/Box/project/project"
 cd to that directory and run "git prune" to resolve any corrupted files
 make sure to comment out myDB, ocr, and log statement above and uncomment the following */
-// var userDir = String.raw`C:\Users\thien\Box\project\project`;
-// var eventsFile = String.raw`C:\Users\thien\Box\data_garbage_classification_original_time.csv`;
-// myDB = new GitHistory(userDir, eventsFile);
+// var userDir = String.raw`/Users/pham/Downloads/new-app`;
+// var eventsFile = String.raw`/Users/pham/Documents/GitHub/CodeStoriesUtil/web_data.csv`;
+// myDB = new GitHistory(userDir, eventsFile, "pseudoGit");
 
 
 // body-parser has been incorporated into express, so no need to have a separate thing
