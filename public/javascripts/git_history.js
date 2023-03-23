@@ -7,9 +7,10 @@ const sqlite3 = require('sqlite3').verbose();
 class GitHistory {
 
     
-    constructor(gitFolder, eventsFile, pseudoGit) {
+    constructor(gitFolder, eventsFile, addlWebDevDataFile, pseudoGit) {
         this.gitFolder = gitFolder;
         this.eventsFile = eventsFile;
+        this.addlWebDevDataFile = addlWebDevDataFile;
 
         this.exec = util.promisify(cp.exec);
         this.readFile = util.promisify(fs.readFile);
@@ -239,7 +240,7 @@ class GitHistory {
 
     async constructGitData() {
         try {
-            let events = await this.updateTimeline();
+            let events = await this.combineWebEventsAndCommits();
             let gitData = [];
             // console.log(events);
 
@@ -295,33 +296,45 @@ class GitHistory {
                 gitData.push(entry);
             }
             console.log('Git data constructed!');
+
+            // if webDevData is not empty, then add it to gitData
+            let addlWebDevData = await this.getAddlWebDevData(this.addlWebDevDataFile);
+
+            if(addlWebDevData.length > 0) {
+                for (let i = 0; i < addlWebDevData.length; i++) {
+                    let entry = addlWebDevData[i];
+                    entry.id = gitData.length + 1;
+                    gitData.push(entry);
+                }
+
+                // sort gitData by time
+                gitData.sort((a, b) => a.time - b.time);
+
+                // reassign id
+                for (let i = 0; i < gitData.length; i++) {
+                    gitData[i].id = i + 1;
+                }
+            }
+
+            //offset time
+            let offset = gitData[0].time;
+            for (let i = 0; i < gitData.length; i++) {
+                gitData[i].time = gitData[i].time - offset;
+            }
+
+            console.log('Git data constructed!');
             return gitData;
         } catch (err) {
             return ("ERROR: " + err);
         }
     }
     
-    async updateTimeline() {
+    async combineWebEventsAndCommits() {
         try {
             this.hashObjsList = await this.constructHashObjsList(this.gitFolder);
             this.eventsList = await this.constructEventsList(this.eventsFile);
-            // console.log(this.hashObjsList);
-            // console.log(this.eventsList);
 
             if(this.eventsList.length > 0 && this.hashObjsList.length > 0) {
-                const firstEventTime = this.eventsList[0].time;
-                const firstCommitTime = this.hashObjsList[0].time;
-                const offset = Math.min(firstEventTime, firstCommitTime);
-    
-                // go through eventsList and hashObjsList to offset the time to start from 0 (whether first commit happened before or after there's web data)
-                for (let i = 0; i < this.eventsList.length; i++) {
-                    this.eventsList[i].time = this.eventsList[i].time - offset;
-                }
-    
-                for (let i = 0; i < this.hashObjsList.length; i++) {
-                    this.hashObjsList[i].time = this.hashObjsList[i].time - offset;
-                }
-                
                 // combine and sort the time of events and commits
                 let combinedTimeList = [];
                 for (let i = 0; i < this.eventsList.length; i++) {
@@ -360,7 +373,7 @@ class GitHistory {
                         }
                     }
                 }
-                console.log('Timeline between events and code commits updated!');
+                console.log('Combined web data events and commits');
                 return newEventsList;
             }
         } catch (err) {
@@ -488,6 +501,30 @@ class GitHistory {
         } catch (error) {
             console.log("ERROR: " + err);
             return null;
+        }
+    }
+
+    async getAddlWebDevData(addlWebDevDataDB) {
+        try {
+            if(fs.existsSync(addlWebDevDataDB)) {
+                let db = new sqlite3.Database(addlWebDevDataDB);
+                db.run = util.promisify(db.run);
+                db.all = util.promisify(db.all);
+
+                let sql = `SELECT * FROM addlWebDevData`;
+                let addlWebDevData = db.all(sql);
+
+                db.close();
+                console.log('Additional web dev data database found!');
+                return addlWebDevData;
+            }
+            else {
+                console.log('No web dev data database found!');
+                return [];
+            }
+        } catch (err) {
+            console.log("ERROR: " + err);
+            return [];
         }
     }
 
