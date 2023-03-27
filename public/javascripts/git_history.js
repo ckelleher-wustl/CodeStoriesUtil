@@ -285,8 +285,10 @@ class GitHistory {
                     entry.timed_url = null;
                     entry.img_file = null;
                 } else {
-                    if(event.img_file.includes("\r")) {
-                        entry.img_file = entry.img_file.replace("\r", "");
+                    if(event.img_file){
+                        if(event.img_file.includes("\r")) {
+                            entry.img_file = entry.img_file.replace("\r", "");
+                        }
                     }
                     entry.code_text = null;
                 }
@@ -295,7 +297,6 @@ class GitHistory {
                 // console.log(i, event.info);
                 gitData.push(entry);
             }
-            console.log('Git data constructed!');
 
             // if webDevData is not empty, then add it to gitData
             let addlWebDevData = await this.getAddlWebDevData(this.addlWebDevDataFile);
@@ -325,7 +326,7 @@ class GitHistory {
             console.log('Git data constructed!');
             return gitData;
         } catch (err) {
-            return ("ERROR: " + err);
+            console.log("ERROR: " + err);
         }
     }
     
@@ -377,7 +378,7 @@ class GitHistory {
                 return newEventsList;
             }
         } catch (err) {
-            return ("ERROR: " + err);
+            console.log("ERROR: " + err);
         }
     }
     
@@ -416,7 +417,7 @@ class GitHistory {
             console.log('Hash objects list constructed!');
             return hashObjsList;
         } catch (err) {
-            return ("ERROR: " + err);
+            console.log("ERROR: " + err);
         }
     }
 
@@ -427,7 +428,8 @@ class GitHistory {
             console.log('Events list constructed!');
             return events;
         } catch (err) {
-            return ("ERROR: " + err);
+            console.log("ERROR: " + err);
+            return [];
         }
     }
 
