@@ -28,7 +28,8 @@ make sure to comment out myDB, ocr, and log statement above and uncomment the fo
 // var userDir = String.raw`/Users/pham/Downloads/new-app`;
 // var eventsFile = String.raw`/Users/pham/Documents/GitHub/CodeStoriesUtil/user4_web_data.csv`;
 // var addlWebDevDataDB = String.raw`/Users/pham/Desktop/processWebDevOutput/addlWebDevData.db`;
-// myDB = new GitHistory(userDir, eventsFile, addlWebDevDataDB, "pseudoGit");
+// var userName = String.raw`pham`; // the username in output.txt so processed data stays unidentified
+// myDB = new GitHistory(userDir, eventsFile, addlWebDevDataDB, "pseudoGit", userName);
 
 
 // body-parser has been incorporated into express, so no need to have a separate thing

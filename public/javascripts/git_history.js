@@ -7,7 +7,7 @@ const sqlite3 = require('sqlite3').verbose();
 class GitHistory {
 
     
-    constructor(gitFolder, eventsFile, addlWebDevDataFile, pseudoGit) {
+    constructor(gitFolder, eventsFile, addlWebDevDataFile, pseudoGit, userName) {
         this.gitFolder = gitFolder;
         this.eventsFile = eventsFile;
         this.addlWebDevDataFile = addlWebDevDataFile;
@@ -19,6 +19,12 @@ class GitHistory {
 
         if(pseudoGit == "pseudoGit") {
             this.pseudoGitCmd = "--git-dir=codeHistories.git --work-tree=.";
+        }
+
+        // trim username code_text for privacy
+        this.userName = "";
+        if(userName) {
+            this.userName = userName;
         }
 
         this.gitData = this.constructGitData();
@@ -246,7 +252,27 @@ class GitHistory {
 
             // make json object containing the following fields: id, timed_url, time, notes, img_file, code_text, coords
             for (let i = 0; i < events.length; i++) {
-                let event = events[i];
+                let event = events[i];;
+
+                let excludeList = ['.png', '.jpg', '.jpeg', '.gif', '.mp4', 
+                                    '.mov', '.avi', '.mpg', '.mpeg', '.wmv', 
+                                    '.flv', '.mkv', '.webm', '.DS_Store', '.otf', 
+                                    '.eot', '.svg', '.ttf', '.woff', '.woff2',
+                                    '.pyc', '.sqlite3', '.db', '.pdf', '.ico', '.csv', 
+                                    '.gitignore', '.vscode/settings.json', 'webData'];
+                
+                let skipCodeEvent = false;
+                for (let i = 0; i < excludeList.length; i++) {
+                    if (event.info.includes(excludeList[i])) {
+                        skipCodeEvent = true;
+                        break;
+                    }
+                }
+
+                if (skipCodeEvent) {
+                    continue;
+                }
+
                 let entry = {};
                 entry.id = i + 1;
                 entry.timed_url = event.timed_url;
@@ -259,29 +285,29 @@ class GitHistory {
                     let id = event.commitId;
                     let hashObj = this.hashObjsList.find(hashObj => hashObj.commitId == id);
 
-                    let excludeList = ['.png', '.jpg', '.jpeg', '.gif', '.mp4', 
-                                        '.mov', '.avi', '.mpg', '.mpeg', '.wmv', 
-                                        '.flv', '.mkv', '.webm', '.DS_Store', '.otf', 
-                                        '.eot', '.svg', '.ttf', '.woff', '.woff2',
-                                        '.pyc', '.sqlite3', '.db', '.pdf', '.ico', '.DS_Store'];
-
-                    let res = excludeList.filter((ext) => event.info.includes(ext));
-                    if (res.length > 0) {
-                        // these files contain non-text data
+                    // event.info contains the filename that was changed
+                    entry.code_text = await this.getCodeTextHelper(hashObj.hash, event.info, this.gitFolder);
+                    
+                    if(typeof entry.code_text === 'undefined'){
                         entry.code_text = null;
-                    } else {
-                        // event.info contains the filename that was changed
-                        entry.code_text = await this.getCodeTextHelper(hashObj.hash, event.info, this.gitFolder);
-                        
-                        if(entry.code_text){
-                            if(entry.code_text.stderr !== "") {
-                                entry.code_text = entry.code_text.stderr.toString();
-                            } else {
-                                entry.code_text = entry.code_text.stdout.toString();
-                            }
-                        }
-                        // console.log(entry.code_text);
                     }
+                    if(entry.code_text.stderr !== "") {
+                        entry.code_text = entry.code_text.stderr.toString();
+                    } else {
+                        entry.code_text = entry.code_text.stdout.toString();
+                        // trim everything before codehistories (usually contains username)
+                        let codeHistoriesIndex = entry.code_text.indexOf("codehistories");
+                        if(codeHistoriesIndex > 0) {
+                            entry.code_text = entry.code_text.substring(codeHistoriesIndex);
+                        }
+
+                        // replace all occurences of this.userName with "user"
+                        if(this.userName.length > 0 && entry.code_text.includes(this.userName)){
+                            entry.code_text = entry.code_text.split(this.userName).join("user");
+                        }
+                    }
+
+                    // console.log(entry.code_text);
                     entry.timed_url = null;
                     entry.img_file = null;
                 } else {
