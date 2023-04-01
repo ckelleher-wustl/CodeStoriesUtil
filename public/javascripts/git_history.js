@@ -563,7 +563,7 @@ class GitHistory {
                 let code_text = event.code_text;
                 let coords = null;
 
-                this.db.run(`INSERT or REPLACE INTO gitData 
+                this.db.run(`INSERT or REPLACE INTO CodingEvents 
                             (eventID, videoID, timed_url, time, img_file, text_file, notes, code_text, coords) 
                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);`, 
                             [eventID, videoID, timed_url, time, img_file, text_file, notes, code_text, coords]
