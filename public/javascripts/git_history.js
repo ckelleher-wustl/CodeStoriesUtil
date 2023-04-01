@@ -42,7 +42,7 @@ class GitHistory {
         this.db.run = util.promisify(this.db.run);
 
         // create table
-        this.db.run(`CREATE TABLE IF NOT EXISTS gitData (
+        this.db.run(`CREATE TABLE IF NOT EXISTS CodingEvents (
             eventID INTEGER PRIMARY KEY,
             videoID INTEGER,
             timed_url VARCHAR(255),
@@ -263,7 +263,7 @@ class GitHistory {
                                         '.mov', '.avi', '.mpg', '.mpeg', '.wmv', 
                                         '.flv', '.mkv', '.webm', '.DS_Store', '.otf', 
                                         '.eot', '.svg', '.ttf', '.woff', '.woff2',
-                                        '.pyc', '.sqlite3', '.db', '.pdf', '.ico'];
+                                        '.pyc', '.sqlite3', '.db', '.pdf', '.ico', '.DS_Store'];
 
                     let res = excludeList.filter((ext) => event.info.includes(ext));
                     if (res.length > 0) {
