@@ -259,7 +259,8 @@ class GitHistory {
                                     '.flv', '.mkv', '.webm', '.DS_Store', '.otf', 
                                     '.eot', '.svg', '.ttf', '.woff', '.woff2',
                                     '.pyc', '.sqlite3', '.db', '.pdf', '.ico', '.csv', 
-                                    '.gitignore', '.vscode/settings.json', 'webData'];
+                                    '.gitignore', '.vscode/settings.json', 'webData', '.env.development',
+                                    'package-lock.json', 'package.json', 'README.md', 'LICENSE', 'yarn.lock'];
                 
                 let skipCodeEvent = false;
                 for (let i = 0; i < excludeList.length; i++) {
@@ -288,22 +289,21 @@ class GitHistory {
                     // event.info contains the filename that was changed
                     entry.code_text = await this.getCodeTextHelper(hashObj.hash, event.info, this.gitFolder);
                     
-                    if(typeof entry.code_text === 'undefined'){
-                        entry.code_text = null;
-                    }
-                    if(entry.code_text.stderr !== "") {
-                        entry.code_text = entry.code_text.stderr.toString();
-                    } else {
-                        entry.code_text = entry.code_text.stdout.toString();
-                        // trim everything before codehistories (usually contains username)
-                        let codeHistoriesIndex = entry.code_text.indexOf("codehistories");
-                        if(codeHistoriesIndex > 0) {
-                            entry.code_text = entry.code_text.substring(codeHistoriesIndex);
-                        }
+                    if(entry.code_text){
+                        if(entry.code_text.stderr !== "") {
+                            entry.code_text = entry.code_text.stderr.toString();
+                        } else {
+                            entry.code_text = entry.code_text.stdout.toString();
+                            // trim everything before codehistories (usually contains username)
+                            let codeHistoriesIndex = entry.code_text.indexOf("codehistories");
+                            if(codeHistoriesIndex > 0) {
+                                entry.code_text = entry.code_text.substring(codeHistoriesIndex);
+                            }
 
-                        // replace all occurences of this.userName with "user"
-                        if(this.userName.length > 0 && entry.code_text.includes(this.userName)){
-                            entry.code_text = entry.code_text.split(this.userName).join("user");
+                            // replace all occurences of this.userName with "user"
+                            if(this.userName.length > 0 && entry.code_text.includes(this.userName)){
+                                entry.code_text = entry.code_text.split(this.userName).join("user4");
+                            }
                         }
                     }
 
@@ -343,11 +343,11 @@ class GitHistory {
                 }
             }
 
-            //offset time
-            let offset = gitData[0].time;
-            for (let i = 0; i < gitData.length; i++) {
-                gitData[i].time = gitData[i].time - offset;
-            }
+            //offset time (maybe real time makes it easier to add potential missing events)
+            // let offset = gitData[0].time;
+            // for (let i = 0; i < gitData.length; i++) {
+            //     gitData[i].time = gitData[i].time - offset;
+            // }
 
             console.log('Git data constructed!');
             return gitData;

@@ -11,10 +11,10 @@ import time
 from generate_screencapture_helper import ScreenCapture
 
 # data (or webData) refers to web data recorded by the browser extension
-DATA_FILE_NAME = r'/Users/pham/Library/CloudStorage/Box/Code_stories_user_study/user_1/project/webData'
+DATA_FILE_NAME = r'/Users/pham/Downloads/new-app/webData'
 
 # output file name
-CSV_FILE_NAME = 'user1_webData.csv'
+CSV_FILE_NAME = 'searchEvts_CodeStories_user4.csv'
 
 
 def read_data():
@@ -64,7 +64,8 @@ def getUrlVars(href):
 
 def get_source(url):
     try:
-        ignore_urls = ['https://www.google.com/search?q=', 'https://www.youtube.com/results?search_query=', 'localhost', '127.0.0.1', 'chrome://']
+        ignore_urls = ['https://www.google.com/search?q=', 'https://www.youtube.com/results?search_query=', 'localhost', 
+                       '127.0.0.1', 'chrome://', 'https://search.yahoo.com/yhs/search']
 
         # return None if the url contains an ignore url
         for ignore_url in ignore_urls:
@@ -102,7 +103,7 @@ def check_visit(dataframe):
     # apply getUrlVars to the search column
     dataframe['visit'] = dataframe['visit'].apply(lambda x: parse_titles(x))
     # if the cell in the visit column is None and cell in curTitle is Extensions, delete the row
-    dataframe = dataframe.drop(dataframe[(dataframe['visit'].isnull()) & (dataframe['curTitle'] == 'Extensions')].index)
+    dataframe = dataframe.drop(dataframe[(dataframe['visit'].isnull()) & ((dataframe['curTitle'] == 'Extensions') | (dataframe['curTitle'] == 'New Tab'))].index)
     # if the cell in the visit column is Just a moment..., update the cell to the value in curTitle
     dataframe.loc[dataframe['visit'] == 'Just a moment...', 'visit'] = dataframe['curTitle']
     # return the dataframe
