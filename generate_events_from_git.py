@@ -11,10 +11,10 @@ import time
 from generate_screencapture_helper import ScreenCapture
 
 # data (or webData) refers to web data recorded by the browser extension
-DATA_FILE_NAME = r'C:\Users\thien\Desktop\webDataViz\data_git_classification'
+DATA_FILE_NAME = r'C:\Users\Tin Pham\Desktop\steam-clone\steam-clone\webData'
 
 # output file name
-CSV_FILE_NAME = 'data_garbage_classification_original_time.csv'
+CSV_FILE_NAME = 'steam-clone-data.csv'
 
 
 def read_data():
@@ -64,7 +64,8 @@ def getUrlVars(href):
 
 def get_source(url):
     try:
-        ignore_urls = ['https://www.google.com/search?q=', 'https://www.youtube.com/results?search_query=', 'localhost', '127.0.0.1']
+        ignore_urls = ['https://www.google.com/search?q=', 'https://www.youtube.com/results?search_query=', 'localhost', 
+                       '127.0.0.1', 'chrome://', 'https://search.yahoo.com/yhs/search']
 
         # return None if the url contains an ignore url
         for ignore_url in ignore_urls:
@@ -101,6 +102,10 @@ def check_visit(dataframe):
     dataframe['visit'] = dataframe['curUrl'].apply(lambda x: get_source(x))
     # apply getUrlVars to the search column
     dataframe['visit'] = dataframe['visit'].apply(lambda x: parse_titles(x))
+    # if the cell in the visit column is None and cell in curTitle is Extensions, delete the row
+    dataframe = dataframe.drop(dataframe[(dataframe['visit'].isnull()) & ((dataframe['curTitle'] == 'Extensions') | (dataframe['curTitle'] == 'New Tab'))].index)
+    # if the cell in the visit column is Just a moment..., update the cell to the value in curTitle
+    dataframe.loc[dataframe['visit'] == 'Just a moment...', 'visit'] = dataframe['curTitle']
     # return the dataframe
     return dataframe
 
@@ -164,15 +169,18 @@ def final_check(dataframe):
 
     # check if consecutive titles are the same
     # if the former title has visit and the latter title has revisit, drop the latter title
-    dataframe.drop(dataframe[dataframe['title_info'].shift(1) == dataframe['title_info']].index, inplace=True)
+    # ignore this for titles that contain 'localhost'
+    indeces = dataframe[(dataframe['title_info'].shift(1) == dataframe['title_info']) & (~dataframe['title_info'].str.contains('localhost'))].index
+    dataframe.drop(indeces, inplace=True)
 
+    # dwell time before next visit event
     dataframe['dwell_time'] = 0
 
     # for new action that contains 'visit' or 'revisit', get the difference between the next row's timestamp and the current row's timestamp
     dataframe.loc[dataframe['new_action'].str.contains('visit'), 'dwell_time'] = dataframe['time'].shift(-1) - dataframe['time']
 
-    # remove row with dwell time less than 2.5 seconds and new action that contains 'visit' or 'revisit'
-    dataframe.drop(dataframe[(dataframe['dwell_time'] < 2.5) & (dataframe['new_action'].str.contains('visit'))].index, inplace=True)
+    # remove row with dwell time less than 5 seconds and new action that contains 'visit' or 'revisit'
+    dataframe.drop(dataframe[(dataframe['dwell_time'] < 5) & (dataframe['new_action'].str.contains('visit'))].index, inplace=True)
 
     # remove row with 'research' action
     dataframe.drop(dataframe[dataframe['new_action'] == 'research'].index, inplace=True)
@@ -239,9 +247,9 @@ def run():
 
     # delete rows if the value of curUrl is exact match as the value of prevUrl
     # get the indices of the rows that are exact matches
-    indices = df_copy[df_copy['curUrl'] == df_copy['prevUrl']].index
+    # indices = df_copy[df_copy['curUrl'] == df_copy['prevUrl']].index
     # delete the rows
-    df_copy.drop(indices, inplace=True)
+    # df_copy.drop(indices, inplace=True)
 
     # decode the google search results
     df_copy = decode_google_search_results(df_copy)

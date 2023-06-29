@@ -7,12 +7,25 @@ const sqlite3 = require('sqlite3').verbose();
 class GitHistory {
 
     
-    constructor(gitFolder, eventsFile) {
+    constructor(gitFolder, eventsFile, addlWebDevDataFile, pseudoGit, userName) {
         this.gitFolder = gitFolder;
         this.eventsFile = eventsFile;
+        this.addlWebDevDataFile = addlWebDevDataFile;
 
         this.exec = util.promisify(cp.exec);
         this.readFile = util.promisify(fs.readFile);
+
+        this.pseudoGitCmd = "";
+
+        if(pseudoGit == "pseudoGit") {
+            this.pseudoGitCmd = "--git-dir=codeHistories.git --work-tree=.";
+        }
+
+        // trim username code_text for privacy
+        this.userName = "";
+        if(userName) {
+            this.userName = userName;
+        }
 
         this.gitData = this.constructGitData();
 
@@ -35,7 +48,7 @@ class GitHistory {
         this.db.run = util.promisify(this.db.run);
 
         // create table
-        this.db.run(`CREATE TABLE IF NOT EXISTS gitData (
+        this.db.run(`CREATE TABLE IF NOT EXISTS CodingEvents (
             eventID INTEGER PRIMARY KEY,
             videoID INTEGER,
             timed_url VARCHAR(255),
@@ -233,13 +246,34 @@ class GitHistory {
 
     async constructGitData() {
         try {
-            let events = await this.updateTimeline();
+            let events = await this.combineWebEventsAndCommits();
             let gitData = [];
             // console.log(events);
 
             // make json object containing the following fields: id, timed_url, time, notes, img_file, code_text, coords
             for (let i = 0; i < events.length; i++) {
-                let event = events[i];
+                let event = events[i];;
+
+                let excludeList = ['.png', '.jpg', '.jpeg', '.gif', '.mp4', 
+                                    '.mov', '.avi', '.mpg', '.mpeg', '.wmv', 
+                                    '.flv', '.mkv', '.webm', '.DS_Store', '.otf', 
+                                    '.eot', '.svg', '.ttf', '.woff', '.woff2',
+                                    '.pyc', '.sqlite3', '.db', '.pdf', '.ico', '.csv', 
+                                    '.gitignore', '.vscode/settings.json', 'webData', '.env.development',
+                                    'package-lock.json', 'package.json', 'README.md', 'LICENSE', 'yarn.lock'];
+                
+                let skipCodeEvent = false;
+                for (let i = 0; i < excludeList.length; i++) {
+                    if (event.info.includes(excludeList[i])) {
+                        skipCodeEvent = true;
+                        break;
+                    }
+                }
+
+                if (skipCodeEvent) {
+                    continue;
+                }
+
                 let entry = {};
                 entry.id = i + 1;
                 entry.timed_url = event.timed_url;
@@ -252,31 +286,35 @@ class GitHistory {
                     let id = event.commitId;
                     let hashObj = this.hashObjsList.find(hashObj => hashObj.commitId == id);
 
-                    let excludeList = ['.png', '.jpg', '.jpeg', '.gif', '.mp4', 
-                                        '.mov', '.avi', '.mpg', '.mpeg', '.wmv', 
-                                        '.flv', '.mkv', '.webm', '.DS_Store', '.otf', 
-                                        '.eot', '.svg', '.ttf', '.woff', '.woff2',
-                                        '.pyc', '.sqlite3', '.db', '.pdf', '.ico'];
-
-                    let res = excludeList.filter((ext) => event.info.includes(ext));
-                    if (res.length > 0) {
-                        // these files contain non-text data
-                        entry.code_text = null;
-                    } else {
-                        // event.info contains the filename that was changed
-                        entry.code_text = await this.getCodeTextHelper(hashObj.hash, event.info, this.gitFolder);
+                    // event.info contains the filename that was changed
+                    entry.code_text = await this.getCodeTextHelper(hashObj.hash, event.info, this.gitFolder);
+                    
+                    if(entry.code_text){
                         if(entry.code_text.stderr !== "") {
                             entry.code_text = entry.code_text.stderr.toString();
                         } else {
                             entry.code_text = entry.code_text.stdout.toString();
+                            // trim everything before codehistories (usually contains username)
+                            let codeHistoriesIndex = entry.code_text.indexOf("codehistories");
+                            if(codeHistoriesIndex > 0) {
+                                entry.code_text = entry.code_text.substring(codeHistoriesIndex);
+                            }
+
+                            // replace all occurences of this.userName with "user"
+                            if(this.userName.length > 0 && entry.code_text.includes(this.userName)){
+                                entry.code_text = entry.code_text.split(this.userName).join("user4");
+                            }
                         }
-                        // console.log(entry.code_text);
                     }
+
+                    // console.log(entry.code_text);
                     entry.timed_url = null;
                     entry.img_file = null;
                 } else {
-                    if(event.img_file.includes("\r")) {
-                        entry.img_file = entry.img_file.replace("\r", "");
+                    if(event.img_file){
+                        if(event.img_file.includes("\r")) {
+                            entry.img_file = entry.img_file.replace("\r", "");
+                        }
                     }
                     entry.code_text = null;
                 }
@@ -285,34 +323,45 @@ class GitHistory {
                 // console.log(i, event.info);
                 gitData.push(entry);
             }
+
+            // if webDevData is not empty, then add it to gitData
+            let addlWebDevData = await this.getAddlWebDevData(this.addlWebDevDataFile);
+
+            if(addlWebDevData.length > 0) {
+                for (let i = 0; i < addlWebDevData.length; i++) {
+                    let entry = addlWebDevData[i];
+                    entry.id = gitData.length + 1;
+                    gitData.push(entry);
+                }
+
+                // sort gitData by time
+                gitData.sort((a, b) => a.time - b.time);
+
+                // reassign id
+                for (let i = 0; i < gitData.length; i++) {
+                    gitData[i].id = i + 1;
+                }
+            }
+
+            //offset time (maybe real time makes it easier to add potential missing events)
+            // let offset = gitData[0].time;
+            // for (let i = 0; i < gitData.length; i++) {
+            //     gitData[i].time = gitData[i].time - offset;
+            // }
+
             console.log('Git data constructed!');
             return gitData;
         } catch (err) {
-            return ("ERROR: " + err);
+            console.log("ERROR: " + err);
         }
     }
     
-    async updateTimeline() {
+    async combineWebEventsAndCommits() {
         try {
             this.hashObjsList = await this.constructHashObjsList(this.gitFolder);
             this.eventsList = await this.constructEventsList(this.eventsFile);
-            // console.log(this.hashObjsList);
-            // console.log(this.eventsList);
 
             if(this.eventsList.length > 0 && this.hashObjsList.length > 0) {
-                const firstEventTime = this.eventsList[0].time;
-                const firstCommitTime = this.hashObjsList[0].time;
-                const offset = Math.min(firstEventTime, firstCommitTime);
-    
-                // go through eventsList and hashObjsList to offset the time to start from 0 (whether first commit happened before or after there's web data)
-                for (let i = 0; i < this.eventsList.length; i++) {
-                    this.eventsList[i].time = this.eventsList[i].time - offset;
-                }
-    
-                for (let i = 0; i < this.hashObjsList.length; i++) {
-                    this.hashObjsList[i].time = this.hashObjsList[i].time - offset;
-                }
-                
                 // combine and sort the time of events and commits
                 let combinedTimeList = [];
                 for (let i = 0; i < this.eventsList.length; i++) {
@@ -351,17 +400,18 @@ class GitHistory {
                         }
                     }
                 }
-                console.log('Timeline between events and code commits updated!');
+                console.log('Combined web data events and commits');
                 return newEventsList;
             }
         } catch (err) {
-            return ("ERROR: " + err);
+            console.log("ERROR: " + err);
         }
     }
     
     async constructHashObjsList(gitFolder) {
         try{
-            let hashes = await this.exec(`git log --pretty=format:%h`, {cwd: gitFolder});
+            let gitLogAllHashes = `git ${this.pseudoGitCmd} log --pretty=format:%h`;
+            let hashes = await this.exec(gitLogAllHashes, {cwd: gitFolder});
             hashes = hashes.stdout.toString().split('\n');
             hashes = hashes.filter(hash => hash !== '');
             hashes.reverse();
@@ -371,7 +421,8 @@ class GitHistory {
             for (let i = 0; i < hashes.length; i++) {
                 // make an array of objects where each object contains the hash an the commit time
                 let hash = hashes[i];
-                let commitMessage = await this.exec(`git log -1 --pretty=%B ${hash}`, {cwd: gitFolder});
+                let gitLogHash = `git ${this.pseudoGitCmd} log -1 --pretty=%B ${hash}`;
+                let commitMessage = await this.exec(gitLogHash, {cwd: gitFolder});
 
                 if(commitMessage.stdout) {
                     commitMessage = commitMessage.stdout.toString();
@@ -379,7 +430,8 @@ class GitHistory {
                     commitMessage = null;
                 }
 
-                let time = await this.exec(`git log -1 --pretty=%ct ${hash}`, {cwd: gitFolder});
+                let gitLogTime = `git ${this.pseudoGitCmd} log -1 --pretty=%ct ${hash}`;
+                let time = await this.exec(gitLogTime, {cwd: gitFolder});
                 time = parseInt(time.stdout.toString());
                 // console.log(time);
 
@@ -391,7 +443,7 @@ class GitHistory {
             console.log('Hash objects list constructed!');
             return hashObjsList;
         } catch (err) {
-            return ("ERROR: " + err);
+            console.log("ERROR: " + err);
         }
     }
 
@@ -402,7 +454,8 @@ class GitHistory {
             console.log('Events list constructed!');
             return events;
         } catch (err) {
-            return ("ERROR: " + err);
+            console.log("ERROR: " + err);
+            return [];
         }
     }
 
@@ -455,8 +508,8 @@ class GitHistory {
         try {
             // const { spawn } = require('node:child_process');
             // let codeText = spawn('git', ['show', `${hash}:"${file}""`], {cwd: gitFolder, shell: true, encoding: 'utf8', maxBuffer: 1024 * 1024 * 1024, stdio: 'pipe'});
-
-            let codeText = await this.exec(`git show ${hash}:"${file}"`, {cwd: gitFolder, encoding: 'utf8', maxBuffer: 1024 * 1024 * 1024});
+            let gitShowFileContent = `git ${this.pseudoGitCmd} show ${hash}:"${file}"`;
+            let codeText = await this.exec(gitShowFileContent, {cwd: gitFolder, encoding: 'utf8', maxBuffer: 1024 * 1024 * 1024});
             return codeText;
         } catch (error) {
             console.log("ERROR: " + error);
@@ -466,7 +519,8 @@ class GitHistory {
 
     async getFilesChangedInCommit(hash, gitFolder) {
         try {
-            let filesChanged = await this.exec(`git show --name-only --pretty="" ${hash}`, {cwd: gitFolder});
+            let gitShowFilesChange = `git ${this.pseudoGitCmd} show --name-only --pretty="" ${hash}`;
+            let filesChanged = await this.exec(gitShowFilesChange, {cwd: gitFolder});
             filesChanged = filesChanged.stdout.toString().split('\n');
             filesChanged = filesChanged.filter(file => file !== '');
             // filesChanged = filesChanged.filter(file => file.endsWith('.py') || file == 'output.txt');
@@ -475,6 +529,30 @@ class GitHistory {
         } catch (error) {
             console.log("ERROR: " + err);
             return null;
+        }
+    }
+
+    async getAddlWebDevData(addlWebDevDataDB) {
+        try {
+            if(fs.existsSync(addlWebDevDataDB)) {
+                let db = new sqlite3.Database(addlWebDevDataDB);
+                db.run = util.promisify(db.run);
+                db.all = util.promisify(db.all);
+
+                let sql = `SELECT * FROM addlWebDevData`;
+                let addlWebDevData = db.all(sql);
+
+                db.close();
+                console.log('Additional web dev data database found!');
+                return addlWebDevData;
+            }
+            else {
+                console.log('No web dev data database found!');
+                return [];
+            }
+        } catch (err) {
+            console.log("ERROR: " + err);
+            return [];
         }
     }
 
@@ -511,7 +589,7 @@ class GitHistory {
                 let code_text = event.code_text;
                 let coords = null;
 
-                this.db.run(`INSERT or REPLACE INTO gitData 
+                this.db.run(`INSERT or REPLACE INTO CodingEvents 
                             (eventID, videoID, timed_url, time, img_file, text_file, notes, code_text, coords) 
                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);`, 
                             [eventID, videoID, timed_url, time, img_file, text_file, notes, code_text, coords]
