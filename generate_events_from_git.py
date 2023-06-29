@@ -11,10 +11,10 @@ import time
 from generate_screencapture_helper import ScreenCapture
 
 # data (or webData) refers to web data recorded by the browser extension
-DATA_FILE_NAME = r'/Users/pham/Downloads/new-app/webData'
+DATA_FILE_NAME = r'C:\Users\Tin Pham\Desktop\steam-clone\steam-clone\webData'
 
 # output file name
-CSV_FILE_NAME = 'searchEvts_CodeStories_user4.csv'
+CSV_FILE_NAME = 'steam-clone-data.csv'
 
 
 def read_data():
@@ -169,15 +169,18 @@ def final_check(dataframe):
 
     # check if consecutive titles are the same
     # if the former title has visit and the latter title has revisit, drop the latter title
-    dataframe.drop(dataframe[dataframe['title_info'].shift(1) == dataframe['title_info']].index, inplace=True)
+    # ignore this for titles that contain 'localhost'
+    indeces = dataframe[(dataframe['title_info'].shift(1) == dataframe['title_info']) & (~dataframe['title_info'].str.contains('localhost'))].index
+    dataframe.drop(indeces, inplace=True)
 
+    # dwell time before next visit event
     dataframe['dwell_time'] = 0
 
     # for new action that contains 'visit' or 'revisit', get the difference between the next row's timestamp and the current row's timestamp
     dataframe.loc[dataframe['new_action'].str.contains('visit'), 'dwell_time'] = dataframe['time'].shift(-1) - dataframe['time']
 
-    # remove row with dwell time less than 2.5 seconds and new action that contains 'visit' or 'revisit'
-    dataframe.drop(dataframe[(dataframe['dwell_time'] < 2.5) & (dataframe['new_action'].str.contains('visit'))].index, inplace=True)
+    # remove row with dwell time less than 5 seconds and new action that contains 'visit' or 'revisit'
+    dataframe.drop(dataframe[(dataframe['dwell_time'] < 5) & (dataframe['new_action'].str.contains('visit'))].index, inplace=True)
 
     # remove row with 'research' action
     dataframe.drop(dataframe[dataframe['new_action'] == 'research'].index, inplace=True)
@@ -244,9 +247,9 @@ def run():
 
     # delete rows if the value of curUrl is exact match as the value of prevUrl
     # get the indices of the rows that are exact matches
-    indices = df_copy[df_copy['curUrl'] == df_copy['prevUrl']].index
+    # indices = df_copy[df_copy['curUrl'] == df_copy['prevUrl']].index
     # delete the rows
-    df_copy.drop(indices, inplace=True)
+    # df_copy.drop(indices, inplace=True)
 
     # decode the google search results
     df_copy = decode_google_search_results(df_copy)
