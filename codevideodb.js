@@ -10,7 +10,8 @@ const levenshtein = require('js-levenshtein');
 const app = express();
 const port = 3000;
 // myDB = new CodingDB("./foodNotFood.db");
-myDB = new CodingDB("./git_classification2.db");
+// myDB = new CodingDB("./git_classification.db");
+myDB = new CodingDB("./gitClassification_filtered.db");
 // myDB = new CodingDB("./techWithTim1.db");
 // myDB = new CodingDB("./wordle_polished.db");
 //myDB = new CodingDB("./slam.db");
@@ -90,7 +91,7 @@ app.get('/intervalCode', async (req, res) => {
 });
 
 
-// get code in interval
+// get searches in interval
 app.get('/intervalSearches', async (req, res) => {
     console.log("requesting data..." + JSON.stringify(req.query));
     var begin = 0;
