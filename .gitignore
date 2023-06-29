@@ -3,3 +3,7 @@ bin
 public/images
 test.db
 eng.traineddata
+venv
+__pycache__
+imgs_git_webdata
+.idea
