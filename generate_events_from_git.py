@@ -11,10 +11,10 @@ import time
 from generate_screencapture_helper import ScreenCapture
 
 # data (or webData) refers to web data recorded by the browser extension
-DATA_FILE_NAME = r'C:\Users\Tin Pham\Desktop\steam-clone\steam-clone\webData'
+DATA_FILE_NAME = r'/Users/pham/Downloads/project-folder-name-here/webData'
 
 # output file name
-CSV_FILE_NAME = 'steam-clone-data.csv'
+CSV_FILE_NAME = 'user-web-events.csv'
 
 
 def read_data():
@@ -266,6 +266,13 @@ def run():
     # final walkthrough of new_action
     df_copy = final_check(df_copy)
 
+    # updated version of webData has "img" key in the json file
+    if 'img' in df_copy.columns:
+        df_copy = df_copy[['time', 'new_action', 'title_info', 'curUrl', 'prevUrl', 'img']]
+        df_copy.columns = ['time', 'action', 'info', 'curTitle', 'prevTitle', 'img_file']
+        df_copy.to_csv(CSV_FILE_NAME, index=False, encoding='utf-8-sig', sep='\t')
+        return
+
     # make a new dataframe with only the columns we want in order
     # first column is timestamp, second column is new_action, third column is title_info, fourth column is curUrl, fifth column is prevUrl
     df_copy = df_copy[['time', 'new_action', 'title_info', 'curTitle', 'curUrl']]
@@ -339,7 +346,11 @@ def run():
 if __name__ == '__main__':
     run()
 
-    # take two csv files and merge them
+    # if img_file column exists, then we don't need to merge the two csv files
+    if 'img_file' in pd.read_csv(CSV_FILE_NAME, sep='\t').columns:
+        sys.exit()
+
+    # else, take two csv files and merge them
     # to avoid weird encoding issues where img_file column not tab separated correctly
 
     # read in the csv files
