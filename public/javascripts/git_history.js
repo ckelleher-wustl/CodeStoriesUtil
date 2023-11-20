@@ -37,7 +37,7 @@ class GitHistory {
                 fs.unlinkSync(dbFile);
                 console.log("Delete File successfully.");
             } catch (error) {
-                console.log(error);
+                console.log("ERROR: " + err.stack);
             }
         }
 
@@ -61,7 +61,7 @@ class GitHistory {
         );`).then(() => {
             console.log("Table created!");
         }).catch((err) => {
-            console.log("ERROR: " + err);
+            console.log("ERROR: " + err.stack);
         });
 
         // this.exportToJSON();
@@ -89,6 +89,7 @@ class GitHistory {
             console.log('returning entries...');
             return rows;
         } catch (err) {
+            console.log("ERROR: " + err.stack);
             return ("ERROR: " + err);
         }
     }
@@ -116,6 +117,7 @@ class GitHistory {
             console.log('returning entries...');
             return rows;
         } catch (err) {
+            console.log("ERROR: " + err.stack);
             return ("ERROR: " + err);
         }
     }
@@ -151,12 +153,13 @@ class GitHistory {
             console.log('returning entries...');
             return rows;
         } catch (err) {
+            console.log("ERROR: " + err.stack);
             return ("ERROR: " + err);
         }
     }
 
     async getCommentsInRange(sourceVideoID, startTime, endTime) {
-        return ("ERROR: No comments recorded")
+        return ("ERROR: No comments recorded");
     }
 
     async getCodeInRange(startTime, endTime) {
@@ -178,6 +181,7 @@ class GitHistory {
             console.log('returning entries...');
             return rows;
         } catch (err) {
+            console.log("ERROR: " + err.stack);
             return ("ERROR: " + err);
         }
     }
@@ -211,7 +215,7 @@ class GitHistory {
             console.log('returning entries...');
             return rows;
         } catch (err) {
-            return ("ERROR: " + err);
+            console.log("ERROR: " + err.stack);
         }
     }
 
@@ -252,7 +256,7 @@ class GitHistory {
 
             // make json object containing the following fields: id, timed_url, time, notes, img_file, code_text, coords
             for (let i = 0; i < events.length; i++) {
-                let event = events[i];;
+                let event = events[i];
 
                 let excludeList = ['.png', '.jpg', '.jpeg', '.gif', '.mp4', 
                                     '.mov', '.avi', '.mpg', '.mpeg', '.wmv', 
@@ -260,10 +264,15 @@ class GitHistory {
                                     '.eot', '.svg', '.ttf', '.woff', '.woff2',
                                     '.pyc', '.sqlite3', '.db', '.pdf', '.ico', '.csv', 
                                     '.gitignore', '.vscode/settings.json', 'webData', '.env.development',
-                                    'package-lock.json', 'package.json', 'README.md', 'LICENSE', 'yarn.lock'];
+                                    'package-lock.json', 'package.json', 'README.md', 'LICENSE', 'yarn.lock', 'node_modules', 'aclImdb'];
                 
                 let skipCodeEvent = false;
                 for (let i = 0; i < excludeList.length; i++) {
+                    if(event.info == null) {
+                        skipCodeEvent = true;
+                        break;
+                    }
+
                     if (event.info.includes(excludeList[i])) {
                         skipCodeEvent = true;
                         break;
@@ -276,7 +285,11 @@ class GitHistory {
 
                 let entry = {};
                 entry.id = i + 1;
-                entry.timed_url = event.timed_url;
+                if(event.timed_url) {
+                    entry.timed_url = event.timed_url;
+                } else {
+                    entry.timed_url = event.curTitle;
+                }
                 entry.time = event.time;
                 entry.notes = event.action + ": " + event.info + ";"; // combine action and info
                 entry.img_file = event.img_file;
@@ -302,7 +315,7 @@ class GitHistory {
 
                             // replace all occurences of this.userName with "user"
                             if(this.userName.length > 0 && entry.code_text.includes(this.userName)){
-                                entry.code_text = entry.code_text.split(this.userName).join("user4");
+                                entry.code_text = entry.code_text.split(this.userName).join("user");
                             }
                         }
                     }
@@ -352,7 +365,7 @@ class GitHistory {
             console.log('Git data constructed!');
             return gitData;
         } catch (err) {
-            console.log("ERROR: " + err);
+            console.log("ERROR: " + err.stack);
         }
     }
     
@@ -386,6 +399,7 @@ class GitHistory {
 
                     // filter out the commits that have the same time as the combined time list
                     let filteredHashObjs = this.hashObjsList.filter(hashObj => hashObj.time == combinedTimeList[i]);
+                    // console.log(filteredHashObjs);
                     
                     if (filteredHashObjs.length > 0) {
                         // for each file changed, add a new event
@@ -401,10 +415,31 @@ class GitHistory {
                     }
                 }
                 console.log('Combined web data events and commits');
+                // console.log(newEventsList);
                 return newEventsList;
             }
+            // if eventsList is empty, then just return the hashObjsList
+            else if(this.hashObjsList.length > 0) {
+                let newEventsList = [];
+                for (let i = 0; i < this.hashObjsList.length; i++) {
+                    let hashObj = this.hashObjsList[i];
+                    for (let j = 0; j < hashObj.filesChanged.length; j++) {
+                        let fileChanged = hashObj.filesChanged[j];
+                        let action = "code";
+                        if(fileChanged == "output.txt") {
+                            action = "output";
+                        }
+                        let newEvent = {time: hashObj.time, action: action, info: fileChanged, commitId: hashObj.commitId};
+                        newEventsList.push(newEvent);
+                    }
+                }
+                console.log('Returning only commits');
+                // console.log(newEventsList);
+                return newEventsList;
+            }
+
         } catch (err) {
-            console.log("ERROR: " + err);
+            console.log("ERROR: " + err.stack);
         }
     }
     
@@ -430,20 +465,24 @@ class GitHistory {
                     commitMessage = null;
                 }
 
-                let gitLogTime = `git ${this.pseudoGitCmd} log -1 --pretty=%ct ${hash}`;
-                let time = await this.exec(gitLogTime, {cwd: gitFolder});
-                time = parseInt(time.stdout.toString());
-                // console.log(time);
+                // only consider those commitMessages that has the form of [Commit time: 11/1/2023, 1:25:35 PM]
+                if(commitMessage && commitMessage.includes("[Commit time:")) {
+                    let gitLogTime = `git ${this.pseudoGitCmd} log -1 --pretty=%ct ${hash}`;
+                    let time = await this.exec(gitLogTime, {cwd: gitFolder});
+                    time = parseInt(time.stdout.toString());
+                    // console.log(time);
 
-                // get files changed
-                let filesChanged = await this.getFilesChangedInCommit(hash, gitFolder);
+                    // get files changed
+                    let filesChanged = await this.getFilesChangedInCommit(hash, gitFolder);
 
-                hashObjsList.push({hash: hash, time: time, commitId: i+1, filesChanged: filesChanged});
+                    hashObjsList.push({hash: hash, time: time, commitId: i+1, filesChanged: filesChanged});
+                }
             }
+            // console.log(hashObjsList);
             console.log('Hash objects list constructed!');
             return hashObjsList;
         } catch (err) {
-            console.log("ERROR: " + err);
+            console.log("ERROR: " + err.stack);
         }
     }
 
@@ -454,7 +493,7 @@ class GitHistory {
             console.log('Events list constructed!');
             return events;
         } catch (err) {
-            console.log("ERROR: " + err);
+            console.log("ERROR: " + err.stack);
             return [];
         }
     }
@@ -511,8 +550,8 @@ class GitHistory {
             let gitShowFileContent = `git ${this.pseudoGitCmd} show ${hash}:"${file}"`;
             let codeText = await this.exec(gitShowFileContent, {cwd: gitFolder, encoding: 'utf8', maxBuffer: 1024 * 1024 * 1024});
             return codeText;
-        } catch (error) {
-            console.log("ERROR: " + error);
+        } catch (err) {
+            console.log("ERROR: " + err.stack);
             return null;
         }
     }
@@ -520,14 +559,26 @@ class GitHistory {
     async getFilesChangedInCommit(hash, gitFolder) {
         try {
             let gitShowFilesChange = `git ${this.pseudoGitCmd} show --name-only --pretty="" ${hash}`;
-            let filesChanged = await this.exec(gitShowFilesChange, {cwd: gitFolder});
+            let filesChanged = await this.exec(gitShowFilesChange, {cwd: gitFolder, encoding:'utf8', maxBuffer: 1024 * 1024 * 1024 });
             filesChanged = filesChanged.stdout.toString().split('\n');
             filesChanged = filesChanged.filter(file => file !== '');
+
+            let excludeList = ['.png', '.jpg', '.jpeg', '.gif', '.mp4', 
+                            '.mov', '.avi', '.mpg', '.mpeg', '.wmv', 
+                            '.flv', '.mkv', '.webm', '.DS_Store', '.otf', 
+                            '.eot', '.svg', '.ttf', '.woff', '.woff2',
+                            '.pyc', 'README.md', 'LICENSE', 'yarn.lock', 'node_modules', 'aclImdb'];
+            
+            // filter out files that are in the exclude list
+            for (let i = 0; i < excludeList.length; i++) {
+                filesChanged = filesChanged.filter(file => !file.includes(excludeList[i]));
+            }
+
             // filesChanged = filesChanged.filter(file => file.endsWith('.py') || file == 'output.txt');
             // console.log(filesChanged);
             return filesChanged;
-        } catch (error) {
-            console.log("ERROR: " + err);
+        } catch (err) {
+            console.log("ERROR: " + err.stack);
             return null;
         }
     }
@@ -551,7 +602,7 @@ class GitHistory {
                 return [];
             }
         } catch (err) {
-            console.log("ERROR: " + err);
+            console.log("ERROR: " + err.stack);
             return [];
         }
     }
@@ -567,7 +618,7 @@ class GitHistory {
             });
             console.log('JSON file exported!');
         } catch (err) {
-            console.log("ERROR: " + err);
+            console.log("ERROR: " + err.stack);
         }
     }
 
@@ -612,7 +663,7 @@ class GitHistory {
                 });
             }            
         } catch (err) {
-            console.log("ERROR: " + err);
+            console.log("ERROR: " + err.stack);
         }
     }
 }
