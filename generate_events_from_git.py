@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup
 import datetime
 import time
 from generate_screencapture_helper import ScreenCapture
+import base64
 
 # data (or webData) refers to web data recorded by the browser extension
 DATA_FILE_NAME = r'/Users/pham/Downloads/project-folder-name-here/webData'
@@ -16,17 +17,19 @@ DATA_FILE_NAME = r'/Users/pham/Downloads/project-folder-name-here/webData'
 # output file name
 CSV_FILE_NAME = 'user-web-events.csv'
 
-
 def read_data():
     # open the file
-    with open(DATA_FILE_NAME) as f:
+    with open(DATA_FILE_NAME, 'r', encoding='utf-8') as f:
         # read the data
-        data = f.read()
+        data = f.readlines()
     # return the data
     return data
 
 
 def parse_data(data):
+    # if data type is list, convert to string
+    if type(data) == list:
+        data = ''.join(data)
     # parse the data
     parsed_data = json.loads(data)
     # return the parsed data
@@ -64,8 +67,11 @@ def getUrlVars(href):
 
 def get_source(url):
     try:
-        ignore_urls = ['https://www.google.com/search?q=', 'https://www.youtube.com/results?search_query=', 'localhost', 
-                       '127.0.0.1', 'chrome://', 'https://search.yahoo.com/yhs/search']
+        ignore_urls = ['https://www.google.com/search?q=', 'https://www.youtube.com/results?search_query=', 'localhost',
+                       '127.0.0.1', 'chrome://', 'https://search.yahoo.com/yhs/search', 'https://www.bing.com/search',
+                       'https://duckduckgo.com/?q=', 'https://search.brave.com/search',
+                       'chrome-extension://', '10.232.162.104', 'https://software.ecmwf.int/wiki/display/CKB', 'arxiv.org',
+                       'amazonaws', 'cse330']
 
         # return None if the url contains an ignore url
         for ignore_url in ignore_urls:
@@ -103,6 +109,8 @@ def check_visit(dataframe):
     # apply getUrlVars to the search column
     dataframe['visit'] = dataframe['visit'].apply(lambda x: parse_titles(x))
     # if the cell in the visit column is None and cell in curTitle is Extensions, delete the row
+    miscellaneous_counter = len(dataframe[(dataframe['visit'].isnull()) & ((dataframe['curTitle'] == 'Extensions') | (dataframe['curTitle'] == 'New Tab'))])
+    print("Miscellaneous counter: ", miscellaneous_counter)
     dataframe = dataframe.drop(dataframe[(dataframe['visit'].isnull()) & ((dataframe['curTitle'] == 'Extensions') | (dataframe['curTitle'] == 'New Tab'))].index)
     # if the cell in the visit column is Just a moment..., update the cell to the value in curTitle
     dataframe.loc[dataframe['visit'] == 'Just a moment...', 'visit'] = dataframe['curTitle']
@@ -117,7 +125,7 @@ def process_new_action(dataframe):
     dataframe['new_action'] = dataframe['search'].apply(lambda x: 'search' if x is not None else x)
     dataframe['new_action'] = dataframe['new_action'].apply(lambda x: 'visit' if x is None else x)
 
-    # if the action column includes revisit, set the corresponding row in new_action to revisit
+    # if the row action value includes revisit, set the corresponding new_action value to revisit
     dataframe.loc[dataframe['action'].str.contains('revisit'), 'new_action'] = 'revisit'
 
     # return the dataframe
@@ -167,23 +175,34 @@ def final_check(dataframe):
     # else if seen is true and new_action is search, set new_action to research
     dataframe.loc[seen_indeces, 'new_action'] = dataframe.loc[seen_indeces, 'new_action'].apply(lambda x: 'research' if x == 'search' else 'revisit')
 
+    # if seen is true and new_action is revisit, if search is not None, set new_action to research
+    for i in seen_indeces:
+        if dataframe.loc[i, 'new_action'] == 'revisit':
+            if dataframe.loc[i, 'search'] is not None:
+                dataframe.loc[i, 'new_action'] = 'research'
+
     # check if consecutive titles are the same
     # if the former title has visit and the latter title has revisit, drop the latter title
     # ignore this for titles that contain 'localhost'
+    consecutive_title_counter = len(dataframe[(dataframe['title_info'].shift(1) == dataframe['title_info']) & (dataframe['new_action'].shift(1) == 'visit') & (dataframe['new_action'] == 'revisit') & (~dataframe['title_info'].str.contains('localhost'))])
+    print("Consecutive title counter: ", consecutive_title_counter)
     indeces = dataframe[(dataframe['title_info'].shift(1) == dataframe['title_info']) & (~dataframe['title_info'].str.contains('localhost'))].index
     dataframe.drop(indeces, inplace=True)
 
     # dwell time before next visit event
     dataframe['dwell_time'] = 0
 
-    # for new action that contains 'visit' or 'revisit', get the difference between the next row's timestamp and the current row's timestamp
-    dataframe.loc[dataframe['new_action'].str.contains('visit'), 'dwell_time'] = dataframe['time'].shift(-1) - dataframe['time']
+    # for new action that contains 'visit' or 'revisit' or 'research', get the difference between the next row's timestamp and the current row's timestamp
+    dataframe.loc[dataframe['new_action'].str.contains('visit|revisit|research'), 'dwell_time'] = dataframe['time'].shift(-1) - dataframe['time']
 
-    # remove row with dwell time less than 5 seconds and new action that contains 'visit' or 'revisit'
-    dataframe.drop(dataframe[(dataframe['dwell_time'] < 5) & (dataframe['new_action'].str.contains('visit'))].index, inplace=True)
+    # remove row with dwell time less than 3 seconds and new action that contains 'visit' or 'revisit' or 'research'
+    # dont drop the row if seen is False
+    dwell_time_filter_counter = len(dataframe[(dataframe['dwell_time'] < 3) & (dataframe['new_action'].str.contains('visit|revisit|research')) & (dataframe['seen'] == True)])
+    print("Dwell time filter counter: ", dwell_time_filter_counter)
+    dataframe.drop(dataframe[(dataframe['dwell_time'] < 3) & (dataframe['new_action'].str.contains('visit|revisit|research')) & (dataframe['seen'] == True)].index, inplace=True)
 
     # remove row with 'research' action
-    dataframe.drop(dataframe[dataframe['new_action'] == 'research'].index, inplace=True)
+    # dataframe.drop(dataframe[dataframe['new_action'] == 'research'].index, inplace=True)
 
     # remove quotation marks from the title_info column
     dataframe['title_info'] = dataframe['title_info'].apply(lambda x: x.replace('"', ''))
@@ -240,8 +259,15 @@ def run():
     parsed_data = parse_data(data)
     # convert data into dataframe
     df = pd.DataFrame(parsed_data)
+    # print length of dataframe
+    print("Length of original dataframe: ", len(df))
+
     # make a copy of the dataframe
     df_copy = df.copy()
+    # count the number of rows that have action value of "empty new tab is active tab"
+    new_tab_counter = len(df_copy[df_copy['action'] == 'empty new tab is active tab'])
+    print("New tab counter: ", new_tab_counter)
+
     # filter out "empty new tab is active tab" rows
     df_copy = df_copy[df_copy['action'] != 'empty new tab is active tab']
 
@@ -273,17 +299,6 @@ def run():
         df_copy.to_csv(CSV_FILE_NAME, index=False, encoding='utf-8-sig', sep='\t')
         return
 
-    # make a new dataframe with only the columns we want in order
-    # first column is timestamp, second column is new_action, third column is title_info, fourth column is curUrl, fifth column is prevUrl
-    df_copy = df_copy[['time', 'new_action', 'title_info', 'curTitle', 'curUrl']]
-
-    # rename the columns
-    df_copy.columns = ['time', 'action', 'info', 'title', 'timed_url']
-
-    # make a new dataframe with column img_file and set it to None
-    img_file_df = pd.DataFrame(columns=['img_file'])
-    img_file_df['img_file'] = None
-
     # check if images folder exists
     if not os.path.exists('imgs_git_webdata'):
         # if not, create it
@@ -298,6 +313,32 @@ def run():
         # create the folder again
         os.makedirs('imgs_git_webdata')
 
+    if 'image' in df_copy.columns:
+        # if type of img_file is not base64, then decode it
+        for i in range(0, len(df_copy)):
+            row = df_copy.iloc[i]
+            img_file = row['image']
+            if type(img_file) != str:
+                continue
+            if 'base64' in img_file:
+                # decode the base64 string into png file and rename the file to be screencapture-n{curTabId}_{time}.png
+                img_file = img_file.replace('data:image/png;base64,', '')
+                img_file_decoded = base64.b64decode(img_file)
+                with open('imgs_git_webdata/screencapture-n' + str(row['curTabId']) + '_' + str(row['time']) + '.png',
+                          'wb') as f:
+                    f.write(img_file_decoded)
+
+    # make a new dataframe with only the columns we want in order
+    # first column is timestamp, second column is new_action, third column is title_info, fourth column is curUrl, fifth column is prevUrl
+    df_copy = df_copy[['time', 'new_action', 'title_info', 'curTitle', 'curUrl']]
+
+    # rename the columns
+    df_copy.columns = ['time', 'action', 'info', 'title', 'timed_url']
+
+    # make a new dataframe with column img_file and set it to None
+    img_file_df = pd.DataFrame(columns=['img_file'])
+    img_file_df['img_file'] = None
+
     start_time = time.time()
 
     sc = ScreenCapture()
@@ -311,8 +352,6 @@ def run():
         timestamp = row['time']
         # get the timed_url
         timed_url = row['timed_url']
-
-        print(timed_url)
 
         # convert the timestamp to this format 2022-08-09-14_52_58
         timestamp = datetime.datetime.fromtimestamp(timestamp)

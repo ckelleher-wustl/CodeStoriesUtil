@@ -264,7 +264,7 @@ class GitHistory {
                                     '.eot', '.svg', '.ttf', '.woff', '.woff2',
                                     '.pyc', '.sqlite3', '.db', '.pdf', '.ico', '.csv', 
                                     '.gitignore', '.vscode/settings.json', 'webData', '.env.development',
-                                    'package-lock.json', 'package.json', 'README.md', 'LICENSE', 'yarn.lock', 'node_modules', 'aclImdb'];
+                                    'package-lock.json', 'README.md', 'LICENSE', 'yarn.lock', 'node_modules', 'aclImdb'];
                 
                 let skipCodeEvent = false;
                 for (let i = 0; i < excludeList.length; i++) {
