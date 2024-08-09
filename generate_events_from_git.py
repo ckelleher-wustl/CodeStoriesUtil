@@ -11,10 +11,10 @@ import time
 from generate_screencapture_helper import ScreenCapture
 
 # data (or webData) refers to web data recorded by the browser extension
-DATA_FILE_NAME = r'/Users/pham/Downloads/project-folder-name-here/webData'
+DATA_FILE_NAME = r'C:\Users\pham\Downloads\doodlejump\doodlejump\webData'
 
 # output file name
-CSV_FILE_NAME = 'user-web-events.csv'
+CSV_FILE_NAME = 'doodlejump-web-events.csv'
 
 
 def read_data():
@@ -267,11 +267,11 @@ def run():
     df_copy = final_check(df_copy)
 
     # updated version of webData has "img" key in the json file
-    if 'img' in df_copy.columns:
-        df_copy = df_copy[['time', 'new_action', 'title_info', 'curUrl', 'prevUrl', 'img']]
-        df_copy.columns = ['time', 'action', 'info', 'curTitle', 'prevTitle', 'img_file']
-        df_copy.to_csv(CSV_FILE_NAME, index=False, encoding='utf-8-sig', sep='\t')
-        return
+    # if 'img' in df_copy.columns:
+    #     df_copy = df_copy[['time', 'new_action', 'title_info', 'curUrl', 'prevUrl', 'img']]
+    #     df_copy.columns = ['time', 'action', 'info', 'curTitle', 'prevTitle', 'img_file']
+    #     df_copy.to_csv(CSV_FILE_NAME, index=False, encoding='utf-8-sig', sep='\t')
+    #     return
 
     # make a new dataframe with only the columns we want in order
     # first column is timestamp, second column is new_action, third column is title_info, fourth column is curUrl, fifth column is prevUrl

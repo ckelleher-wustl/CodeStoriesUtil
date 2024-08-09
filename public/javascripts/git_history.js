@@ -37,7 +37,7 @@ class GitHistory {
                 fs.unlinkSync(dbFile);
                 console.log("Delete File successfully.");
             } catch (error) {
-                console.log("ERROR: " + err.stack);
+                console.log("ERROR: " + error.stack);
             }
         }
 
@@ -57,6 +57,7 @@ class GitHistory {
             text_file VARCHAR(255),
             notes VARCHAR(255),
             code_text TEXT,
+            diff_text TEXT,
             coords VARCHAR(255)
         );`).then(() => {
             console.log("Table created!");
@@ -298,15 +299,17 @@ class GitHistory {
                 if (event.action == "code" || event.action == "output") {
                     let id = event.commitId;
                     let hashObj = this.hashObjsList.find(hashObj => hashObj.commitId == id);
-
                     // event.info contains the filename that was changed
-                    entry.code_text = await this.getCodeTextHelper(hashObj.hash, event.info, this.gitFolder);
+                    //fileInfo contains both code text and diff text
+                    let fileInfo = await this.getCodeTextHelper(hashObj.hash, event.info, this.gitFolder);
                     
-                    if(entry.code_text){
-                        if(entry.code_text.stderr !== "") {
-                            entry.code_text = entry.code_text.stderr.toString();
+                    if(fileInfo){
+                        if(fileInfo.code_text.stderr !== "") {
+                            entry.code_text = fileInfo.code_text.stderr.toString();
+                            entry.diff_text = fileInfo.diff_text.stderr.toString();
                         } else {
-                            entry.code_text = entry.code_text.stdout.toString();
+                            entry.code_text = fileInfo.code_text.stdout.toString();
+                            entry.diff_text = fileInfo.diff_text.stdout.toString();
                             // trim everything before codehistories (usually contains username)
                             let codeHistoriesIndex = entry.code_text.indexOf("codehistories");
                             if(codeHistoriesIndex > 0) {
@@ -330,6 +333,7 @@ class GitHistory {
                         }
                     }
                     entry.code_text = null;
+                    entry.diff_text = null;
                 }
 
                 entry.coords = null;
@@ -545,16 +549,56 @@ class GitHistory {
 
     async getCodeTextHelper(hash, file, gitFolder) {
         try {
-            // const { spawn } = require('node:child_process');
-            // let codeText = spawn('git', ['show', `${hash}:"${file}""`], {cwd: gitFolder, shell: true, encoding: 'utf8', maxBuffer: 1024 * 1024 * 1024, stdio: 'pipe'});
             let gitShowFileContent = `git ${this.pseudoGitCmd} show ${hash}:"${file}"`;
-            let codeText = await this.exec(gitShowFileContent, {cwd: gitFolder, encoding: 'utf8', maxBuffer: 1024 * 1024 * 1024});
-            return codeText;
+            let code_text = await this.exec(gitShowFileContent, {cwd: gitFolder, encoding: 'utf8', maxBuffer: 1024 * 1024 * 1024});
+            
+            // Get the first commit hash in the repository
+            let firstCommitHashCmd = `git ${this.pseudoGitCmd} rev-list --max-parents=0 HEAD`;
+            let firstCommitHashResult = await this.exec(firstCommitHashCmd, {cwd: gitFolder});
+            let firstCommitHash = firstCommitHashResult.stdout.trim().substring(0, 7);
+
+            let gitDiffFileContent;
+            if (hash == firstCommitHash) {
+                // If this is the first commit, it's basically all new additions
+                gitDiffFileContent = `git ${this.pseudoGitCmd} show ${hash}:"${file}"`;
+                let diff_text = await this.exec(gitShowFileContent, {cwd: gitFolder, encoding: 'utf8', maxBuffer: 1024 * 1024 * 1024});
+                // decorate the diff_text with 
+                // index 0000000..7d9da2b
+                // @@ -0,0 +1,25 @@
+
+                let lines = diff_text.stdout.split('\n');
+                let decoratedDiffText = `index 0000000..${hash}\n@@ -0,0 +1,${lines.length-1} @@\n`;
+                decoratedDiffText += diff_text.stdout;
+
+                // every line should start with a +
+                let decoratedLines = decoratedDiffText.split('\n');
+                for (let i = 0; i < decoratedLines.length-1; i++) {
+                    if(decoratedLines[i].startsWith("index")) {
+                        continue;
+                    }
+                    if(decoratedLines[i].startsWith("@@")) {
+                        continue;
+                    }
+                    decoratedLines[i] = "+" + decoratedLines[i];
+                }
+                decoratedDiffText = decoratedLines.join('\n');
+                diff_text.stdout = decoratedDiffText;
+
+                return { code_text, diff_text };
+            } else {
+                // Otherwise, show the diff between this hash and the previous hash to see what was changed
+                let prevHashCmd = `git ${this.pseudoGitCmd} rev-list --parents -n 1 ${hash}`;
+                let prevHashResult = await this.exec(prevHashCmd, {cwd: gitFolder});
+                let prevHash = prevHashResult.stdout.trim().split(' ')[1].substring(0, 7);
+                gitDiffFileContent = `git ${this.pseudoGitCmd} diff ${prevHash} ${hash} -- "${file}"`;
+                let diff_text = await this.exec(gitDiffFileContent, {cwd: gitFolder, encoding: 'utf8', maxBuffer: 1024 * 1024 * 1024});
+                return { code_text, diff_text };
+            }
         } catch (err) {
             console.log("ERROR: " + err.stack);
             return null;
         }
-    }
+    }    
 
     async getFilesChangedInCommit(hash, gitFolder) {
         try {
@@ -638,12 +682,13 @@ class GitHistory {
                 let text_file = null;
                 let notes = event.notes;
                 let code_text = event.code_text;
+                let diff_text = event.diff_text;
                 let coords = null;
 
                 this.db.run(`INSERT or REPLACE INTO CodingEvents 
-                            (eventID, videoID, timed_url, time, img_file, text_file, notes, code_text, coords) 
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);`, 
-                            [eventID, videoID, timed_url, time, img_file, text_file, notes, code_text, coords]
+                            (eventID, videoID, timed_url, time, img_file, text_file, notes, code_text, diff_text, coords) 
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`, 
+                            [eventID, videoID, timed_url, time, img_file, text_file, notes, code_text, diff_text, coords]
                             ).then(() => {
                                 console.log(`Event ${eventID} inserted!`);
                             }).catch((err) => {
