@@ -567,12 +567,12 @@ class GitHistory {
                 // @@ -0,0 +1,25 @@
 
                 let lines = diff_text.stdout.split('\n');
-                let decoratedDiffText = `index 0000000..${hash}\n@@ -0,0 +1,${lines.length-1} @@\n`;
+                let decoratedDiffText = `index 0000000..${hash}\n@@ -0,0 +1,${lines.length} @@\n`;
                 decoratedDiffText += diff_text.stdout;
 
                 // every line should start with a +
                 let decoratedLines = decoratedDiffText.split('\n');
-                for (let i = 0; i < decoratedLines.length-1; i++) {
+                for (let i = 0; i < decoratedLines.length; i++) {
                     if(decoratedLines[i].startsWith("index")) {
                         continue;
                     }
