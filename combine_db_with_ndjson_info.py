@@ -77,6 +77,29 @@ def append_selection_log_to_db(db_df, selection_log_df):
     return updated_df
 
 
+def add_prev_code_text(df):
+    # Dictionary to store the last code_text for each filename
+    last_code_text = {}
+
+    # Iterate through the DataFrame rows
+    for index, row in df.iterrows():
+        filename = row['notes'].split(':')[1].strip()  # Extract filename from 'code: filename'
+
+        if 'code:' in row['notes']:
+            # Check if this filename has been seen before
+            if filename in last_code_text:
+                # Set the prev_code_text to the last seen code_text for this filename
+                df.at[index, 'prev_code_text'] = last_code_text[filename]
+            else:
+                # This is the first time we're seeing this filename
+                df.at[index, 'prev_code_text'] = None
+
+            # Update the last_code_text for this filename to the current code_text
+            last_code_text[filename] = row['code_text']
+
+    return df
+
+
 # Sort by time, reset index, and repopulate eventID
 def sort_and_reset_eventID(df):
     # Sort the DataFrame by time
@@ -97,6 +120,9 @@ merged_save_db = append_save_log_to_db(db_df, save_log_df)
 
 # merge selection log with db
 merged_selection_db = append_selection_log_to_db(merged_save_db, selection_history_df)
+
+# add prev_code_text
+merged_selection_db = add_prev_code_text(merged_selection_db)
 
 # sort and reset eventID
 final_df = sort_and_reset_eventID(merged_selection_db)
